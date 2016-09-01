@@ -19,7 +19,6 @@ namespace ThreeGlasses
 
 
     //3Glasses C# interfaces
-    //3Glasses C#接口类
     public class ThreeGlassesInterfaces
     {
         public const int MAJOR = 6;
@@ -48,15 +47,12 @@ namespace ThreeGlasses
         static Vector3 LastRightVector3;
 
 
-        //获取数据
         //Get data from SDK
         [DllImport(vrLib)]
         private static extern bool SZVR_GetData(float[] input, float[] output);
-        //支付接口
         //Pay app
         [DllImport(vrLib, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool SZVR_PayApp(string appKey);
-        //手柄接口
         [DllImport("SZVRWandPlugin", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool SZVR_GetWandData(
             float[] quaternion,
@@ -66,22 +62,18 @@ namespace ThreeGlasses
             byte[] Stick ,
             bool right);
 
-        //窗口样式设置
         //Set window style
         [DllImport("user32.dll")]
         private static extern IntPtr SetWindowLong(IntPtr hwnd, int _nIndex, int dwNewLong);
 
-        //设置窗口位置和大小
         //Set windows position and resolution
         [DllImport("user32.dll")]
         private static extern bool SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-        //获取当前窗口
         //Get current app window
         [DllImport("user32.dll")]
         static extern IntPtr GetActiveWindow();
 
-        //通过窗口句柄，获得窗口大小和位置
         //Get window Position and resolution
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -91,19 +83,17 @@ namespace ThreeGlasses
         private const int GWL_STYLE = -16;
         private const int WS_BORDER = 1;
 
-        //内部数据结构：
         //Internal data structure
         //------------------------------------
         #region InternalDataStructure
-        //窗口矩形
         //Window Rect
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
         {
-            public int Left; //最左坐标
-            public int Top; //最上坐标
-            public int Right; //最右坐标
-            public int Bottom; //最下坐标
+            public int Left; 
+            public int Top; 
+            public int Right; 
+            public int Bottom;
         }
         #endregion
         //------------------------------------
@@ -119,11 +109,9 @@ namespace ThreeGlasses
             return status;
         }
 
-        //头盔控制
-        //Headset control
+        //windows control
         //-------------------------------------
-        #region Headset
-        //获取头盔的显示屏在window下的位置和分辨率
+        #region windows
         //Get the position and resolution of the headset under MS windows OS
         internal static Vector4 GetScreenPosRes()
         {
@@ -142,12 +130,74 @@ namespace ThreeGlasses
         #endregion
         //-------------------------------------
 
-        //Unity 公开接口
+        //Chair control
+        //------------------------------------
+        #region ChairControl
+
+        /// <summary>
+        /// Init chair from chair.xml file.
+        /// </summary>
+        public static void IntChair()
+        {
+            var inputs = new float[2];
+            inputs[0] = 5;
+            inputs[1] = 0;
+            var result = new float[1];
+            SZVR_GetData(inputs, result);
+        }
+
+        /// <summary>
+        /// Set chair to zero position
+        /// </summary>
+        public static void ChairToZero()
+        {
+            var inputs = new float[2];
+            inputs[0] = 5;
+            inputs[1] = 1;
+            var result = new float[1];
+            SZVR_GetData(inputs, result);
+        }
+
+        /// <summary>
+        /// Set chair to middle height
+        /// </summary>
+        public static void ChairToMiddle()
+        {
+            var inputs = new float[2];
+            inputs[0] = 5;
+            inputs[1] = 2;
+            var result = new float[1];
+            SZVR_GetData(inputs, result);
+        }
+
+        /// <summary>
+        /// Set chair vertical direction
+        /// </summary>
+        /// <param name="center"> Center point</param>
+        /// <param name="directionY"> Y vector</param>
+        /// <param name="time"> time</param>
+        public static void ChairCenterMove(Vector3 center, Vector3 directionY, int time = 10)
+        {
+            var inputs = new float[9];
+            inputs[0] = 5;
+            inputs[1] = 3;
+            inputs[2] = center.x;
+            inputs[3] = center.y;
+            inputs[4] = center.z;
+            inputs[5] = directionY.x;
+            inputs[6] = directionY.y;
+            inputs[7] = directionY.z;
+            inputs[8] = time;
+            var result = new float[1];
+            SZVR_GetData(inputs, result);
+        }
+        #endregion
+        //------------------------------------
+
         //Unity Interfaces
         //-------------------------------------
 
         #region UnityInterfaces
-        //获取头盔旋转信息
         //Get Headset rotation Quaternion
         public static Quaternion GetCameraOrientation()
         {
@@ -163,7 +213,6 @@ namespace ThreeGlasses
             return rotation;
         }
 
-        //获取头盔位置信息
         //Get Headset position
         public static Vector3 GetCameraPosition()
         {
@@ -183,7 +232,7 @@ namespace ThreeGlasses
         }
 
         ///// <summary>
-        ///// 获取头盔FOV. Get headset fov
+        ///// Get headset fov
         ///// </summary>
         ///// <returns></returns>
         //public static float GetFov()
@@ -202,12 +251,11 @@ namespace ThreeGlasses
         //}
 
         /// <summary>
-        /// 获取手柄位置和旋转.
         /// Get Wand position and orientaion.
         /// </summary>
-        /// <param name="LR"> 左右手 </param>
-        /// <param name="position">返回的坐标</param>
-        /// <param name="rotation">旋转的四元数</param>
+        /// <param name="LR"> LR Hand </param>
+        /// <param name="position">position</param>
+        /// <param name="rotation">Quaternion</param>
         /// <param name="buttonEvent"></param>
         public static void GetWandPosAndRot(LeftOrRight LR, ref Vector3 position, ref Quaternion rotation,out ThreeGlassesWandButtonEvent.ButtonEvent buttonEvent )
         {
@@ -255,7 +303,7 @@ namespace ThreeGlasses
 
 
         /// <summary>
-        ///设置当前窗口并移动到头盔中. Set current application window to headset display
+        /// Set current application window to headset display
         /// </summary>
         public static void SetPositionAndResolution()
         {
@@ -267,7 +315,7 @@ namespace ThreeGlasses
 
 
         /// <summary>
-        /// 支付接口. Pay app interfaces.
+        /// Pay app interfaces.
         /// </summary>
         /// <param name="appKey">app id</param>
         /// <returns></returns>
@@ -285,72 +333,6 @@ namespace ThreeGlasses
             
             return status;
         }
-
-        //动感座椅控制
-        //Chair control
-        //------------------------------------
-        #region ChairControl
-
-        /// <summary>
-        /// 初始化座椅. Init chair from chair.xml file.
-        /// </summary>
-        public static void IntChair()
-        {
-            var inputs = new float[2];
-            inputs[0] = 5;
-            inputs[1] = 0;
-            var result = new float[1];
-            SZVR_GetData(inputs, result);
-        }
-
-        /// <summary>
-        /// 设置座椅归零. Set chair to zero position
-        /// </summary>
-        public static void ChairToZero()
-        {
-            var inputs = new float[2];
-            inputs[0] = 5;
-            inputs[1] = 1;
-            var result = new float[1];
-            SZVR_GetData(inputs, result);
-        }
-
-        /// <summary>
-        /// 设置座椅上升到终点位置. Set chair to middle height
-        /// </summary>
-        public static void ChairToMiddle()
-        {
-            var inputs = new float[2];
-            inputs[0] = 5;
-            inputs[1] = 2;
-            var result = new float[1];
-            SZVR_GetData(inputs, result);
-        }
-
-        /// <summary>
-        /// 设置座椅垂直法向量. Set chair vertical direction
-        /// </summary>
-        /// <param name="center">中点位置 Center point</param>
-        /// <param name="directionY">Y方向向量 Y vector</param>
-        /// <param name="time">时间. time</param>
-        public static void ChairCenterMove(Vector3 center, Vector3 directionY, int time = 10)
-        {
-            var inputs = new float[9];
-            inputs[0] = 5;
-            inputs[1] = 3;
-            inputs[2] = center.x;
-            inputs[3] = center.y;
-            inputs[4] = center.z;
-            inputs[5] = directionY.x;
-            inputs[6] = directionY.y;
-            inputs[7] = directionY.z;
-            inputs[8] = time;
-            var result = new float[1];
-            SZVR_GetData(inputs, result);
-        }
-        #endregion
-        //------------------------------------
-
         #endregion
         //-------------------------------------
     }
