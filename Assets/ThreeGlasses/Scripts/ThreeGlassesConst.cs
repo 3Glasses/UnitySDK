@@ -9,9 +9,8 @@ namespace ThreeGlasses
     {
         public const string ResourcesPath = "ThreeGlasses/";
         public const string ImageResourcesPath = ResourcesPath + "Image/";
-        public const string ShaderPath = ResourcesPath + "Shader/FixRenderTargetUV";
 
-        public const string DefaultLeftCameraName  = "LeftCamera";
+        public const string DefaultLeftCameraName = "LeftCamera";
         public const string DefaultRightCameraName = "RightCamera";
     }
 }
