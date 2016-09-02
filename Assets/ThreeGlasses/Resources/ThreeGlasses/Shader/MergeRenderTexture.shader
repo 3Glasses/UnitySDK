@@ -1,8 +1,9 @@
-﻿Shader "Hidden/FixRenderTargetUV"
+﻿Shader "Hidden/MergeRenderTexture"
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
+        _LeftTex ("Texture", 2D) = "white" {}
+        _RightTex ("Texture", 2D) = "white" {}
 	}
 	SubShader
 	{
@@ -37,11 +38,20 @@
 				return o;
 			}
 			
-			sampler2D _MainTex;
+			sampler2D _LeftTex;
+            sampler2D _RightTex;
 
 			fixed4 frag (v2f i) : SV_Target
 			{
-				fixed4 col = tex2D(_MainTex, 1.0f - i.uv);
+                fixed4 col;
+                if (i.uv.x > 0.5) 
+                {
+                    col = tex2D(_RightTex, i.uv);
+                }
+                else
+                {
+                    col = tex2D(_LeftTex, i.uv);
+                }
 				return col;
 			}
 			ENDCG

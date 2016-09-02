@@ -22,10 +22,9 @@ namespace ThreeGlasses
     {
         public bool LeftEye;
         public Camera cam;
-        public bool FixUV = true;
 
         private RenderTexture render;
-        private Material material;
+        private static Material material;
 
         public void SetRenderTarget(RenderTexture r)
         {
@@ -34,7 +33,8 @@ namespace ThreeGlasses
 
         void Awake()
         {
-            var shader = Resources.Load<Shader>(ThreeGlassesConst.ShaderPath);
+            if (material != null) return;
+            var shader = Resources.Load<Shader>(ThreeGlassesConst.FixShaderPath);
             material = new Material(shader);
         }
 
@@ -72,10 +72,7 @@ namespace ThreeGlasses
 
         void LateUpdate()
         {
-            if (ThreeGlassesHeadset.OutRenderTexture.Create())
-            {
-                StartCoroutine(UpdateTexture());
-            }
+            StartCoroutine(UpdateTexture());
         }
 
         IEnumerator UpdateTexture()
@@ -83,22 +80,7 @@ namespace ThreeGlasses
             yield return new WaitForEndOfFrame();
 
             if (render == null) yield break;
-
-            var outRender = RenderTexture.GetTemporary(render.width, render.height, 24, RenderTextureFormat.ARGBFloat,
-                RenderTextureReadWrite.Default);
-
-            if (FixUV)
-            {
-                Graphics.Blit(render, outRender, material);
-            }
-
-            Graphics.CopyTexture(
-                render, 0, 0, 0, 0, render.width, render.height,
-                ThreeGlassesHeadset.OutRenderTexture, 0, 0, LeftEye ? 0 : render.width, 0);
-
             ThreeGlassesHeadset.Submit(LeftEye);
-
-            RenderTexture.ReleaseTemporary(outRender);
         }
     }
 }
