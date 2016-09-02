@@ -29,27 +29,32 @@ namespace ThreeGlasses
         {
             render = r;
             cam.targetTexture = render;
+
+            var cams = gameObject.GetComponentsInChildren<Camera>();
+            if (cams == null) return;
+            foreach (var l_cam in cams)
+            {
+                l_cam.targetTexture = render;
+            }
+        }
+
+        void Awake()
+        {
+            cam = GetComponent<Camera>();
         }
 
         void Start()
         {
-            cam = GetComponent<Camera>();
             cam.rect = LeftEye ? new Rect(0, 0, 0.5f, 1.0f) : new Rect(0.5f, 0, 0.5f, 1.0f);
-            StartCoroutine(ThreeGlassesUtils.DelayedRun(
-                () =>
-                {
-                    var cams = gameObject.GetComponentsInChildren<Camera>();
-                    if (cams == null) return;
-                    foreach (var l_cam in cams)
-                    {
-                        l_cam.rect = cam.rect;
-                        l_cam.fieldOfView = cam.fieldOfView;
-                        l_cam.nearClipPlane = cam.nearClipPlane;
-                        l_cam.farClipPlane = cam.farClipPlane;
-                    }
-                },
-                new WaitForFixedUpdate()
-                ));
+            var cams = gameObject.GetComponentsInChildren<Camera>();
+            if (cams == null) return;
+            foreach (var l_cam in cams)
+            {
+                l_cam.rect = cam.rect;
+                l_cam.fieldOfView = cam.fieldOfView;
+                l_cam.nearClipPlane = cam.nearClipPlane;
+                l_cam.farClipPlane = cam.farClipPlane;
+            }
         }
 
         void LateUpdate()

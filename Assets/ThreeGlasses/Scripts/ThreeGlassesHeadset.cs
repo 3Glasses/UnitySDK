@@ -39,9 +39,10 @@ namespace ThreeGlasses
         public ThreeGlassesVRCamera rightCamera;
 
         private static RenderTexture OutRenderTexture;
+
         private static bool[] eyeStatus = { false, false };
 
-        void Start()
+        void Awake()
         {
             SetCameraPos();
         }
@@ -75,12 +76,11 @@ namespace ThreeGlasses
             ThreeGlassesEvents.HeadPosEvent += UpdatePos;
             ThreeGlassesEvents.HeadRotEvent += UpdateRot;
 
-            if (OutRenderTexture == null)
-            {
-                OutRenderTexture = new RenderTexture(RenderWidth, RenderHeight, 24,
-                    RenderTextureFormat.ARGBFloat,
-                    RenderTextureReadWrite.Default);
-            }
+            if (OutRenderTexture != null) return;
+
+            OutRenderTexture = new RenderTexture(RenderWidth, RenderHeight, 24,
+                RenderTextureFormat.ARGBFloat,
+                RenderTextureReadWrite.Default);
 
             leftCamera.SetRenderTarget(OutRenderTexture);
             rightCamera.SetRenderTarget(OutRenderTexture);
@@ -95,7 +95,6 @@ namespace ThreeGlasses
             {
                 OutRenderTexture.Release();
             }
-
             OutRenderTexture = null;
         }
 
