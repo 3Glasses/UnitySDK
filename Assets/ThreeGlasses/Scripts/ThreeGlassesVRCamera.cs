@@ -24,25 +24,17 @@ namespace ThreeGlasses
         public Camera cam;
 
         private RenderTexture render;
-        private static Material material;
 
         public void SetRenderTarget(RenderTexture r)
         {
             render = r;
-        }
-
-        void Awake()
-        {
-            if (material != null) return;
-            var shader = Resources.Load<Shader>(ThreeGlassesConst.FixShaderPath);
-            material = new Material(shader);
+            cam.targetTexture = render;
         }
 
         void Start()
         {
             cam = GetComponent<Camera>();
-            cam.rect = new Rect(0, 0, 1.0f, 1.0f);
-
+            cam.rect = LeftEye ? new Rect(0, 0, 0.5f, 1.0f) : new Rect(0.5f, 0, 0.5f, 1.0f);
             StartCoroutine(ThreeGlassesUtils.DelayedRun(
                 () =>
                 {
@@ -58,16 +50,6 @@ namespace ThreeGlasses
                 },
                 new WaitForFixedUpdate()
                 ));
-
-            cam.targetTexture = render;
-        }
-
-        void OnDisable()
-        {
-            cam.targetTexture = null;
-            if (render == null) return;
-            render.Release();
-            render = null;
         }
 
         void LateUpdate()
