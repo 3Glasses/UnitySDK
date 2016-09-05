@@ -19,7 +19,7 @@ namespace ThreeGlasses
         private const int RenderWidth = 2880;
         private const int RenderHeight = 1440;
 
-       
+
         [DllImport("SZVRCompositorPlugin", CallingConvention = CallingConvention.StdCall, EntryPoint = "UpdateTextureFromUnity")]
         private static extern void UpdateTextureFromUnity(System.IntPtr texture);
 
@@ -29,7 +29,7 @@ namespace ThreeGlasses
         public bool EnableHeadRotTracking = true;
         public bool EnableHeadPosTracking = false;
 
-        public bool FixUV = true;
+        public bool ReversalV = true;
 
         public float Near = 0.01f;
         public float Far = 1000f;
@@ -40,13 +40,25 @@ namespace ThreeGlasses
         public ThreeGlassesVRCamera leftCamera;
         public ThreeGlassesVRCamera rightCamera;
 
-        internal static RenderTexture OutRenderTexture;  
+        private static bool _reversalV;
+        private static Material _material;
 
-        private static bool[] eyeStatus = {false, false};
+        private static RenderTexture _renderTexture;
+        private static RenderTexture _outRenderTexture;
+
+        private static bool[] eyeStatus = { false, false };
+
+        void Awake()
+        {
+            SetCameraPos();
+        }
 
         void Start()
         {
-            SetCameraPos();
+            _reversalV = ReversalV;
+            if (_material != null) return;
+            var shader = Shader.Find("Hidden/ReversalUV");
+            _material = new Material(shader);
         }
 
         public void SetCameraPos()
@@ -57,9 +69,6 @@ namespace ThreeGlasses
 
             leftCamera.transform.localPosition = -eyeDistance;
             rightCamera.transform.localPosition = eyeDistance;
-
-            leftCamera.FixUV = FixUV;
-            rightCamera.FixUV = FixUV;
 
             if (leftCamera.cam == null || rightCamera.cam == null) return;
 
@@ -80,20 +89,19 @@ namespace ThreeGlasses
         {
             ThreeGlassesEvents.HeadPosEvent += UpdatePos;
             ThreeGlassesEvents.HeadRotEvent += UpdateRot;
+            
+            if (_outRenderTexture != null) return;
 
-            if (OutRenderTexture != null) return;
+            _renderTexture = new RenderTexture(RenderWidth, RenderHeight, 24,
+                RenderTextureFormat.ARGBFloat,
+                RenderTextureReadWrite.Default);
 
-                OutRenderTexture = new RenderTexture(RenderWidth, RenderHeight, 24,
-                    RenderTextureFormat.ARGBFloat,
-                    RenderTextureReadWrite.Default);
+            _outRenderTexture = new RenderTexture(RenderWidth, RenderHeight, 24,
+                RenderTextureFormat.ARGBFloat,
+                RenderTextureReadWrite.Default);
 
-                leftCamera.SetRenderTarget(new RenderTexture(RenderWidth / 2,
-                    RenderHeight, 24, RenderTextureFormat.ARGBFloat,
-                    RenderTextureReadWrite.Default));
-
-                rightCamera.SetRenderTarget(new RenderTexture(RenderWidth / 2,
-                    RenderHeight, 24, RenderTextureFormat.ARGBFloat,
-                    RenderTextureReadWrite.Default));
+            leftCamera.SetRenderTarget(_renderTexture);
+            rightCamera.SetRenderTarget(_renderTexture);
         }
 
         void OnDisable()
@@ -101,9 +109,17 @@ namespace ThreeGlasses
             ThreeGlassesEvents.HeadPosEvent -= UpdatePos;
             ThreeGlassesEvents.HeadRotEvent -= UpdateRot;
 
-            if (OutRenderTexture == null) return;
-            OutRenderTexture.Release();
-            OutRenderTexture = null;
+            if (_renderTexture != null)
+            {
+                _renderTexture.Release();
+            }
+            _renderTexture = null;
+
+            if (_outRenderTexture != null)
+            {
+                _outRenderTexture.Release();
+            }
+            _outRenderTexture = null;
         }
 
         void UpdatePos(Vector3 pos)
@@ -122,7 +138,7 @@ namespace ThreeGlasses
             }
         }
 
-        internal static void Submit(bool lefteye)
+        public static void Submit(bool lefteye)
         {
             if (lefteye)
             {
@@ -134,8 +150,20 @@ namespace ThreeGlasses
             }
 
             if (!eyeStatus[0] || !eyeStatus[1]) return;
-            UpdateTextureFromUnity(OutRenderTexture.GetNativeTexturePtr());
+            if (!_renderTexture.Create() || !_outRenderTexture.Create() || _material == null) return;
+
+            if (_reversalV)
+            {
+                Graphics.Blit(_renderTexture, _outRenderTexture, _material);
+            }
+            else
+            {
+                Graphics.Blit(_renderTexture, _outRenderTexture);
+            }
+
+            UpdateTextureFromUnity(_outRenderTexture.GetNativeTexturePtr());
             GL.IssuePluginEvent(GetRenderEventFunc(), 1);
+
             eyeStatus[0] = eyeStatus[1] = false;
         }
     }

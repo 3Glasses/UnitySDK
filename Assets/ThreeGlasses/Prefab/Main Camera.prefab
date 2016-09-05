@@ -256,7 +256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnableHeadRotTracking: 1
   EnableHeadPosTracking: 0
-  FixUV: 1
+  ReversalUV: 1
   Near: 0.01
   Far: 1000
   EyeDistance: 0.1
@@ -276,7 +276,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LeftEye: 0
   cam: {fileID: 20000012050634532}
-  FixUV: 1
 --- !u!114 &114000013270874314
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -290,7 +289,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LeftEye: 1
   cam: {fileID: 20000012316771180}
-  FixUV: 1
 --- !u!124 &124000013105213622
 Behaviour:
   m_ObjectHideFlags: 1

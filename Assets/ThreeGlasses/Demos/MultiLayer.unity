@@ -448,6 +448,41 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 20000013397408486, guid: 64b2caafe199eec4c80e3d4efcc56316,
+        type: 2}
+      propertyPath: m_ClearFlags
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 20000010803941720, guid: 64b2caafe199eec4c80e3d4efcc56316,
+        type: 2}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 20000013397408486, guid: 64b2caafe199eec4c80e3d4efcc56316,
+        type: 2}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 20000012465891900, guid: 64b2caafe199eec4c80e3d4efcc56316,
+        type: 2}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 20000012412549604, guid: 64b2caafe199eec4c80e3d4efcc56316,
+        type: 2}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 20000013334069588, guid: 64b2caafe199eec4c80e3d4efcc56316,
+        type: 2}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 20000012515887914, guid: 64b2caafe199eec4c80e3d4efcc56316,
+        type: 2}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 64b2caafe199eec4c80e3d4efcc56316, type: 2}
   m_IsPrefabParent: 0

@@ -1,4 +1,4 @@
-﻿Shader "Hidden/FixRenderTargetUV"
+﻿Shader "Hidden/ReversalUV"
 {
 	Properties
 	{
@@ -41,7 +41,7 @@
 
 			fixed4 frag (v2f i) : SV_Target
 			{
-				fixed4 col = tex2D(_MainTex, 1.0f - i.uv);
+                fixed4 col = tex2D(_MainTex, float2( i.uv.x, 1.0f - i.uv.y ));
 				return col;
 			}
 			ENDCG
