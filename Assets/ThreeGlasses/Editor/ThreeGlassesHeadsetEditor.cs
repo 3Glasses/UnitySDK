@@ -11,6 +11,9 @@ namespace ThreeGlasses
     {
         private SerializedProperty EnableHeadRotTracking;
         private SerializedProperty EnableHeadPosTracking;
+
+        private SerializedProperty ReversalV;
+
         private SerializedProperty Near;
         private SerializedProperty Far;
 
@@ -26,6 +29,8 @@ namespace ThreeGlasses
 
             EnableHeadRotTracking = serializedObject.FindProperty("EnableHeadRotTracking");
             EnableHeadPosTracking = serializedObject.FindProperty("EnableHeadPosTracking");
+
+            ReversalV = serializedObject.FindProperty("ReversalV");
 
             Near = serializedObject.FindProperty("Near");
             Far = serializedObject.FindProperty("Far");
@@ -50,6 +55,8 @@ namespace ThreeGlasses
 
             EditorGUILayout.PropertyField(EnableHeadRotTracking);
             EditorGUILayout.PropertyField(EnableHeadPosTracking);
+
+            EditorGUILayout.PropertyField(ReversalV);
 
             EditorGUILayout.PropertyField(Near);
             EditorGUILayout.PropertyField(Far);
