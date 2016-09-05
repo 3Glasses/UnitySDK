@@ -19,7 +19,7 @@ namespace ThreeGlasses
         private const int RenderWidth = 2880;
         private const int RenderHeight = 1440;
 
-       
+
         [DllImport("SZVRCompositorPlugin", CallingConvention = CallingConvention.StdCall, EntryPoint = "UpdateTextureFromUnity")]
         private static extern void UpdateTextureFromUnity(System.IntPtr texture);
 
@@ -28,8 +28,6 @@ namespace ThreeGlasses
 
         public bool EnableHeadRotTracking = true;
         public bool EnableHeadPosTracking = false;
-
-        public bool FixUV = true;
 
         public float Near = 0.01f;
         public float Far = 1000f;
@@ -40,11 +38,11 @@ namespace ThreeGlasses
         public ThreeGlassesVRCamera leftCamera;
         public ThreeGlassesVRCamera rightCamera;
 
-        internal static RenderTexture OutRenderTexture;  
+        private static RenderTexture OutRenderTexture;
 
-        private static bool[] eyeStatus = {false, false};
+        private static bool[] eyeStatus = { false, false };
 
-        void Start()
+        void Awake()
         {
             SetCameraPos();
         }
@@ -57,9 +55,6 @@ namespace ThreeGlasses
 
             leftCamera.transform.localPosition = -eyeDistance;
             rightCamera.transform.localPosition = eyeDistance;
-
-            leftCamera.FixUV = FixUV;
-            rightCamera.FixUV = FixUV;
 
             if (leftCamera.cam == null || rightCamera.cam == null) return;
 
@@ -83,17 +78,12 @@ namespace ThreeGlasses
 
             if (OutRenderTexture != null) return;
 
-                OutRenderTexture = new RenderTexture(RenderWidth, RenderHeight, 24,
-                    RenderTextureFormat.ARGBFloat,
-                    RenderTextureReadWrite.Default);
+            OutRenderTexture = new RenderTexture(RenderWidth, RenderHeight, 24,
+                RenderTextureFormat.ARGBFloat,
+                RenderTextureReadWrite.Default);
 
-                leftCamera.SetRenderTarget(new RenderTexture(RenderWidth / 2,
-                    RenderHeight, 24, RenderTextureFormat.ARGBFloat,
-                    RenderTextureReadWrite.Default));
-
-                rightCamera.SetRenderTarget(new RenderTexture(RenderWidth / 2,
-                    RenderHeight, 24, RenderTextureFormat.ARGBFloat,
-                    RenderTextureReadWrite.Default));
+            leftCamera.SetRenderTarget(OutRenderTexture);
+            rightCamera.SetRenderTarget(OutRenderTexture);
         }
 
         void OnDisable()
@@ -101,8 +91,10 @@ namespace ThreeGlasses
             ThreeGlassesEvents.HeadPosEvent -= UpdatePos;
             ThreeGlassesEvents.HeadRotEvent -= UpdateRot;
 
-            if (OutRenderTexture == null) return;
-            OutRenderTexture.Release();
+            if (OutRenderTexture != null)
+            {
+                OutRenderTexture.Release();
+            }
             OutRenderTexture = null;
         }
 
@@ -122,7 +114,7 @@ namespace ThreeGlasses
             }
         }
 
-        internal static void Submit(bool lefteye)
+        public static void Submit(bool lefteye)
         {
             if (lefteye)
             {
@@ -134,8 +126,11 @@ namespace ThreeGlasses
             }
 
             if (!eyeStatus[0] || !eyeStatus[1]) return;
+            if (!OutRenderTexture.Create()) return;
+
             UpdateTextureFromUnity(OutRenderTexture.GetNativeTexturePtr());
             GL.IssuePluginEvent(GetRenderEventFunc(), 1);
+
             eyeStatus[0] = eyeStatus[1] = false;
         }
     }
