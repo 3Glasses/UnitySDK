@@ -7,7 +7,7 @@ using UnityEngine;
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 
 /*
- * Head Module 
+ * Head Module
  */
 
 namespace ThreeGlasses
@@ -43,13 +43,37 @@ namespace ThreeGlasses
 
         private static RenderTexture _outRenderTexture;
 
-        public RenderTexture Out;
-
         private static bool[] eyeStatus = { false, false };
 
-        void Awake()
+        private static Material _material;
+
+        void Start()
         {
-            SetCameraPos();
+            if (_material == null)
+            {
+                _material = new Material(Shader.Find("Hidden/DrawTextureCloseLight"));
+            }
+
+            StartCoroutine(ThreeGlassesUtils.DelayedRun(() =>
+            {
+                SetCameraPos();
+                if (_outRenderTexture != null) return;
+
+                _leftRenderTexture = new RenderTexture(RenderWidth/2, RenderHeight, 24,
+                    RenderTextureFormat.ARGBFloat,
+                    RenderTextureReadWrite.Default);
+
+                _rightRenderTexture = new RenderTexture(RenderWidth/2, RenderHeight, 24,
+                    RenderTextureFormat.ARGBFloat,
+                    RenderTextureReadWrite.Default);
+
+                _outRenderTexture = new RenderTexture(RenderWidth, RenderHeight, 24,
+                    RenderTextureFormat.ARGBFloat,
+                    RenderTextureReadWrite.Default);
+
+                leftCamera.SetRenderTarget(_leftRenderTexture);
+                rightCamera.SetRenderTarget(_rightRenderTexture);
+            }, new WaitForEndOfFrame()));
         }
 
         public void SetCameraPos()
@@ -80,49 +104,33 @@ namespace ThreeGlasses
         {
             ThreeGlassesEvents.HeadPosEvent += UpdatePos;
             ThreeGlassesEvents.HeadRotEvent += UpdateRot;
-
-            if (_outRenderTexture != null) return;
-
-            _leftRenderTexture = new RenderTexture(RenderWidth / 2, RenderHeight, 24,
-                RenderTextureFormat.ARGBFloat,
-                RenderTextureReadWrite.Default);
-
-            _rightRenderTexture = new RenderTexture(RenderWidth / 2, RenderHeight, 24,
-                RenderTextureFormat.ARGBFloat,
-                RenderTextureReadWrite.Default);
-
-            _outRenderTexture = new RenderTexture(RenderWidth, RenderHeight, 24,
-                RenderTextureFormat.ARGBFloat,
-                RenderTextureReadWrite.Default);
-
-            Out = _outRenderTexture;
-
-            leftCamera.SetRenderTarget(_leftRenderTexture);
-            rightCamera.SetRenderTarget(_rightRenderTexture);
         }
 
         void OnDisable()
         {
             ThreeGlassesEvents.HeadPosEvent -= UpdatePos;
             ThreeGlassesEvents.HeadRotEvent -= UpdateRot;
+        }
 
-            if (_leftRenderTexture != null)
-            {
-                _leftRenderTexture.Release();
-            }
-            _leftRenderTexture = null;
+        void OnDestroy()
+        {
+          if (_leftRenderTexture != null)
+          {
+              _leftRenderTexture.Release();
+          }
+          _leftRenderTexture = null;
 
-            if (_rightRenderTexture != null)
-            {
-                _rightRenderTexture.Release();
-            }
-            _rightRenderTexture = null;
+          if (_rightRenderTexture != null)
+          {
+              _rightRenderTexture.Release();
+          }
+          _rightRenderTexture = null;
 
-            if (_outRenderTexture != null)
-            {
-                _outRenderTexture.Release();
-            }
-            _outRenderTexture = null;
+          if (_outRenderTexture != null)
+          {
+              _outRenderTexture.Release();
+          }
+          _outRenderTexture = null;  
         }
 
         void UpdatePos(Vector3 pos)
@@ -162,16 +170,20 @@ namespace ThreeGlasses
 
             Graphics.SetRenderTarget(_outRenderTexture);
 
+            GL.Clear(true, true, Color.black, 1.0f);
+
             GL.PushMatrix();
             GL.LoadOrtho();
 
             GL.Viewport(new Rect(0, 0, RenderWidth / 2.0f, RenderHeight));
-            Graphics.DrawTexture(new Rect(0, 0, 1.0f, 1.0f), _leftRenderTexture);
+            Graphics.DrawTexture(new Rect(0, 0, 1.0f, 1.0f), _leftRenderTexture, _material);
 
             GL.Viewport(new Rect(RenderWidth / 2.0f, 0, RenderWidth / 2.0f, RenderHeight));
-            Graphics.DrawTexture(new Rect(0, 0, 1.0f, 1.0f), _rightRenderTexture);
+            Graphics.DrawTexture(new Rect(0, 0, 1.0f, 1.0f), _rightRenderTexture, _material);
 
             GL.PopMatrix();
+
+            GL.Flush();
 
             UpdateTextureFromUnity(_outRenderTexture.GetNativeTexturePtr());
             GL.IssuePluginEvent(GetRenderEventFunc(), 1);
