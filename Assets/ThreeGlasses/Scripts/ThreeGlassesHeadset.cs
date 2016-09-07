@@ -29,8 +29,6 @@ namespace ThreeGlasses
         public bool EnableHeadRotTracking = true;
         public bool EnableHeadPosTracking = false;
 
-        public bool ReversalV = true;
-
         public float Near = 0.01f;
         public float Far = 1000f;
 
@@ -40,25 +38,18 @@ namespace ThreeGlasses
         public ThreeGlassesVRCamera leftCamera;
         public ThreeGlassesVRCamera rightCamera;
 
-        private static bool _reversalV;
-        private static Material _material;
+        private static RenderTexture _leftRenderTexture;
+        private static RenderTexture _rightRenderTexture;
 
-        private static RenderTexture _renderTexture;
         private static RenderTexture _outRenderTexture;
+
+        public RenderTexture Out;
 
         private static bool[] eyeStatus = { false, false };
 
         void Awake()
         {
             SetCameraPos();
-        }
-
-        void Start()
-        {
-            _reversalV = ReversalV;
-            if (_material != null) return;
-            var shader = Shader.Find("Hidden/ReversalUV");
-            _material = new Material(shader);
         }
 
         public void SetCameraPos()
@@ -89,10 +80,14 @@ namespace ThreeGlasses
         {
             ThreeGlassesEvents.HeadPosEvent += UpdatePos;
             ThreeGlassesEvents.HeadRotEvent += UpdateRot;
-            
+
             if (_outRenderTexture != null) return;
 
-            _renderTexture = new RenderTexture(RenderWidth, RenderHeight, 24,
+            _leftRenderTexture = new RenderTexture(RenderWidth / 2, RenderHeight, 24,
+                RenderTextureFormat.ARGBFloat,
+                RenderTextureReadWrite.Default);
+
+            _rightRenderTexture = new RenderTexture(RenderWidth / 2, RenderHeight, 24,
                 RenderTextureFormat.ARGBFloat,
                 RenderTextureReadWrite.Default);
 
@@ -100,8 +95,10 @@ namespace ThreeGlasses
                 RenderTextureFormat.ARGBFloat,
                 RenderTextureReadWrite.Default);
 
-            leftCamera.SetRenderTarget(_renderTexture);
-            rightCamera.SetRenderTarget(_renderTexture);
+            Out = _outRenderTexture;
+
+            leftCamera.SetRenderTarget(_leftRenderTexture);
+            rightCamera.SetRenderTarget(_rightRenderTexture);
         }
 
         void OnDisable()
@@ -109,11 +106,17 @@ namespace ThreeGlasses
             ThreeGlassesEvents.HeadPosEvent -= UpdatePos;
             ThreeGlassesEvents.HeadRotEvent -= UpdateRot;
 
-            if (_renderTexture != null)
+            if (_leftRenderTexture != null)
             {
-                _renderTexture.Release();
+                _leftRenderTexture.Release();
             }
-            _renderTexture = null;
+            _leftRenderTexture = null;
+
+            if (_rightRenderTexture != null)
+            {
+                _rightRenderTexture.Release();
+            }
+            _rightRenderTexture = null;
 
             if (_outRenderTexture != null)
             {
@@ -150,16 +153,25 @@ namespace ThreeGlasses
             }
 
             if (!eyeStatus[0] || !eyeStatus[1]) return;
-            if (!_renderTexture.Create() || !_outRenderTexture.Create() || _material == null) return;
+            if (!_leftRenderTexture.Create() ||
+                !_rightRenderTexture.Create() ||
+                !_outRenderTexture.Create())
+            {
+                return;
+            }
 
-            if (_reversalV)
-            {
-                Graphics.Blit(_renderTexture, _outRenderTexture, _material);
-            }
-            else
-            {
-                Graphics.Blit(_renderTexture, _outRenderTexture);
-            }
+            Graphics.SetRenderTarget(_outRenderTexture);
+
+            GL.PushMatrix();
+            GL.LoadOrtho();
+
+            GL.Viewport(new Rect(0, 0, RenderWidth / 2.0f, RenderHeight));
+            Graphics.DrawTexture(new Rect(0, 0, 1.0f, 1.0f), _leftRenderTexture);
+
+            GL.Viewport(new Rect(RenderWidth / 2.0f, 0, RenderWidth / 2.0f, RenderHeight));
+            Graphics.DrawTexture(new Rect(0, 0, 1.0f, 1.0f), _rightRenderTexture);
+
+            GL.PopMatrix();
 
             UpdateTextureFromUnity(_outRenderTexture.GetNativeTexturePtr());
             GL.IssuePluginEvent(GetRenderEventFunc(), 1);

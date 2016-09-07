@@ -24,7 +24,7 @@ namespace ThreeGlasses
         public const int MAJOR = 6;
         public const int MINOR = 0;
         public const int PATCH = 0;
-        public const string MAY = "beta";
+        public const string MAY = "beta4";
 
         public static string getVersion
         {

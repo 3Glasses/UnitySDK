@@ -45,7 +45,7 @@ namespace ThreeGlasses
 
         void Start()
         {
-            cam.rect = LeftEye ? new Rect(0, 0, 0.5f, 1.0f) : new Rect(0.5f, 0, 0.5f, 1.0f);
+            cam.rect = new Rect(0, 0, 1.0f, 1.0f);
             var cams = gameObject.GetComponentsInChildren<Camera>();
             if (cams == null) return;
             foreach (var l_cam in cams)
