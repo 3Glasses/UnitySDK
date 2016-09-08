@@ -183,8 +183,6 @@ namespace ThreeGlasses
 
             GL.PopMatrix();
 
-            GL.Flush();
-
             UpdateTextureFromUnity(_outRenderTexture.GetNativeTexturePtr());
             GL.IssuePluginEvent(GetRenderEventFunc(), 1);
 
