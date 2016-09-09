@@ -26,7 +26,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 122750}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.8, z: -2}
+  m_LocalPosition: {x: 0, y: 3, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -134,7 +134,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 90
+  field of view: 110
   orthographic: 0
   orthographic size: 5
   m_Depth: 20
@@ -168,7 +168,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 90
+  field of view: 110
   orthographic: 0
   orthographic size: 5
   m_Depth: 1
@@ -202,7 +202,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 90
+  field of view: 110
   orthographic: 0
   orthographic size: 5
   m_Depth: 1
@@ -256,11 +256,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnableHeadRotTracking: 1
   EnableHeadPosTracking: 0
-  ReversalUV: 1
   Near: 0.01
   Far: 1000
   EyeDistance: 0.1
-  FieldOfView: 90
+  FieldOfView: 110
   leftCamera: {fileID: 114000013270874314}
   rightCamera: {fileID: 114000012892104458}
 --- !u!114 &114000012892104458

@@ -183,7 +183,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 428674, guid: 2ed62f4d75ad1744e86bf7c68485cbd9, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 1.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 428674, guid: 2ed62f4d75ad1744e86bf7c68485cbd9, type: 2}
       propertyPath: m_LocalPosition.z
@@ -208,6 +208,26 @@ Prefab:
     - target: {fileID: 428674, guid: 2ed62f4d75ad1744e86bf7c68485cbd9, type: 2}
       propertyPath: m_RootOrder
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 20000011854872570, guid: 2ed62f4d75ad1744e86bf7c68485cbd9,
+        type: 2}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 20000012050634532, guid: 2ed62f4d75ad1744e86bf7c68485cbd9,
+        type: 2}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 20000012316771180, guid: 2ed62f4d75ad1744e86bf7c68485cbd9,
+        type: 2}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000010519446098, guid: 2ed62f4d75ad1744e86bf7c68485cbd9,
+        type: 2}
+      propertyPath: FieldOfView
+      value: 90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2ed62f4d75ad1744e86bf7c68485cbd9, type: 2}
@@ -443,7 +463,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 7cc12bae48fa10d40a17e73c38899ea2, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}

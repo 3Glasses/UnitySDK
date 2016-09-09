@@ -39,6 +39,7 @@ namespace ThreeGlasses
             if ( self != this ) return;
             GetWandPosAndRotd(ThreeGlassesInterfaces.LeftOrRight.Left,  LeftWandEvent);
             GetWandPosAndRotd(ThreeGlassesInterfaces.LeftOrRight.Right, RightWandEvent);
+            RefreshOrientationData();
         }
 
         static void GetWandPosAndRotd(ThreeGlassesInterfaces.LeftOrRight lr, System.Action<Quaternion, Vector3> callback)
@@ -58,16 +59,8 @@ namespace ThreeGlasses
             }
         }
 
-        void LateUpdate()
+        static void RefreshOrientationData()
         {
-            if ( self != this ) return;
-            StartCoroutine(RefreshOrientationData());
-        }
-
-        static IEnumerator RefreshOrientationData()
-        {
-            yield return new WaitForEndOfFrame();
-
             if( HeadRotEvent != null)
             {
                 var rotation = ThreeGlassesInterfaces.GetCameraOrientation();
@@ -81,7 +74,7 @@ namespace ThreeGlasses
                 HeadRotEvent(rotation);
             }
 
-            if (HeadPosEvent == null) yield break;
+            if (HeadPosEvent == null)  return;
             var vec = ThreeGlassesInterfaces.GetCameraPosition();
             HeadPosEvent(vec);
         }
