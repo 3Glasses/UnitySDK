@@ -20,13 +20,14 @@ namespace ThreeGlasses
         private const int RenderHeight = 2048;
 
 
-        [DllImport("SZVRCompositorPlugin",
-             EntryPoint = "UpdateTextureFromUnity")]
+        [DllImport("SZVRCompositorPlugin")]
         private static extern void UpdateTextureFromUnity(System.IntPtr leftIntPtr, System.IntPtr rigthIntPtr);
 
-        [DllImport("SZVRCompositorPlugin",
-             EntryPoint = "GetRenderEventFunc")]
+        [DllImport("SZVRCompositorPlugin")]
         private static extern System.IntPtr GetRenderEventFunc();
+
+        [DllImport("SZVRCompositorPlugin")]
+        public static extern void PluginHandleWindowMsg();
 
         public bool EnableHeadRotTracking = true;
         public bool EnableHeadPosTracking = false;
@@ -42,12 +43,11 @@ namespace ThreeGlasses
 
         private static RenderTexture _leftRenderTexture;
         private static RenderTexture _rightRenderTexture;
-        private static RenderTexture _leftRenderTextureOut;
-        private static RenderTexture _rightRenderTextureOut;
 
         private static bool[] eyeStatus = {false, false};
 
         private static Material _material;
+        private static bool upTexture;
 
         void Start()
         {
@@ -69,17 +69,11 @@ namespace ThreeGlasses
                     RenderTextureFormat.ARGBFloat,
                     RenderTextureReadWrite.Default);
 
-                _leftRenderTextureOut = new RenderTexture(RenderWidth / 2, RenderHeight, 24,
-                    RenderTextureFormat.ARGBFloat,
-                    RenderTextureReadWrite.Default);
-
-                _rightRenderTextureOut = new RenderTexture(RenderWidth / 2, RenderHeight, 24,
-                    RenderTextureFormat.ARGBFloat,
-                    RenderTextureReadWrite.Default);
-
                 leftCamera.SetRenderTarget(_leftRenderTexture);
                 rightCamera.SetRenderTarget(_rightRenderTexture);
 
+                upTexture = false;
+                
             }, new WaitForEndOfFrame()));
         }
 
@@ -168,19 +162,12 @@ namespace ThreeGlasses
                 return;
             }
 
-            GL.Viewport(new Rect(0, 0, RenderWidth/2.0f, RenderHeight));
-            GL.PushMatrix();
-            GL.LoadOrtho();
-
-            Graphics.SetRenderTarget(_leftRenderTextureOut);
-            Graphics.DrawTexture(new Rect(0, 0, 1.0f, 1.0f), _leftRenderTexture, _material);
-
-            Graphics.SetRenderTarget(_rightRenderTextureOut);
-            Graphics.DrawTexture(new Rect(0, 0, 1.0f, 1.0f), _rightRenderTexture, _material);
-
-            GL.PopMatrix();
-
-            UpdateTextureFromUnity(_leftRenderTextureOut.GetNativeTexturePtr(), _rightRenderTextureOut.GetNativeTexturePtr());
+            if (!upTexture)
+            {
+                upTexture = true;
+                UpdateTextureFromUnity(_leftRenderTexture.GetNativeTexturePtr(),
+                    _rightRenderTexture.GetNativeTexturePtr());
+            }
             GL.IssuePluginEvent(GetRenderEventFunc(), 1);
 
             eyeStatus[0] = eyeStatus[1] = false;

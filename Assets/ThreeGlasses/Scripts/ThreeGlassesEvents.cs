@@ -39,7 +39,8 @@ namespace ThreeGlasses
             if ( self != this ) return;
             GetWandPosAndRotd(ThreeGlassesInterfaces.LeftOrRight.Left,  LeftWandEvent);
             GetWandPosAndRotd(ThreeGlassesInterfaces.LeftOrRight.Right, RightWandEvent);
-            RefreshOrientationData();
+
+            StartCoroutine(ThreeGlassesUtils.DelayedRun(RefreshOrientationData, new WaitForEndOfFrame()));
         }
 
         static void GetWandPosAndRotd(ThreeGlassesInterfaces.LeftOrRight lr, System.Action<Quaternion, Vector3> callback)
