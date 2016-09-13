@@ -26,9 +26,6 @@ namespace ThreeGlasses
         [DllImport("SZVRCompositorPlugin")]
         private static extern System.IntPtr GetRenderEventFunc();
 
-        [DllImport("SZVRCompositorPlugin")]
-        public static extern void PluginHandleWindowMsg();
-
         public bool EnableHeadRotTracking = true;
         public bool EnableHeadPosTracking = false;
 
