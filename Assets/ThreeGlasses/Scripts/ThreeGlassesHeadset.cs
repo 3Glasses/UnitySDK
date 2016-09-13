@@ -51,6 +51,8 @@ namespace ThreeGlasses
 
         void Start()
         {
+            Application.targetFrameRate = 90;
+
             if (_material == null)
             {
                 _material = new Material(Shader.Find("Hidden/DrawTextureCloseLight"));
