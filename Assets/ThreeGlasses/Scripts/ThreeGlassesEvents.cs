@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 // ReSharper disable CheckNamespace
 // ReSharper disable InconsistentNaming
 // ReSharper disable ArrangeTypeMemberModifiers
@@ -22,6 +22,17 @@ namespace ThreeGlasses
 
         private static ThreeGlassesEvents self;
 
+        private static ThreeGlassesWandButtonEvent.ButtonEvent _wand_button_event;
+        private static Vector3 _wand_position;
+        private static Quaternion _wand_quaternion;
+
+        private static Vector3 _hmd_position;
+        private static Quaternion _hmd_quaternion;
+
+        //no gc
+        private static ThreeGlassesInterfaces.LeftOrRight left = ThreeGlassesInterfaces.LeftOrRight.Left;
+        private static ThreeGlassesInterfaces.LeftOrRight right = ThreeGlassesInterfaces.LeftOrRight.Right;
+
         void Awake()
         {
             if ( self != null )
@@ -32,58 +43,55 @@ namespace ThreeGlasses
                 }
             }
             self = this;
+
+            StopAllCoroutines();
+            StartCoroutine(RefreshOrientationData());
         }
 
         void Update()
         {
             if ( self != this ) return;
-            GetWandPosAndRotd(ThreeGlassesInterfaces.LeftOrRight.Left,  LeftWandEvent);
-            GetWandPosAndRotd(ThreeGlassesInterfaces.LeftOrRight.Right, RightWandEvent);
+            GetWandPosAndRotd(ref left, ref LeftWandEvent);
+            GetWandPosAndRotd(ref right, ref RightWandEvent);
         }
 
-        static void GetWandPosAndRotd(ThreeGlassesInterfaces.LeftOrRight lr, System.Action<Quaternion, Vector3> callback)
+        static void GetWandPosAndRotd(ref ThreeGlassesInterfaces.LeftOrRight lr, ref System.Action<Quaternion, Vector3> callback)
         {
-            var position = Vector3.zero;
-            var rotation = Quaternion.identity;
-            ThreeGlassesWandButtonEvent.ButtonEvent buttonEvent;
-            ThreeGlassesInterfaces.GetWandPosAndRot(lr, ref position, ref rotation, out buttonEvent);
+            ThreeGlassesInterfaces.GetWandPosAndRot(lr, ref _wand_position, ref _wand_quaternion, out _wand_button_event);
 
             if (callback != null)
             {
-                callback(rotation, position);
+                callback(_wand_quaternion, _wand_position);
             }
             if (WandButtonEvent != null)
             {
-                WandButtonEvent(buttonEvent);
+                WandButtonEvent(_wand_button_event);
             }
-        }
-
-        void LateUpdate()
-        {
-            if ( self != this ) return;
-            StartCoroutine(RefreshOrientationData());
         }
 
         static IEnumerator RefreshOrientationData()
         {
-            yield return new WaitForEndOfFrame();
-
-            if( HeadRotEvent != null)
+            while (true)
             {
-                var rotation = ThreeGlassesInterfaces.GetCameraOrientation();
-                if( rotation.x.Equals(float.NaN) ||
-                    rotation.y.Equals(float.NaN) ||
-                    rotation.z.Equals(float.NaN) ||
-                    rotation.w.Equals(float.NaN))
+                yield return new WaitForEndOfFrame();
+                if (HeadRotEvent != null)
                 {
-                    rotation = Quaternion.identity;
+                    _hmd_quaternion = ThreeGlassesInterfaces.GetCameraOrientation();
+                    if (_hmd_quaternion.x.Equals(float.NaN) ||
+                        _hmd_quaternion.y.Equals(float.NaN) ||
+                        _hmd_quaternion.z.Equals(float.NaN) ||
+                        _hmd_quaternion.w.Equals(float.NaN))
+                    {
+                        _hmd_quaternion = Quaternion.identity;
+                    }
+                    HeadRotEvent(_hmd_quaternion);
                 }
-                HeadRotEvent(rotation);
-            }
 
-            if (HeadPosEvent == null) yield break;
-            var vec = ThreeGlassesInterfaces.GetCameraPosition();
-            HeadPosEvent(vec);
+                if (HeadPosEvent == null) continue;
+                _hmd_position = ThreeGlassesInterfaces.GetCameraPosition();
+                HeadPosEvent(_hmd_position);
+            }
+            // ReSharper disable once IteratorNeverReturns
         }
 
         void OnDestroy()

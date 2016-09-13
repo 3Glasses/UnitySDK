@@ -24,7 +24,7 @@ namespace ThreeGlasses
         public const int MAJOR = 6;
         public const int MINOR = 0;
         public const int PATCH = 0;
-        public const string MAY = "beta";
+        public const string MAY = "beta4";
 
         public static string getVersion
         {
@@ -202,7 +202,7 @@ namespace ThreeGlasses
         public static Quaternion GetCameraOrientation()
         {
             var rotation = Quaternion.identity;
-            var inputs = new[] {1.0f, 16.7f};
+            var inputs = new[] {1.0f, Time.deltaTime * 1000};
 
             var result = new float[4];
             if (!SZVR_GetData(inputs, result)) return rotation;
