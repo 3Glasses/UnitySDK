@@ -1,7 +1,7 @@
 # UnitySDK
 This is the Unity SDK for 3Glasses Devices.
 
-## version: v6.0.0-RC
+## version: v6.0.0
 
 ### Quick Start
   1. download latest releases zip

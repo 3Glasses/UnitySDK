@@ -24,7 +24,7 @@ namespace ThreeGlasses
         public const int MAJOR = 6;
         public const int MINOR = 0;
         public const int PATCH = 0;
-        public const string MAY = "beta4";
+        public const string MAY = "";
 
         public static string getVersion
         {
@@ -90,9 +90,9 @@ namespace ThreeGlasses
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
         {
-            public int Left; 
-            public int Top; 
-            public int Right; 
+            public int Left;
+            public int Top;
+            public int Right;
             public int Bottom;
         }
         #endregion
@@ -330,7 +330,7 @@ namespace ThreeGlasses
             {
                 status = false;
             }
-            
+
             return status;
         }
         #endregion
