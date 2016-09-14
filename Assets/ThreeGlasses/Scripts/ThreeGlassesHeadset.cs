@@ -16,8 +16,8 @@ namespace ThreeGlasses
     [AddComponentMenu("3Glasses/Headset")]
     public class ThreeGlassesHeadset : MonoBehaviour
     {
-        private const int RenderWidth = 4096;
-        private const int RenderHeight = 2048;
+        private const int RenderWidth = 2880;
+        private const int RenderHeight = 1440;
 
 
         [DllImport("SZVRCompositorPlugin")]
@@ -33,7 +33,7 @@ namespace ThreeGlasses
         public float Far = 1000f;
 
         public float EyeDistance = 0.1f;
-        public float FieldOfView = 90f;
+        public float FieldOfView = 110f;
 
         public ThreeGlassesVRCamera leftCamera;
         public ThreeGlassesVRCamera rightCamera;
@@ -54,10 +54,10 @@ namespace ThreeGlasses
             {
                 _material = new Material(Shader.Find("Hidden/DrawTextureCloseLight"));
             }
+            SetCameraPos();
 
             StartCoroutine(ThreeGlassesUtils.DelayedRun(() =>
             {
-                SetCameraPos();
                 if (_leftRenderTexture != null && _rightRenderTexture != null) return;
 
                 _leftRenderTexture = new RenderTexture(RenderWidth/2, RenderHeight, 24,
