@@ -45,16 +45,19 @@ namespace ThreeGlasses
 
         void Start()
         {
-            cam.rect = new Rect(0, 0, 1.0f, 1.0f);
-            var cams = gameObject.GetComponentsInChildren<Camera>();
-            if (cams == null) return;
-            foreach (var l_cam in cams)
+            StartCoroutine(ThreeGlassesUtils.DelayedRun(() =>
             {
-                l_cam.rect = cam.rect;
-                l_cam.fieldOfView = cam.fieldOfView;
-                l_cam.nearClipPlane = cam.nearClipPlane;
-                l_cam.farClipPlane = cam.farClipPlane;
-            }
+                cam.rect = new Rect(0, 0, 1.0f, 1.0f);
+                var cams = gameObject.GetComponentsInChildren<Camera>();
+                if (cams == null) return;
+                foreach (var l_cam in cams)
+                {
+                    l_cam.rect = cam.rect;
+                    l_cam.fieldOfView = cam.fieldOfView;
+                    l_cam.nearClipPlane = cam.nearClipPlane;
+                    l_cam.farClipPlane = cam.farClipPlane;
+                }
+            }, new WaitForEndOfFrame()));
         }
 
         void LateUpdate()
