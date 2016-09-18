@@ -203,7 +203,7 @@ Light:
     m_Bits: 4294967295
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 3.56
+  m_BounceIntensity: 2
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &977710989
@@ -448,40 +448,30 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 20000013397408486, guid: 64b2caafe199eec4c80e3d4efcc56316,
-        type: 2}
-      propertyPath: m_ClearFlags
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 20000010803941720, guid: 64b2caafe199eec4c80e3d4efcc56316,
         type: 2}
-      propertyPath: field of view
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 20000013397408486, guid: 64b2caafe199eec4c80e3d4efcc56316,
-        type: 2}
-      propertyPath: field of view
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 20000012465891900, guid: 64b2caafe199eec4c80e3d4efcc56316,
-        type: 2}
-      propertyPath: field of view
-      value: 90
+      propertyPath: near clip plane
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 20000012412549604, guid: 64b2caafe199eec4c80e3d4efcc56316,
         type: 2}
-      propertyPath: field of view
-      value: 90
+      propertyPath: near clip plane
+      value: 0.3
       objectReference: {fileID: 0}
-    - target: {fileID: 20000013334069588, guid: 64b2caafe199eec4c80e3d4efcc56316,
+    - target: {fileID: 20000012465891900, guid: 64b2caafe199eec4c80e3d4efcc56316,
         type: 2}
-      propertyPath: field of view
-      value: 90
+      propertyPath: near clip plane
+      value: 0.3
       objectReference: {fileID: 0}
-    - target: {fileID: 20000012515887914, guid: 64b2caafe199eec4c80e3d4efcc56316,
+    - target: {fileID: 20000013397408486, guid: 64b2caafe199eec4c80e3d4efcc56316,
         type: 2}
-      propertyPath: field of view
-      value: 90
+      propertyPath: near clip plane
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011801069698, guid: 64b2caafe199eec4c80e3d4efcc56316,
+        type: 2}
+      propertyPath: FieldOfView
+      value: 110
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 64b2caafe199eec4c80e3d4efcc56316, type: 2}
