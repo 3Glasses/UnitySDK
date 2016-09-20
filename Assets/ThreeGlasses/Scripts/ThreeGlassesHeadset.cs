@@ -42,18 +42,10 @@ namespace ThreeGlasses
         private static RenderTexture _rightRenderTexture;
 
         private static bool[] eyeStatus = {false, false};
-
-        private static Material _material;
         private static bool upTexture;
 
         void Start()
         {
-            Application.targetFrameRate = 90;
-
-            if (_material == null)
-            {
-                _material = new Material(Shader.Find("Hidden/DrawTextureCloseLight"));
-            }
             SetCameraPos();
 
             StartCoroutine(ThreeGlassesUtils.DelayedRun(() =>
