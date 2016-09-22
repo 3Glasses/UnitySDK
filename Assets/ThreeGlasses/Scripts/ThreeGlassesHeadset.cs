@@ -104,21 +104,6 @@ namespace ThreeGlasses
             ThreeGlassesEvents.HeadRotEvent -= UpdateRot;
         }
 
-        void OnDestroy()
-        {
-            if (_leftRenderTexture != null)
-            {
-                _leftRenderTexture.Release();
-            }
-            _leftRenderTexture = null;
-
-            if (_rightRenderTexture != null)
-            {
-                _rightRenderTexture.Release();
-            }
-            _rightRenderTexture = null;
-        }
-
         void UpdatePos(Vector3 pos)
         {
             if (EnableHeadPosTracking)
