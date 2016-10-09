@@ -19,7 +19,6 @@ namespace ThreeGlasses
         private const int RenderWidth = 2880;
         private const int RenderHeight = 1440;
 
-
         [DllImport("SZVRCompositorPlugin")]
         private static extern void UpdateTextureFromUnity(System.IntPtr leftIntPtr, System.IntPtr rigthIntPtr);
 

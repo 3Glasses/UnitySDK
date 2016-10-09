@@ -132,7 +132,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
+  near clip plane: 0.3
   far clip plane: 1000
   field of view: 110
   orthographic: 0
@@ -166,7 +166,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
+  near clip plane: 0.3
   far clip plane: 1000
   field of view: 110
   orthographic: 0
@@ -200,7 +200,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
+  near clip plane: 0.3
   far clip plane: 1000
   field of view: 110
   orthographic: 0
@@ -256,7 +256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnableHeadRotTracking: 1
   EnableHeadPosTracking: 0
-  Near: 0.01
+  Near: 0.3
   Far: 1000
   EyeDistance: 0.1
   FieldOfView: 110
