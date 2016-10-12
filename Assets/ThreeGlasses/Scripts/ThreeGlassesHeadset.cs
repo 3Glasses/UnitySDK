@@ -20,6 +20,12 @@ namespace ThreeGlasses
         private const int RenderHeight = 1440;
 
         [DllImport("SZVRCompositorPlugin")]
+        private static extern void InitVRCompositor();
+
+        [DllImport("SZVRCompositorPlugin")]
+        private static extern void DestroyVRCompositor();
+
+        [DllImport("SZVRCompositorPlugin")]
         private static extern void UpdateTextureFromUnity(System.IntPtr leftIntPtr, System.IntPtr rigthIntPtr);
 
         [DllImport("SZVRCompositorPlugin")]
@@ -46,6 +52,7 @@ namespace ThreeGlasses
         void Start()
         {
             SetCameraPos();
+            InitVRCompositor();
 
             StartCoroutine(ThreeGlassesUtils.DelayedRun(() =>
             {
@@ -101,6 +108,11 @@ namespace ThreeGlasses
         {
             ThreeGlassesEvents.HeadPosEvent -= UpdatePos;
             ThreeGlassesEvents.HeadRotEvent -= UpdateRot;
+        }
+
+        void OnDestroy()
+        {
+            DestroyVRCompositor();
         }
 
         void UpdatePos(Vector3 pos)
