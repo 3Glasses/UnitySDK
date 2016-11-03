@@ -5,6 +5,7 @@ using UnityEngine;
 // ReSharper disable ArrangeTypeMemberModifiers
 // ReSharper disable UnusedMember.Local
 // ReSharper disable FieldCanBeMadeReadOnly.Local
+// ReSharper disable UseStringInterpolation
 
 /*
  * Head Module
@@ -19,26 +20,35 @@ namespace ThreeGlasses
         private const int RenderWidth = 2880;
         private const int RenderHeight = 1440;
 
-        [DllImport("SZVRCompositorPlugin")]
-        private static extern void InitVRCompositor();
+        [DllImport("SZVRUnityPlugin")]
+        private static extern void SZVRPluginInit();
 
-        [DllImport("SZVRCompositorPlugin")]
-        private static extern void DestroyVRCompositor();
+        [DllImport("SZVRUnityPlugin")]
+        private static extern void SZVRPluginDestroy();
 
-        [DllImport("SZVRCompositorPlugin")]
+        [DllImport("SZVRUnityPlugin")]
+        private static extern void SZVRPluginEnableATW();
+
+        [DllImport("SZVRUnityPlugin")]
+        private static extern void SZVRPluginDiasbleATW();
+
+        [DllImport("SZVRUnityPlugin")]
+        private static extern void GetCameraOrientation(float[] input);
+
+        [DllImport("SZVRUnityPlugin")]
         private static extern void UpdateTextureFromUnity(System.IntPtr leftIntPtr, System.IntPtr rigthIntPtr);
 
-        [DllImport("SZVRCompositorPlugin")]
+        [DllImport("SZVRUnityPlugin")]
         private static extern System.IntPtr GetRenderEventFunc();
 
         public bool EnableHeadRotTracking = true;
         public bool EnableHeadPosTracking = false;
 
-        public float Near = 0.01f;
+        public float Near = 0.3f;
         public float Far = 1000f;
 
         public float EyeDistance = 0.1f;
-        public float FieldOfView = 110f;
+        private const float FieldOfView = 90;
 
         public ThreeGlassesVRCamera leftCamera;
         public ThreeGlassesVRCamera rightCamera;
@@ -49,21 +59,26 @@ namespace ThreeGlasses
         private static bool[] eyeStatus = {false, false};
         private static bool upTexture;
 
+        void Awake()
+        {
+            SZVRPluginInit();
+        }
+
         void Start()
         {
-            SetCameraPos();
-            InitVRCompositor();
+            //Application.targetFrameRate = 60;
 
+            SetCameraPos();
             StartCoroutine(ThreeGlassesUtils.DelayedRun(() =>
             {
                 if (_leftRenderTexture != null && _rightRenderTexture != null) return;
 
                 _leftRenderTexture = new RenderTexture(RenderWidth/2, RenderHeight, 24,
-                    RenderTextureFormat.ARGBFloat,
+                    RenderTextureFormat.BGRA32,
                     RenderTextureReadWrite.Default);
 
                 _rightRenderTexture = new RenderTexture(RenderWidth/2, RenderHeight, 24,
-                    RenderTextureFormat.ARGBFloat,
+                    RenderTextureFormat.BGRA32,
                     RenderTextureReadWrite.Default);
 
                 leftCamera.SetRenderTarget(_leftRenderTexture);
@@ -101,18 +116,16 @@ namespace ThreeGlasses
         void OnEnable()
         {
             ThreeGlassesEvents.HeadPosEvent += UpdatePos;
-            ThreeGlassesEvents.HeadRotEvent += UpdateRot;
         }
 
         void OnDisable()
         {
             ThreeGlassesEvents.HeadPosEvent -= UpdatePos;
-            ThreeGlassesEvents.HeadRotEvent -= UpdateRot;
         }
 
         void OnDestroy()
         {
-            DestroyVRCompositor();
+            SZVRPluginDestroy();
         }
 
         void UpdatePos(Vector3 pos)
@@ -123,12 +136,26 @@ namespace ThreeGlasses
             }
         }
 
-        void UpdateRot(Quaternion rotation)
+        public void Update()
         {
-            if (EnableHeadRotTracking)
-            {
-                transform.localRotation = rotation;
-            }
+            if (!EnableHeadRotTracking) return;
+            var input = new float[] {0, 0, 0, 0};
+            GetCameraOrientation(input);
+            input[0] = -input[0];
+            input[1] = -input[1];
+            input[2] = input[2];
+            input[3] = input[3];
+            transform.localRotation = new Quaternion(input[0], input[1], input[2], input[3]);
+        }
+
+        public void EnableATW()
+        {
+            SZVRPluginEnableATW();
+        }
+
+        public void DisableATW()
+        {
+            SZVRPluginDiasbleATW();
         }
 
         public static void Submit(bool lefteye)
@@ -152,7 +179,8 @@ namespace ThreeGlasses
             if (!upTexture)
             {
                 upTexture = true;
-                UpdateTextureFromUnity(_leftRenderTexture.GetNativeTexturePtr(),
+                UpdateTextureFromUnity(
+                    _leftRenderTexture.GetNativeTexturePtr(),
                     _rightRenderTexture.GetNativeTexturePtr());
             }
             GL.IssuePluginEvent(GetRenderEventFunc(), 1);

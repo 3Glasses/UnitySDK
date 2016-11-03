@@ -16,7 +16,6 @@ namespace ThreeGlasses
         private SerializedProperty Far;
 
         private SerializedProperty EyeDistance;
-        private SerializedProperty FieldOfView;
 
         private SerializedProperty leftCamera;
         private SerializedProperty rightCamera;
@@ -32,7 +31,6 @@ namespace ThreeGlasses
             Far = serializedObject.FindProperty("Far");
 
             EyeDistance = serializedObject.FindProperty("EyeDistance");
-            FieldOfView = serializedObject.FindProperty("FieldOfView");
 
             leftCamera = serializedObject.FindProperty("leftCamera");
             rightCamera = serializedObject.FindProperty("rightCamera");
@@ -56,7 +54,6 @@ namespace ThreeGlasses
             EditorGUILayout.PropertyField(Far);
 
             EyeDistance.floatValue = EditorGUILayout.Slider("Eye Distance", EyeDistance.floatValue, 0.02f, 1.0f);
-            FieldOfView.floatValue = EditorGUILayout.Slider("Field Of View", FieldOfView.floatValue, 0.1f, 180f);
 
             EditorGUILayout.PropertyField(leftCamera);
             EditorGUILayout.PropertyField(rightCamera);

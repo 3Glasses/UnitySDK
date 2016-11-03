@@ -24,6 +24,7 @@ namespace ThreeGlasses
         public Camera cam;
 
         private RenderTexture render;
+        private Material material;
 
         public void SetRenderTarget(RenderTexture r)
         {
@@ -41,6 +42,7 @@ namespace ThreeGlasses
         void Awake()
         {
             cam = GetComponent<Camera>();
+            material = new Material(Shader.Find("Hidden/ThreeGlasses/ReverseUV"));
         }
 
         void Start()
@@ -71,6 +73,11 @@ namespace ThreeGlasses
 
             if (render == null) yield break;
             ThreeGlassesHeadset.Submit(LeftEye);
+        }
+
+        void OnRenderImage(RenderTexture src, RenderTexture dst)
+        {
+            Graphics.Blit(src, dst, material);
         }
     }
 }

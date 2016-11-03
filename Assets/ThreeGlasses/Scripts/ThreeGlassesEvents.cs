@@ -14,7 +14,7 @@ namespace ThreeGlasses
     [AddComponentMenu("3Glasses/Event System")]
     public class ThreeGlassesEvents : MonoBehaviour
     {
-        public static event System.Action<Quaternion> HeadRotEvent;
+//        public static event System.Action<Quaternion> HeadRotEvent;
         public static event System.Action<Vector3> HeadPosEvent;
         public static event System.Action<Quaternion, Vector3> LeftWandEvent;
         public static event System.Action<Quaternion, Vector3> RightWandEvent;
@@ -45,7 +45,7 @@ namespace ThreeGlasses
             self = this;
 
             StopAllCoroutines();
-            StartCoroutine(RefreshOrientationData());
+//            StartCoroutine(RefreshOrientationData());
         }
 
         void Update()
@@ -69,30 +69,30 @@ namespace ThreeGlasses
             }
         }
 
-        static IEnumerator RefreshOrientationData()
-        {
-            while (true)
-            {
-                yield return new WaitForEndOfFrame();
-                if (HeadRotEvent != null)
-                {
-                    _hmd_quaternion = ThreeGlassesInterfaces.GetCameraOrientation();
-                    if (_hmd_quaternion.x.Equals(float.NaN) ||
-                        _hmd_quaternion.y.Equals(float.NaN) ||
-                        _hmd_quaternion.z.Equals(float.NaN) ||
-                        _hmd_quaternion.w.Equals(float.NaN))
-                    {
-                        _hmd_quaternion = Quaternion.identity;
-                    }
-                    HeadRotEvent(_hmd_quaternion);
-                }
-
-                if (HeadPosEvent == null) continue;
-                _hmd_position = ThreeGlassesInterfaces.GetCameraPosition();
-                HeadPosEvent(_hmd_position);
-            }
-            // ReSharper disable once IteratorNeverReturns
-        }
+//        static IEnumerator RefreshOrientationData()
+//        {
+//            while (true)
+//            {
+//                yield return new WaitForEndOfFrame();
+//                if (HeadRotEvent != null)
+//                {
+//                    _hmd_quaternion = ThreeGlassesInterfaces.GetCameraOrientation();
+//                    if (_hmd_quaternion.x.Equals(float.NaN) ||
+//                        _hmd_quaternion.y.Equals(float.NaN) ||
+//                        _hmd_quaternion.z.Equals(float.NaN) ||
+//                        _hmd_quaternion.w.Equals(float.NaN))
+//                    {
+//                        _hmd_quaternion = Quaternion.identity;
+//                    }
+//                    HeadRotEvent(_hmd_quaternion);
+//                }
+//
+//                if (HeadPosEvent == null) continue;
+//                _hmd_position = ThreeGlassesInterfaces.GetCameraPosition();
+//                HeadPosEvent(_hmd_position);
+//            }
+//            // ReSharper disable once IteratorNeverReturns
+//        }
 
         void OnDestroy()
         {
