@@ -33,7 +33,7 @@ namespace ThreeGlasses
         private static extern void SZVRPluginDiasbleATW();
 
         [DllImport("SZVRUnityPlugin")]
-        private static extern void GetCameraOrientation(float[] input);
+        private static extern void GetHMDQuaternion(float[] input);
 
         [DllImport("SZVRUnityPlugin")]
         private static extern void UpdateTextureFromUnity(System.IntPtr leftIntPtr, System.IntPtr rigthIntPtr);
@@ -140,9 +140,9 @@ namespace ThreeGlasses
         {
             if (!EnableHeadRotTracking) return;
             var input = new float[] {0, 0, 0, 0};
-            GetCameraOrientation(input);
-            input[0] = -input[0];
-            input[1] = -input[1];
+            GetHMDQuaternion(input);
+            input[0] = input[0];
+            input[1] = input[1];
             input[2] = input[2];
             input[3] = input[3];
             transform.localRotation = new Quaternion(input[0], input[1], input[2], input[3]);
