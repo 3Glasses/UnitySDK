@@ -179,13 +179,13 @@ namespace ThreeGlasses
 
 
                 // 更新主相机旋转角度
-                var input = new float[] { 0, 0, 0, 0 };
-                ThreeGlassesDllInterface.GetHMDQuaternion(input);
-                input[0] = input[0];
-                input[1] = input[1];
-                input[2] = input[2];
-                input[3] = input[3];
-                transform.localRotation = new Quaternion(input[0], input[1], input[2], input[3]);
+                var hmd = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+                var controller_left = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+                var controller_right = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+                ThreeGlassesDllInterface.GetTrackedPost(hmd, controller_left, controller_right);
+                transform.localPosition = new Vector3(hmd[0], hmd[1], hmd[2]);
+                transform.localRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
+
 
                 // 更新手柄信息
                 if (enableJoypad)
