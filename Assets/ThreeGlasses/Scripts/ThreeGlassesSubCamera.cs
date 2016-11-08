@@ -15,7 +15,7 @@ namespace ThreeGlasses
         public CameraType type = CameraType.Screen;
         void Awake()
         {
-            material = new Material(Shader.Find("Hidden/ThreeGlasses/ReverseUV"));
+            material = new Material(Shader.Find("Hidden/ThreeGlasses/FlipUV"));
         }
 
         void OnRenderImage(RenderTexture src, RenderTexture dst)

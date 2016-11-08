@@ -4,7 +4,7 @@ using System.Diagnostics; // 注意：这是为了使用包含在此名称空间
 
 namespace ThreeGlasses
 {
-    static class ThreeGlassesUtils
+    public static class ThreeGlassesUtils
     {
         // 复写log
         [ConditionalAttribute("TGDEBUG")]

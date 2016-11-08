@@ -42,7 +42,7 @@ namespace ThreeGlasses
             if (enableJoypad)
             {
                 // 初始化手柄
-                Debug.Log("init joypad");
+                ThreeGlassesUtils.Log("init joypad");
                 joyPad[0] = new ThreeGlassesJoypad(InputType.LeftJoyPad);
                 joyPad[1] = new ThreeGlassesJoypad(InputType.RightJoyPad);
             }
@@ -52,23 +52,7 @@ namespace ThreeGlasses
 
         public void Update()
         {
-            // 更新主相机旋转角度
-            var input = new float[] {0, 0, 0, 0};
-            ThreeGlassesDllInterface.GetHMDQuaternion(input);
-            input[0] = input[0];
-            input[1] = input[1];
-            input[2] = input[2];
-            input[3] = input[3];
-            transform.localRotation = new Quaternion(input[0], input[1], input[2], input[3]);
-
-            // 更新手柄信息
-            if(enableJoypad)
-            {
-                for (int i = 0; i < JOYPAD_NUM; i++)
-                {
-                    joyPad[i].Update();
-                }
-            }
+            
         }
         
         void VRCameraInit ()
@@ -120,6 +104,25 @@ namespace ThreeGlasses
                                        renderTexture[1].GetNativeTexturePtr());
 
                 GL.IssuePluginEvent(ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
+
+
+                // 更新主相机旋转角度
+                var input = new float[] { 0, 0, 0, 0 };
+                ThreeGlassesDllInterface.GetHMDQuaternion(input);
+                input[0] = input[0];
+                input[1] = input[1];
+                input[2] = input[2];
+                input[3] = input[3];
+                transform.localRotation = new Quaternion(input[0], input[1], input[2], input[3]);
+
+                // 更新手柄信息
+                if (enableJoypad)
+                {
+                    for (int i = 0; i < JOYPAD_NUM; i++)
+                    {
+                        joyPad[i].Update();
+                    }
+                }
             }
         }
 
