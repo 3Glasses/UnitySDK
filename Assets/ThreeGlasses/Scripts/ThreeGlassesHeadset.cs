@@ -33,7 +33,7 @@ namespace ThreeGlasses
         private static extern void SZVRPluginDiasbleATW();
 
         [DllImport("SZVRUnityPlugin")]
-        private static extern void GetHMDQuaternion(float[] input);
+        private static extern void GetTrackedPost(float[] hmd, float[] controller_left, float[] Controller_right);
 
         [DllImport("SZVRUnityPlugin")]
         private static extern void UpdateTextureFromUnity(System.IntPtr leftIntPtr, System.IntPtr rigthIntPtr);
@@ -139,13 +139,12 @@ namespace ThreeGlasses
         public void Update()
         {
             if (!EnableHeadRotTracking) return;
-            var input = new float[] {0, 0, 0, 0};
-            GetHMDQuaternion(input);
-            input[0] = input[0];
-            input[1] = input[1];
-            input[2] = input[2];
-            input[3] = input[3];
-            transform.localRotation = new Quaternion(input[0], input[1], input[2], input[3]);
+            var hmd = new float[] {0, 0, 0, 0, 0, 0, 0};
+            var controller_left = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+            var controller_right = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+            GetTrackedPost(hmd, controller_left, controller_right);
+            transform.localPosition = new Vector3(hmd[0], hmd[1], hmd[2]);
+            transform.localRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
         }
 
         public void EnableATW()
