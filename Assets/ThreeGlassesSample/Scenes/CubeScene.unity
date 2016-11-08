@@ -120,6 +120,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Num: 10
   distance: 5
+  red: {fileID: 2100000, guid: 2b66c97bceeae714cbbe687b3abf1f41, type: 2}
+  green: {fileID: 2100000, guid: 5fca48a35ab3ca04abeca86cd68bebf5, type: 2}
 --- !u!4 &342207176
 Transform:
   m_ObjectHideFlags: 0
@@ -205,9 +207,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 1960752114}
   - 20: {fileID: 1960752113}
-  - 92: {fileID: 1960752112}
   - 124: {fileID: 1960752111}
   - 81: {fileID: 1960752110}
+  - 92: {fileID: 1960752112}
   - 114: {fileID: 1960752115}
   m_Layer: 0
   m_Name: Main Camera
@@ -296,4 +298,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eyeDistance: 0.1
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   enableJoypad: 1
+  onlyHeadDisplay: 0
+  flipDisplay: 0

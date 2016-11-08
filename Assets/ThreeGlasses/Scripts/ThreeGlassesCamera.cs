@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Reflection;
 
 namespace ThreeGlasses
 {
@@ -17,11 +18,19 @@ namespace ThreeGlasses
         private const int renderHeight = 1440;
         // 视距
         public float eyeDistance = 0.1f;
+        public LayerMask layerMask = -1;
 
         // 是否需要支持手柄
         public bool enableJoypad = true;
         const int JOYPAD_NUM = 2;
         static ThreeGlassesJoypad[] joyPad = new ThreeGlassesJoypad[JOYPAD_NUM];
+
+        // 主相机的显示
+        public bool onlyHeadDisplay = false;
+
+        // 是否需要手动翻转
+        public bool flipDisplay = false;
+
         void Awake()
         {
             // 初始化dll
@@ -30,13 +39,14 @@ namespace ThreeGlasses
             for (int i = 0; i < CAMERA_NUM; i++)
             {
                 renderTexture[i] = new RenderTexture(renderWidth / 2, renderHeight, 24,
-                                                  RenderTextureFormat.BGRA32,
-                                                  RenderTextureReadWrite.Default);
+                                                     RenderTextureFormat.BGRA32,
+                                                     RenderTextureReadWrite.Default);
                 renderTexture[i].Create();
             }            
         }
         IEnumerator Start ()
         {
+            ThreeGlassesUtils.Log("MainCamera init");
             // 初始化相机
             VRCameraInit();
             if (enableJoypad)
@@ -57,21 +67,82 @@ namespace ThreeGlasses
         
         void VRCameraInit ()
         {
-            // 创建并设置相机
-            near = GetComponent<Camera>().nearClipPlane;
-            far = GetComponent<Camera>().farClipPlane;
-            
-            for(int i=0; i<CAMERA_NUM; i++)
+            // 获取原有相机的远近裁剪面
+            Camera thiscam = GetComponent<Camera>();
+            near = thiscam.nearClipPlane;
+            far = thiscam.farClipPlane;
+
+            // 获取要添加的component
+            ArrayList needAdd = new ArrayList();
+            System.Type[] needAddTypes = new System.Type[] { typeof(GUILayer), typeof(FlareLayer)};
+            Component[] coms = gameObject.GetComponents<Component>();
+            // 普通component
+            foreach (var com in coms)
             {
+                foreach(var type in needAddTypes)
+                {
+                    if(com.GetType() == type)
+                    {
+                        needAdd.Add(com);
+                    }
+                }
+            }
+            // 脚本component
+            foreach (var com in coms)
+            {
+               
+                if (com is MonoBehaviour)
+                {
+                        
+                    if (com != this)
+                    {
+                        System.Type t = com.GetType();
+
+
+                        MemberInfo meth = t.GetMethod("OnRenderImage", BindingFlags.Instance |
+                                                      BindingFlags.NonPublic | BindingFlags.Public);
+                        if (meth != null)
+                        {
+                            needAdd.Add(com);
+                        }
+                    }
+                      
+                }
+                
+            }
+
+            // 创建并设置相机
+            for (int i=0; i<CAMERA_NUM; i++)
+            {
+                // 创建左右相机
                 subCamera[i] = new GameObject();
+                
+                // 重命名，添加ThreeGlassesSubCamera
                 subCamera[i].name = cameraName[i];
                 Camera cam = subCamera[i].AddComponent<Camera>();
-                ThreeGlassesSubCamera subCameraScript = subCamera[i].AddComponent<ThreeGlassesSubCamera>();
-                subCameraScript.type = (ThreeGlassesSubCamera.CameraType)i;
                 cam.fieldOfView = fieldOfView;
                 cam.nearClipPlane = near;
                 cam.farClipPlane = far;
+                cam.cullingMask = thiscam.cullingMask;
+                cam.depth = thiscam.depth;
                 subCamera[i].transform.SetParent(this.transform);
+
+                // 添加主相机中需要copy过来的component
+                foreach(var item in needAdd)
+                {
+                    UnityEditorInternal.ComponentUtility.CopyComponent((Component)item);
+                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(subCamera[i]);
+                }
+
+                // 添加完所有component包含ImageEffect后再添加subCamera，因为需要blit翻转
+                ThreeGlassesSubCamera subCameraScript = subCamera[i].AddComponent<ThreeGlassesSubCamera>();
+                subCameraScript.type = (ThreeGlassesSubCamera.CameraType)i;
+                if(!flipDisplay)
+                {
+                    subCameraScript.FLIP = true;
+                }
+                
+
             }
             var eyeDis = new Vector3(eyeDistance/2, 0, 0);
             subCamera[0].transform.localPosition = -eyeDis;
@@ -91,6 +162,7 @@ namespace ThreeGlasses
                 tempCamera.targetTexture = renderTexture[(int)cam.type];
             }
 
+            thiscam.enabled = !onlyHeadDisplay;
         }
         
         private IEnumerator CallPluginAtEndOfFrames()
@@ -101,7 +173,7 @@ namespace ThreeGlasses
                 yield return new WaitForEndOfFrame();
 
                 ThreeGlassesDllInterface.UpdateTextureFromUnity(renderTexture[0].GetNativeTexturePtr(),
-                                       renderTexture[1].GetNativeTexturePtr());
+                                                                renderTexture[1].GetNativeTexturePtr());
 
                 GL.IssuePluginEvent(ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
 
