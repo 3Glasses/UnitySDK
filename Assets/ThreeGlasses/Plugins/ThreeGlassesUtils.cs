@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Diagnostics; // 注意：这是为了使用包含在此名称空间中的ConditionalAttribute特性
+using System.Diagnostics; // for ConditionalAttribute
 
 namespace ThreeGlasses
 {
@@ -12,5 +12,20 @@ namespace ThreeGlasses
         {
             UnityEngine.Debug.Log(msg);
         }
+
+        public static Component CopyComponent(Component original, GameObject destination)
+        {
+            System.Type type = original.GetType();
+            Component copy = destination.AddComponent(type);
+            // Copied fields can be restricted with BindingFlags
+            System.Reflection.FieldInfo[] fields = type.GetFields();
+            foreach (System.Reflection.FieldInfo field in fields)
+            {
+                field.SetValue(copy, field.GetValue(original));
+            }
+            return copy;
+
+        }
     }
+
 }

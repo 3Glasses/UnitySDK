@@ -31,10 +31,17 @@ namespace ThreeGlasses
         // 是否需要手动翻转
         public bool flipDisplay = false;
 
+        private static bool isInitVRPlugin = false;
+
         void Awake()
         {
             // 初始化dll
-            ThreeGlassesDllInterface.SZVRPluginInit();
+            if(!isInitVRPlugin)
+            {
+                ThreeGlassesDllInterface.SZVRPluginInit();
+                isInitVRPlugin = true;
+            }
+
             // 初始化渲染纹理
             for (int i = 0; i < CAMERA_NUM; i++)
             {
@@ -130,8 +137,7 @@ namespace ThreeGlasses
                 // 添加主相机中需要copy过来的component
                 foreach(var item in needAdd)
                 {
-                    UnityEditorInternal.ComponentUtility.CopyComponent((Component)item);
-                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(subCamera[i]);
+                    ThreeGlassesUtils.CopyComponent((Component)item, subCamera[i]);
                 }
 
                 // 添加完所有component包含ImageEffect后再添加subCamera，因为需要blit翻转
@@ -200,7 +206,8 @@ namespace ThreeGlasses
 
         void OnDestroy()
         {
-            ThreeGlassesDllInterface.SZVRPluginDestroy();
+            if(isInitVRPlugin)
+                ThreeGlassesDllInterface.SZVRPluginDestroy();
         }
 
         // get
