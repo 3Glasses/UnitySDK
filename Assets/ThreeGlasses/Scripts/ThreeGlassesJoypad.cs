@@ -39,8 +39,6 @@ namespace ThreeGlasses
             var trigger_value = new byte[] { 255 };// min:0, max:255
             var stick = new byte[2]; // 0.x 1.y
 
-            ThreeGlassesDllInterface.SZVR_GetWandData(quaternion_array, position_array, key_status,
-                                                      trigger_value, stick, type == InputType.RightJoyPad);
             
             // 转换信息并缓存
             position.x = checkFloat(position_array[0]) ? -position_array[0] : position.x;
