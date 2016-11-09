@@ -19,7 +19,7 @@ namespace ThreeGlasses
             
         }
 
-        public Wand pack;
+        public Wand pack = new Wand();
         
         // temp save
         private uint[] keyStatusTemp = new uint[KEY_NUM];
