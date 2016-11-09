@@ -31,16 +31,16 @@ namespace ThreeGlasses
         // 是否需要手动翻转
         public bool flipDisplay = false;
 
-        private static bool isInitVRPlugin = false;
-
         void Awake()
         {
-            // 初始化dll
-            if(!isInitVRPlugin)
+            // create life manager object
+            if(GameObject.FindObjectOfType(typeof(ThreeGlassesHeadDisplayLife)) == null)
             {
-                ThreeGlassesDllInterface.SZVRPluginInit();
-                isInitVRPlugin = true;
+                GameObject life = new GameObject("ThreeGlassesHeadDisplayLife");
+                life.AddComponent<ThreeGlassesHeadDisplayLife>();
+                GameObject.DontDestroyOnLoad(life);
             }
+            
 
             // 初始化渲染纹理
             for (int i = 0; i < CAMERA_NUM; i++)
@@ -206,8 +206,7 @@ namespace ThreeGlasses
 
         void OnDestroy()
         {
-            if(isInitVRPlugin)
-                ThreeGlassesDllInterface.SZVRPluginDestroy();
+        
         }
 
         // get

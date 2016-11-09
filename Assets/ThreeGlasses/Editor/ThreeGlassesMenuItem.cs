@@ -1,5 +1,4 @@
-﻿#define TGDEBUG
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#define TGDEBUG
+using UnityEngine;
 using System.Collections;
 using System.Diagnostics; // for ConditionalAttribute
 
