@@ -21,7 +21,7 @@ public class JoyPadTest : MonoBehaviour {
 //         }
     }
 
-    void OnWandChange(ThreeGlassesJoypad.Wand pack)
+    void OnWandChange(ThreeGlassesWand.Wand pack)
     {
         ThreeGlassesUtils.Log("wand=" + pack);
     }

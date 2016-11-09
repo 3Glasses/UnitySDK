@@ -23,7 +23,7 @@ namespace ThreeGlasses
         // 是否需要支持手柄
         public bool enableJoypad = true;
         const int JOYPAD_NUM = 2;
-        public static ThreeGlassesJoypad[] joyPad = new ThreeGlassesJoypad[JOYPAD_NUM];
+        public static ThreeGlassesWand[] joyPad = new ThreeGlassesWand[JOYPAD_NUM];
 
         // 主相机的显示
         public bool onlyHeadDisplay = false;
@@ -60,8 +60,8 @@ namespace ThreeGlasses
             {
                 // 初始化手柄
                 ThreeGlassesUtils.Log("init joypad");
-                joyPad[0] = new ThreeGlassesJoypad(InputType.LeftJoyPad);
-                joyPad[1] = new ThreeGlassesJoypad(InputType.RightJoyPad);
+                joyPad[0] = new ThreeGlassesWand(InputType.LeftJoyPad);
+                joyPad[1] = new ThreeGlassesWand(InputType.RightJoyPad);
             }
 
             yield return StartCoroutine("CallPluginAtEndOfFrames");

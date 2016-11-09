@@ -2,7 +2,7 @@
 using System.Collections;
 namespace ThreeGlasses
 {
-    public class ThreeGlassesJoypad {
+    public class ThreeGlassesWand {
         private const int KEY_NUM = 6;
         private const int KEY_DOWN = 1;
         public class Wand
@@ -25,7 +25,7 @@ namespace ThreeGlasses
         private uint[] keyStatusTemp = new uint[KEY_NUM];
         private byte[] stickTemp = new byte[3];
 
-        public ThreeGlassesJoypad(InputType type)
+        public ThreeGlassesWand(InputType type)
         {
             pack.type = type;
         }
@@ -43,10 +43,7 @@ namespace ThreeGlasses
                 {
                     pack.keyStatus[i] = keyStatusTemp[i];
                 }
-            }
-
-            
-            
+            }            
         }
         
         // get key status up=false  down=true
@@ -65,15 +62,6 @@ namespace ThreeGlasses
         public Vector2 GetStick()
         {
             return new Vector2(pack.stick.x, pack.stick.y);
-        }
-
-        void SendPack()
-        {
-            MonoBehaviour[] codes = GameObject.FindObjectsOfType<MonoBehaviour>();
-            foreach (var code in codes)
-            {
-                code.SendMessage("OnWandChange", pack);
-            }
         }
         
         private static bool checkFloat(float v)
