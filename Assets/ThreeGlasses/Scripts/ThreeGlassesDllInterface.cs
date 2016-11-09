@@ -16,7 +16,7 @@ namespace ThreeGlasses
         public static extern void SZVRPluginDestroy();
 
         [DllImport(Dllname)]
-        public static extern void SZVRPluginGetFOV();
+        public static extern uint SZVRPluginGetFOV();
 
         [DllImport(Dllname)]
         public static extern void SZVRPluginEnableATW();
