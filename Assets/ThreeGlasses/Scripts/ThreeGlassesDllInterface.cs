@@ -7,38 +7,54 @@ namespace ThreeGlasses
 {
     public class ThreeGlassesDllInterface
     {
-        // 注意缺少x86的版本
-        // -----------------------------------------------------------相机------------SZVRUnityPlugin.dll
-        [DllImport("SZVRUnityPlugin")]
+        private const string Dllname = "SZVRUnityPlugin";
+
+        [DllImport(Dllname)]
         public static extern void SZVRPluginInit();
 
-        [DllImport("SZVRUnityPlugin")]
+        [DllImport(Dllname)]
         public static extern void SZVRPluginDestroy();
 
-        [DllImport("SZVRUnityPlugin")]
+        [DllImport(Dllname)]
+        public static extern uint SZVRPluginGetFOV();
+
+        [DllImport(Dllname)]
         public static extern void SZVRPluginEnableATW();
 
-        [DllImport("SZVRUnityPlugin")]
+        [DllImport(Dllname)]
         public static extern void SZVRPluginDiasbleATW();
 
-        // 新接口替换原来的GetHMDQuaternion
-        [DllImport("SZVRUnityPlugin")]
-        public static extern void GetTrackedPost(float[] hmd, float[] controller_left, float[] Controller_right);
+        [DllImport(Dllname)]
+        public static extern void GetTrackedPost(float[] hmd, float[] controllerLeft, float[] controllerRight);
 
-        [DllImport("SZVRUnityPlugin")]
+        /* 
+         * Return Value(uint):
+		 *   0: success to get the value
+		 *   1: fail to get the value
+         * 
+         * side (uint):
+         *   0 for the first recognized controller, 1 for the second recognized controller
+         * buttoms ( uint array, length: 6) 
+         *   0: up, 1: down
+         *   buttoms[0] = Menu button;
+		 *   buttoms[1] = Back button;
+		 *   buttoms[2] = Left handle button;
+		 *   buttoms[3] = Right handle button;
+		 *   buttoms[4] = Trigger press down;
+		 *   buttoms[5] = Trigger press all the way down;
+         * value ( byte array, length: 3 )
+         *   value[0] = value pointer for output trigger press measuring value, range in (0 - 255)
+         *   value[1] = x coordinate;
+         *   value[2] = y coordinate;
+         */
+        [DllImport(Dllname)]
+        public static extern uint GetWandInput(uint side, uint[] buttoms, byte[] value);
+
+        [DllImport(Dllname)]
         public static extern void UpdateTextureFromUnity(System.IntPtr leftIntPtr, System.IntPtr rigthIntPtr);
 
-        [DllImport("SZVRUnityPlugin")]
+        [DllImport(Dllname)]
         public static extern System.IntPtr GetRenderEventFunc();
-
-                
-        // ------------------------------------------------------------手柄-----------SZVRPWandPlugin.dll
-        // 默认不就是cdecl的么？
-        [DllImport("SZVRWandPlugin", CallingConvention = CallingConvention.Cdecl)]
-        public static extern bool SZVR_GetWandData(float[] quaternion, float[] position,
-                                                    uint[] keyStatus, byte[] TriggerValue,
-                                                    byte[] Stick, bool right);
-
 
     }
 

@@ -3,68 +3,79 @@ using System.Collections;
 namespace ThreeGlasses
 {
     public class ThreeGlassesJoypad {
-  
-        InputType type = InputType.LeftJoyPad;
+        private const int KEY_NUM = 6;
+        private const int KEY_DOWN = 1;
+        public class Wand
+        {
+            public InputType type = InputType.LeftJoyPad;
+            // wand postion & rotation
+            public Vector3 position;
+            public Quaternion rotation;
+            // key status
+            public uint[] keyStatus = new uint[KEY_NUM];
+            // stick status
+            public Vector2 stick;
+            public float triggerProcess;
+            
+        }
 
-        // 手柄本身的位置和旋转
-        public Vector3 position;
-        public Quaternion rotation;
-        // 手柄按键状态
-        public uint keyStatus;
-        // 手柄的摇杆状态
-        public Vector2 stick;
+        public Wand pack;
+        
+        // temp save
+        private uint[] keyStatusTemp = new uint[KEY_NUM];
+        private byte[] stickTemp = new byte[3];
 
         public ThreeGlassesJoypad(InputType type)
         {
-            this.type = type;
-        }
-        // 掩码
-        // todo 需要拿实物弄清楚状态对应的掩码
-        private static class ButtonMask
-        {
-            public const uint MENU_BUTTON_MASK = 0x000001;
-            public const uint B_BUTTON_MASK = 0x000001 << 2;
-            public const uint LEFT_HANDLE_MASK = 0x000001 << 3;
-            public const uint RIGHT_HANDLE_MASK = 0x000001 << 4;
-            public const uint TRIGGER_MASK = 0x000001 << 5;
-            public const uint TRIGGER_PRESSEND_MASK = 0x000001 << 6;
+            pack.type = type;
         }
 
         // 更新位置信息并将其缓存
         public void Update()
         {
-            var quaternion_array = new float[4];
-            var position_array = new float[3]; // 0.x 1.y 2.z
-            var key_status = new uint[1];
-            var trigger_value = new byte[] { 255 };// min:0, max:255
-            var stick = new byte[2]; // 0.x 1.y
+            if (0 == ThreeGlassesDllInterface.GetWandInput((uint)pack.type, keyStatusTemp, stickTemp))
+            {
+                pack.stick[0] = stickTemp[1] / (float)255.0;
+                pack.stick[1] = stickTemp[2] / (float)255.0;
+                pack.triggerProcess = stickTemp[0] / (float)255.0;
 
-            ThreeGlassesDllInterface.SZVR_GetWandData(quaternion_array, position_array, key_status,
-                                                      trigger_value, stick, type == InputType.RightJoyPad);
+                for (int i = 0; i < KEY_NUM; i++)
+                {
+                    pack.keyStatus[i] = keyStatusTemp[i];
+                }
+            }
+
             
-            // 转换信息并缓存
-            position.x = checkFloat(position_array[0]) ? -position_array[0] : position.x;
-            position.y = checkFloat(position_array[1]) ? -position_array[1] : position.y;
-            position.z = checkFloat(position_array[2]) ? -position_array[2] : position.z;
-
-            rotation.x = checkFloat(quaternion_array[2]) ? quaternion_array[2] : 0;
-            rotation.y = -(checkFloat(quaternion_array[0]) ? quaternion_array[0] : 0);
-            rotation.z = checkFloat(quaternion_array[1]) ? quaternion_array[1] : 0;
-            rotation.w = -(checkFloat(quaternion_array[3]) ? quaternion_array[3] : 0);
-
-            keyStatus = key_status[0];
-            // todo trigger是否也属于按键类属于的话将其转换到keyStatus状态中并添加相应掩码
-
-            // todo 测试stick的范围并归一化
-            this.stick = new Vector2(stick[0], stick[1]);
+            
         }
-
-        public bool getKey(InputKey key)
+        
+        // get key status up=false  down=true
+        public bool GetKey(InputKey key)
         {
-            // todo 根据掩码算得出键状态
-            return false;
+            return pack.keyStatus[(int)key] == KEY_DOWN;
+        }
+        
+        // get trigger process rang=0-1.0
+        public float GetTriggerProcess()
+        {
+            return pack.triggerProcess;
         }
 
+        // get stick rang=0-1.0
+        public Vector2 GetStick()
+        {
+            return new Vector2(pack.stick.x, pack.stick.y);
+        }
+
+        void SendPack()
+        {
+            MonoBehaviour[] codes = GameObject.FindObjectsOfType<MonoBehaviour>();
+            foreach (var code in codes)
+            {
+                code.SendMessage("OnWandChange", pack);
+            }
+        }
+        
         private static bool checkFloat(float v)
         {
             var status = !float.IsNaN(v);

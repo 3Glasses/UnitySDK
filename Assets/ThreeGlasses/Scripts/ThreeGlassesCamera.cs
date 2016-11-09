@@ -9,7 +9,7 @@ namespace ThreeGlasses
         const int CAMERA_NUM = 2;
         private GameObject[] subCamera = new GameObject[CAMERA_NUM];
         private float near, far;
-        private const float fieldOfView = 90;
+        private float fieldOfView = 90;
         private string[] cameraName = new string[]{"leftCamera", "rightCamera"};
         
         // 渲染纹理
@@ -23,7 +23,7 @@ namespace ThreeGlasses
         // 是否需要支持手柄
         public bool enableJoypad = true;
         const int JOYPAD_NUM = 2;
-        static ThreeGlassesJoypad[] joyPad = new ThreeGlassesJoypad[JOYPAD_NUM];
+        public static ThreeGlassesJoypad[] joyPad = new ThreeGlassesJoypad[JOYPAD_NUM];
 
         // 主相机的显示
         public bool onlyHeadDisplay = false;
@@ -78,6 +78,7 @@ namespace ThreeGlasses
             Camera thiscam = GetComponent<Camera>();
             near = thiscam.nearClipPlane;
             far = thiscam.farClipPlane;
+            fieldOfView = (float)(ThreeGlassesDllInterface.SZVRPluginGetFOV());
 
             // 获取要添加的component
             ArrayList needAdd = new ArrayList();
@@ -186,16 +187,20 @@ namespace ThreeGlasses
 
                 // 更新主相机旋转角度
                 var hmd = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-                var controller_left = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-                var controller_right = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-                ThreeGlassesDllInterface.GetTrackedPost(hmd, controller_left, controller_right);
+                float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+                float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+                ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
                 transform.localPosition = new Vector3(hmd[0], hmd[1], hmd[2]);
-                transform.localRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
+                transform.localRotation = new Quaternion(hmd[5], hmd[4], hmd[3], -hmd[6]);
 
 
                 // 更新手柄信息
                 if (enableJoypad)
                 {
+                    joyPad[0].pack.position = new Vector3(wand_left[0], wand_left[1], wand_left[2]);
+                    joyPad[0].pack.rotation = new Quaternion(wand_left[5], wand_left[4], wand_left[3], -wand_left[6]);
+                    joyPad[1].pack.position = new Vector3(wand_right[0], wand_right[1], wand_right[2]);
+                    joyPad[1].pack.rotation = new Quaternion(wand_right[5], wand_right[4], wand_right[3], -wand_right[6]);
                     for (int i = 0; i < JOYPAD_NUM; i++)
                     {
                         joyPad[i].Update();
@@ -217,11 +222,6 @@ namespace ThreeGlasses
         public RenderTexture RightEyeRT
         {
             get { return renderTexture[1]; }
-        }
-
-        public static bool getJoypadKey(InputType type, InputKey key)
-        {
-            return joyPad[(int)type].getKey(key);
         }
 
     }
