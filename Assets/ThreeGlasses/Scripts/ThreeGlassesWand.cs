@@ -49,9 +49,10 @@ namespace ThreeGlasses
         {
             if (0 == ThreeGlassesDllInterface.GetWandInput((uint)pack.type, keyStatusTemp, stickTemp))
             {
-                pack.stick[0] = stickTemp[1] / (float)255.0;
-                pack.stick[1] = stickTemp[2] / (float)255.0;
-                pack.triggerProcess = stickTemp[0] / (float)255.0;
+                pack.stick[0] = ((stickTemp[1] / (float)255.0) - 0.5f)*2.0f;
+                pack.stick[1] = (-(stickTemp[2] / (float)255.0) + 0.5f)*2.0f;
+
+                pack.triggerProcess = 1.0f - (stickTemp[0] / (float)255.0);
 
                 for (int i = 0; i < KEY_NUM; i++)
                 {

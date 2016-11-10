@@ -6,18 +6,26 @@ public class JoyPadTest : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-//         for (int i = 0; i < (int)InputKey.InputNum; i++)
-//         {
-//             for (int j = 0; j < 2; j++)
-//             {
-//                 InputType type = (InputType)j;
-//                 InputKey key = (InputKey)i;
-//                 bool keystatus = TGInput.GetKey(type, key);
-//                 ThreeGlassesUtils.Log("type=" + (InputType)j + "         "+(InputKey)i + "keypress"
-//                                       + "         trigger process=" + TGInput.GetTriggerProcess(type)
-//                                       + "         stick=" + TGInput.GetStick(type));
-//             }   
-//         }
+        for (int i = 0; i < 2; i++)
+        {
+            InputType type = (InputType)i;
+            for (int j = 0; j < (int)InputKey.InputNum; j++)
+            {
+                
+                InputKey key = (InputKey)j;
+                bool keystatus = TGInput.GetKey(type, key);
+                if(keystatus)
+                {
+                    //ThreeGlassesUtils.Log("type=" + (InputType)i + "key=" + key);
+                }
+            }
+
+            ThreeGlassesUtils.Log("type=" + (InputType)i
+                                      +"         trigger process=" + TGInput.GetTriggerProcess(type)
+                                      + "         stick=" + TGInput.GetStick(type));
+        }
+
+        
 
         // left wand controll all cube's transform
 
