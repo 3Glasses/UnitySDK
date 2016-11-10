@@ -7,7 +7,7 @@ namespace ThreeGlasses
         private const int KEY_DOWN = 1;
         public class Wand
         {
-            public InputType type = InputType.LeftJoyPad;
+            public InputType type = InputType.LeftWand;
             // wand postion & rotation
             public Vector3 position;
             public Quaternion rotation;

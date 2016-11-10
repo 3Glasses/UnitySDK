@@ -15,6 +15,7 @@ public class GenerateCube : MonoBehaviour {
     {
         float step = distance + cubeSize;
         float origin = -(step * Num - distance) / 2.0f;
+
         for (int x = 0; x < Num; x++ )
         {
             for (int y = 0; y < Num; y++)
@@ -25,16 +26,6 @@ public class GenerateCube : MonoBehaviour {
                     cube.position = new Vector3(origin + x * step, origin + y * step, origin + z * step);
                     cube.rotation = Quaternion.identity;
                     cube.parent = gameObject.transform;
-                    if((int)(Random.value+0.5) == 1)
-                    {
-                        cube.gameObject.GetComponent<Renderer>().material = red;
-                        cube.gameObject.layer = LayerMask.NameToLayer("A");
-                    }
-                    else
-                    {
-                        cube.gameObject.GetComponent<Renderer>().material = green;
-                        cube.gameObject.layer = LayerMask.NameToLayer("B");
-                    }
                 }
             }
         }

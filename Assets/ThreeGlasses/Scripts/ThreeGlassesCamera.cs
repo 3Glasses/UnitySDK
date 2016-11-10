@@ -61,8 +61,8 @@ namespace ThreeGlasses
             {
                 // init wand
                 ThreeGlassesUtils.Log("init joypad");
-                joyPad[0] = new ThreeGlassesWand(InputType.LeftJoyPad);
-                joyPad[1] = new ThreeGlassesWand(InputType.RightJoyPad);
+                joyPad[0] = new ThreeGlassesWand(InputType.LeftWand);
+                joyPad[1] = new ThreeGlassesWand(InputType.RightWand);
             }
 
             yield return StartCoroutine("CallPluginAtEndOfFrames");

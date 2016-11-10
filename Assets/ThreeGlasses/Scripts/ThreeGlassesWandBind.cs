@@ -5,7 +5,7 @@ namespace ThreeGlasses
 {
     public class ThreeGlassesWandBind : MonoBehaviour
     {
-        public InputType type = InputType.LeftJoyPad;
+        public InputType type = InputType.LeftWand;
         // Use this for initialization
         void Start()
         {
