@@ -30,8 +30,6 @@ namespace ThreeGlasses
                 }
             }
             public Wand() {}
-            
-            
         }
 
         public Wand pack = new Wand();

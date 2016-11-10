@@ -56,7 +56,7 @@ namespace ThreeGlasses
             Camera[] cams = GameObject.FindObjectsOfType<Camera>();
             float depth = 0;
             Camera cam;
-            if(cams != null)
+            if(cams.Length > 0)
             {
                 depth = cams[0].depth;
                 cam = cams[0];
