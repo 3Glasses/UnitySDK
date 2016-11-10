@@ -101,6 +101,7 @@ GameObject:
   - 4: {fileID: 342207176}
   - 114: {fileID: 342207175}
   - 114: {fileID: 342207177}
+  - 114: {fileID: 342207178}
   m_Layer: 0
   m_Name: GenerateCube
   m_TagString: Untagged
@@ -147,6 +148,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbcf7b027b2ec9545a6c7f4defb5a58e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &342207178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 342207174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3c4972898d58bb4dad40a61d4d57884, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
 --- !u!1 &975063839
 GameObject:
   m_ObjectHideFlags: 0

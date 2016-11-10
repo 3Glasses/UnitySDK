@@ -2,7 +2,7 @@
 using System.Collections;
 namespace ThreeGlasses
 {
-    public class ThreeGlassesJoypad {
+    public class ThreeGlassesWand {
         private const int KEY_NUM = 6;
         private const int KEY_DOWN = 1;
         public class Wand
@@ -16,6 +16,21 @@ namespace ThreeGlasses
             // stick status
             public Vector2 stick;
             public float triggerProcess;
+
+            public Wand(Wand wand)
+            {
+                type = wand.type;
+                position = wand.position;
+                rotation = wand.rotation;
+                stick = new Vector2(wand.stick.x, wand.stick.y);
+                triggerProcess = wand.triggerProcess;
+                for (int i = 0; i < KEY_NUM; i++)
+                {
+                    keyStatus[i] = wand.keyStatus[i];
+                }
+            }
+            public Wand() {}
+            
             
         }
 
@@ -25,12 +40,12 @@ namespace ThreeGlasses
         private uint[] keyStatusTemp = new uint[KEY_NUM];
         private byte[] stickTemp = new byte[3];
 
-        public ThreeGlassesJoypad(InputType type)
+        public ThreeGlassesWand(InputType type)
         {
             pack.type = type;
         }
 
-        // 更新位置信息并将其缓存
+        // update wand info
         public void Update()
         {
             if (0 == ThreeGlassesDllInterface.GetWandInput((uint)pack.type, keyStatusTemp, stickTemp))
@@ -43,10 +58,7 @@ namespace ThreeGlasses
                 {
                     pack.keyStatus[i] = keyStatusTemp[i];
                 }
-            }
-
-            
-            
+            }            
         }
         
         // get key status up=false  down=true
@@ -65,15 +77,6 @@ namespace ThreeGlasses
         public Vector2 GetStick()
         {
             return new Vector2(pack.stick.x, pack.stick.y);
-        }
-
-        void SendPack()
-        {
-            MonoBehaviour[] codes = GameObject.FindObjectsOfType<MonoBehaviour>();
-            foreach (var code in codes)
-            {
-                code.SendMessage("OnWandChange", pack);
-            }
         }
         
         private static bool checkFloat(float v)
