@@ -6,6 +6,7 @@ public class WandLeft : MonoBehaviour {
     private Transform origin;
     public float fireRate = 1.0f;
     private float currRate = 0.0f;
+
 	// Use this for initialization
 	void Start () {
         origin = GetComponent<Transform>();
