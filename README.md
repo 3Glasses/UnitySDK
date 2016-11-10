@@ -1,7 +1,7 @@
 # UnitySDK
 This is the Unity SDK for 3Glasses Devices.
 
-## version: v6.0.0
+## version: v7.0.0
 
 **This repository is Unity3D project**
 
