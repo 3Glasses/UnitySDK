@@ -6,7 +6,7 @@ namespace ThreeGlasses
     public class ThreeGlassesSubCamera : MonoBehaviour
     {
         private Material material;
-        private bool flip = false;
+
         public enum CameraType
         {
             LeftEye = 0,
@@ -14,6 +14,12 @@ namespace ThreeGlasses
             Screen = 3
         };
         public CameraType type = CameraType.Screen;
+
+        public ThreeGlassesSubCamera()
+        {
+            Flip = false;
+        }
+
         void Awake()
         {
             material = new Material(Shader.Find("Hidden/ThreeGlasses/ReverseUV"));
@@ -21,7 +27,7 @@ namespace ThreeGlasses
 
         void OnRenderImage(RenderTexture src, RenderTexture dst)
         {
-            if(flip)
+            if(Flip)
             {
                 Graphics.Blit(src, dst, material);
             }
@@ -32,11 +38,6 @@ namespace ThreeGlasses
             
         }
 
-        public bool FLIP
-        {
-            get { return flip; }
-            set { flip = value; }
-        }
-
+        public bool Flip { get; set; }
     }
 }
