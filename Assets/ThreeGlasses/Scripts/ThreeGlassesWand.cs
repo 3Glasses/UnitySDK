@@ -4,7 +4,7 @@ namespace ThreeGlasses
 {
     public class ThreeGlassesWand {
         private const int KEY_NUM = 6;
-        private const int KEY_DOWN = 1;
+        private const uint KEY_DOWN = 1;
 
         public class Wand
         {
@@ -64,7 +64,7 @@ namespace ThreeGlasses
         // get key status up=false  down=true
         public bool GetKey(InputKey key)
         {
-            return pack.keyStatus[(int)key] == KEY_DOWN;
+            return pack.keyStatus[(int)key] > 0;
         }
         
         // get trigger process rang=0-1.0

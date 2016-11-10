@@ -16,22 +16,15 @@ public class JoyPadTest : MonoBehaviour {
                 bool keystatus = TGInput.GetKey(type, key);
                 if(keystatus)
                 {
-                    //ThreeGlassesUtils.Log("type=" + (InputType)i + "key=" + key);
+                    ThreeGlassesUtils.Log("type=" + (InputType)i + "key=" + key);
                 }
             }
 
-            ThreeGlassesUtils.Log("type=" + (InputType)i
-                                      +"         trigger process=" + TGInput.GetTriggerProcess(type)
-                                      + "         stick=" + TGInput.GetStick(type));
+//             ThreeGlassesUtils.Log("type=" + (InputType)i
+//                                       +"         trigger process=" + TGInput.GetTriggerProcess(type)
+//                                       + "         stick=" + TGInput.GetStick(type));
         }
 
-        
-
-        // left wand controll all cube's transform
-
-
-
-        // right wand controll all cube's rotation
     }
 
     void OnWandChange(ThreeGlassesWand.Wand pack)
