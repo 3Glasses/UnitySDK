@@ -5,8 +5,8 @@ namespace ThreeGlasses
 {
     public enum InputType
     {
-        LeftJoyPad = 0,
-        RightJoyPad = 1
+        LeftWand = 0,
+        RightWand = 1
     }
 
     public enum InputKey
@@ -37,6 +37,18 @@ namespace ThreeGlasses
         public static Vector2 GetStick(InputType type)
         {
             return ThreeGlassesCamera.joyPad[(int)type].GetStick();
+        }
+
+        public static Vector3 GetPosition(InputType type)
+        {
+            Vector3 temp = ThreeGlassesCamera.joyPad[(int)type].pack.position;
+            return new Vector3(temp.x, temp.y, temp.z);
+        }
+
+        public static Quaternion GetRotation(InputType type)
+        {
+            Quaternion temp = ThreeGlassesCamera.joyPad[(int)type].pack.rotation;
+            return new Quaternion(temp.x, temp.y, temp.z, temp.w);
         }
     }
 }

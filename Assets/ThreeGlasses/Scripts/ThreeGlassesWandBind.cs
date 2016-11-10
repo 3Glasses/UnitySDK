@@ -1,18 +1,24 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace ThreeGlasses
 {
     public class ThreeGlassesWandBind : MonoBehaviour
     {
-        public InputType Type = InputType.LeftJoyPad;
-
-        public void LateUpdate()
+        public InputType type = InputType.LeftWand;
+        // Use this for initialization
+        void Start()
         {
-            var pack = new ThreeGlassesWand.Wand(ThreeGlassesCamera.joyPad[(int)Type].pack);
-            transform.localPosition = pack.position;
-            transform.localRotation = pack.rotation;
 
+        }
+
+        // Update is called once per frame
+        void LateUpdate()
+        {
+            ThreeGlassesWand.Wand pack = new ThreeGlassesWand.Wand(ThreeGlassesCamera.joyPad[(int)type].pack);
             gameObject.BroadcastMessage("OnWandChange", pack, SendMessageOptions.DontRequireReceiver);
         }
+
+
     }
 }

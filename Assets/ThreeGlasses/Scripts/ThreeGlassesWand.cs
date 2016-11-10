@@ -4,11 +4,11 @@ namespace ThreeGlasses
 {
     public class ThreeGlassesWand {
         private const int KEY_NUM = 6;
-        private const int KEY_DOWN = 1;
+        private const uint KEY_DOWN = 1;
 
         public class Wand
         {
-            public InputType type = InputType.LeftJoyPad;
+            public InputType type = InputType.LeftWand;
             // wand postion & rotation
             public Vector3 position;
             public Quaternion rotation;
@@ -31,8 +31,6 @@ namespace ThreeGlasses
                 }
             }
             public Wand() {}
-            
-            
         }
 
         public Wand pack = new Wand();
@@ -51,9 +49,10 @@ namespace ThreeGlasses
         {
             if (0 == ThreeGlassesDllInterface.GetWandInput((uint)pack.type, keyStatusTemp, stickTemp))
             {
-                pack.stick[0] = stickTemp[1] / (float)255.0;
-                pack.stick[1] = stickTemp[2] / (float)255.0;
-                pack.triggerProcess = stickTemp[0] / (float)255.0;
+                pack.stick[0] = ((stickTemp[1] / (float)255.0) - 0.5f)*2.0f;
+                pack.stick[1] = (-(stickTemp[2] / (float)255.0) + 0.5f)*2.0f;
+
+                pack.triggerProcess = 1.0f - (stickTemp[0] / (float)255.0);
 
                 for (int i = 0; i < KEY_NUM; i++)
                 {
@@ -65,7 +64,7 @@ namespace ThreeGlasses
         // get key status up=false  down=true
         public bool GetKey(InputKey key)
         {
-            return pack.keyStatus[(int)key] == KEY_DOWN;
+            return pack.keyStatus[(int)key] > 0;
         }
         
         // get trigger process rang=0-1.0
