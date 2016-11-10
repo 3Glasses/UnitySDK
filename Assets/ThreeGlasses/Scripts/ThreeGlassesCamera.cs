@@ -199,7 +199,7 @@ namespace ThreeGlasses
                 float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 0 };
                 ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
                 transform.localPosition = new Vector3(-hmd[0] / 1000.0f, hmd[1] / 1000.0f, -hmd[2] / 1000.0f);
-                transform.localRotation = new Quaternion(hmd[5], hmd[4], hmd[3], -hmd[6]);
+                transform.localRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
 
                 // update wand info
                 if (!enableJoypad) continue;
