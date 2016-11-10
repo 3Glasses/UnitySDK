@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Reflection;
+// ReSharper disable IteratorNeverReturns
+// ReSharper disable InconsistentNaming
 
 namespace ThreeGlasses
 {
@@ -14,8 +16,8 @@ namespace ThreeGlasses
         
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
-        private const int renderWidth = 2880;
-        private const int renderHeight = 1440;
+        private uint renderWidth = 2880;
+        private uint renderHeight = 1440;
         // eye's distance
         public float eyeDistance = 0.1f;
        
@@ -41,22 +43,33 @@ namespace ThreeGlasses
                 life.AddComponent<ThreeGlassesHeadDisplayLife>();
                 GameObject.DontDestroyOnLoad(life);
             }
-            
-
-            // init RenderTexture
-            for (int i = 0; i < CAMERA_NUM; i++)
-            {
-                renderTexture[i] = new RenderTexture(renderWidth / 2, renderHeight, 24,
-                                                     RenderTextureFormat.BGRA32,
-                                                     RenderTextureReadWrite.Default);
-                renderTexture[i].Create();
-            }            
         }
-        IEnumerator Start ()
+
+        void Start ()
         {
             ThreeGlassesUtils.Log("MainCamera init");
+            
+            // init RenderTexture
+            if (renderTexture[0] == null && renderTexture[1] == null)
+            {
+                uint[] buffsize = { renderWidth, renderHeight };
+                ThreeGlassesDllInterface.GetRenderSize(buffsize);
+                renderWidth = buffsize[0];
+                renderHeight = buffsize[1];
+
+                for (var i = 0; i < CAMERA_NUM; i++)
+                {
+                    renderTexture[i] = new RenderTexture((int)renderWidth / 2,
+                        (int)renderHeight, 24,
+                        RenderTextureFormat.BGRA32,
+                        RenderTextureReadWrite.Default);
+                    renderTexture[i].Create();
+                }
+            }
+
             // init camera
             VRCameraInit();
+
             if (enableJoypad)
             {
                 // init wand
@@ -65,14 +78,10 @@ namespace ThreeGlasses
                 joyPad[1] = new ThreeGlassesWand(InputType.RightJoyPad);
             }
 
-            yield return StartCoroutine("CallPluginAtEndOfFrames");
+            StopAllCoroutines();
+            StartCoroutine(CallPluginAtEndOfFrames());
         }
 
-        public void Update()
-        {
-            
-        }
-        
         void VRCameraInit ()
         {
             // get maincamera's nearClip and farClip
@@ -147,11 +156,10 @@ namespace ThreeGlasses
                 subCameraScript.type = (ThreeGlassesSubCamera.CameraType)i;
                 if(!flipDisplay)
                 {
-                    subCameraScript.FLIP = true;
+                    subCameraScript.Flip = true;
                 }
-                
-
             }
+
             var eyeDis = new Vector3(eyeDistance/2, 0, 0);
             subCamera[0].transform.localPosition = -eyeDis;
             subCamera[1].transform.localPosition = eyeDis;
@@ -185,34 +193,31 @@ namespace ThreeGlasses
 
                 GL.IssuePluginEvent(ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
 
-
                 // update headdisplay position and rotation
                 var hmd = new float[] { 0, 0, 0, 0, 0, 0, 0 };
                 float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 0 };
                 float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 0 };
                 ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
-                transform.localPosition = new Vector3(hmd[0], hmd[1], hmd[2]);
+                transform.localPosition = new Vector3(-hmd[0] / 1000.0f, hmd[1] / 1000.0f, -hmd[2] / 1000.0f);
                 transform.localRotation = new Quaternion(hmd[5], hmd[4], hmd[3], -hmd[6]);
 
-
                 // update wand info
-                if (enableJoypad)
+                if (!enableJoypad) continue;
+                joyPad[0].pack.position = new Vector3(
+                    wand_left[0]/1000.0f,
+                    wand_left[1]/1000.0f,
+                    wand_left[2]/1000.0f);
+                joyPad[0].pack.rotation = new Quaternion(wand_left[3], wand_left[5], -wand_left[4], -wand_left[6]);
+                joyPad[1].pack.position = new Vector3(
+                    wand_right[0]/1000.0f,
+                    wand_right[1]/1000.0f,
+                    wand_right[2]/1000.0f);
+                joyPad[1].pack.rotation = new Quaternion(wand_right[3], wand_right[5],-wand_right[4], -wand_right[6]);
+                for (var i = 0; i < JOYPAD_NUM; i++)
                 {
-                    joyPad[0].pack.position = new Vector3(wand_left[0], wand_left[1], wand_left[2]);
-                    joyPad[0].pack.rotation = new Quaternion(wand_left[5], wand_left[4], wand_left[3], -wand_left[6]);
-                    joyPad[1].pack.position = new Vector3(wand_right[0], wand_right[1], wand_right[2]);
-                    joyPad[1].pack.rotation = new Quaternion(wand_right[5], wand_right[4], wand_right[3], -wand_right[6]);
-                    for (int i = 0; i < JOYPAD_NUM; i++)
-                    {
-                        joyPad[i].Update();
-                    }
+                    joyPad[i].Update();
                 }
             }
-        }
-
-        void OnDestroy()
-        {
-        
         }
 
         // get

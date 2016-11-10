@@ -5,6 +5,7 @@ namespace ThreeGlasses
     public class ThreeGlassesWand {
         private const int KEY_NUM = 6;
         private const int KEY_DOWN = 1;
+
         public class Wand
         {
             public InputType type = InputType.LeftJoyPad;

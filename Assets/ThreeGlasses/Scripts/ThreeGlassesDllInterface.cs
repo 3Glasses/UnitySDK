@@ -51,6 +51,9 @@ namespace ThreeGlasses
         public static extern uint GetWandInput(uint side, uint[] buttoms, byte[] value);
 
         [DllImport(Dllname)]
+        public static extern void GetRenderSize(uint[] bufferSize);
+
+        [DllImport(Dllname)]
         public static extern void UpdateTextureFromUnity(System.IntPtr leftIntPtr, System.IntPtr rigthIntPtr);
 
         [DllImport(Dllname)]
