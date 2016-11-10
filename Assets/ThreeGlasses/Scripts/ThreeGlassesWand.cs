@@ -16,6 +16,21 @@ namespace ThreeGlasses
             // stick status
             public Vector2 stick;
             public float triggerProcess;
+
+            public Wand(Wand wand)
+            {
+                type = wand.type;
+                position = wand.position;
+                rotation = wand.rotation;
+                stick = new Vector2(wand.stick.x, wand.stick.y);
+                triggerProcess = wand.triggerProcess;
+                for (int i = 0; i < KEY_NUM; i++)
+                {
+                    keyStatus[i] = wand.keyStatus[i];
+                }
+            }
+            public Wand() {}
+            
             
         }
 
@@ -30,7 +45,7 @@ namespace ThreeGlasses
             pack.type = type;
         }
 
-        // 更新位置信息并将其缓存
+        // update wand info
         public void Update()
         {
             if (0 == ThreeGlassesDllInterface.GetWandInput((uint)pack.type, keyStatusTemp, stickTemp))

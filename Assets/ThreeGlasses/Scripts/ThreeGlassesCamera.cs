@@ -5,30 +5,31 @@ using System.Reflection;
 namespace ThreeGlasses
 {
     public class ThreeGlassesCamera : MonoBehaviour {
-        // 相机
+        // camera
         const int CAMERA_NUM = 2;
         private GameObject[] subCamera = new GameObject[CAMERA_NUM];
         private float near, far;
         private float fieldOfView = 90;
         private string[] cameraName = new string[]{"leftCamera", "rightCamera"};
         
-        // 渲染纹理
+        // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
         private const int renderWidth = 2880;
         private const int renderHeight = 1440;
-        // 视距
+        // eye's distance
         public float eyeDistance = 0.1f;
+       
         public LayerMask layerMask = -1;
 
-        // 是否需要支持手柄
+        // whether to active the wand
         public bool enableJoypad = true;
         const int JOYPAD_NUM = 2;
         public static ThreeGlassesWand[] joyPad = new ThreeGlassesWand[JOYPAD_NUM];
 
-        // 主相机的显示
+        // maincamera can displayer
         public bool onlyHeadDisplay = false;
 
-        // 是否需要手动翻转
+        // when display upside down use it
         public bool flipDisplay = false;
 
         void Awake()
@@ -42,7 +43,7 @@ namespace ThreeGlasses
             }
             
 
-            // 初始化渲染纹理
+            // init RenderTexture
             for (int i = 0; i < CAMERA_NUM; i++)
             {
                 renderTexture[i] = new RenderTexture(renderWidth / 2, renderHeight, 24,
@@ -54,11 +55,11 @@ namespace ThreeGlasses
         IEnumerator Start ()
         {
             ThreeGlassesUtils.Log("MainCamera init");
-            // 初始化相机
+            // init camera
             VRCameraInit();
             if (enableJoypad)
             {
-                // 初始化手柄
+                // init wand
                 ThreeGlassesUtils.Log("init joypad");
                 joyPad[0] = new ThreeGlassesWand(InputType.LeftJoyPad);
                 joyPad[1] = new ThreeGlassesWand(InputType.RightJoyPad);
@@ -74,17 +75,17 @@ namespace ThreeGlasses
         
         void VRCameraInit ()
         {
-            // 获取原有相机的远近裁剪面
+            // get maincamera's nearClip and farClip
             Camera thiscam = GetComponent<Camera>();
             near = thiscam.nearClipPlane;
             far = thiscam.farClipPlane;
             fieldOfView = (float)(ThreeGlassesDllInterface.SZVRPluginGetFOV());
 
-            // 获取要添加的component
+            // get components
             ArrayList needAdd = new ArrayList();
             System.Type[] needAddTypes = new System.Type[] { typeof(GUILayer), typeof(FlareLayer)};
             Component[] coms = gameObject.GetComponents<Component>();
-            // 普通component
+            // non-script component
             foreach (var com in coms)
             {
                 foreach(var type in needAddTypes)
@@ -95,7 +96,7 @@ namespace ThreeGlasses
                     }
                 }
             }
-            // 脚本component
+            // script component
             foreach (var com in coms)
             {
                
@@ -119,13 +120,13 @@ namespace ThreeGlasses
                 
             }
 
-            // 创建并设置相机
+            // create and set camera
             for (int i=0; i<CAMERA_NUM; i++)
             {
-                // 创建左右相机
+                // create camera
                 subCamera[i] = new GameObject();
                 
-                // 重命名，添加ThreeGlassesSubCamera
+                // rename，add ThreeGlassesSubCamera
                 subCamera[i].name = cameraName[i];
                 Camera cam = subCamera[i].AddComponent<Camera>();
                 cam.fieldOfView = fieldOfView;
@@ -135,13 +136,13 @@ namespace ThreeGlasses
                 cam.depth = thiscam.depth;
                 subCamera[i].transform.SetParent(this.transform);
 
-                // 添加主相机中需要copy过来的component
+                // add the components
                 foreach(var item in needAdd)
                 {
                     ThreeGlassesUtils.CopyComponent((Component)item, subCamera[i]);
                 }
 
-                // 添加完所有component包含ImageEffect后再添加subCamera，因为需要blit翻转
+                // add subCamera script after add all component
                 ThreeGlassesSubCamera subCameraScript = subCamera[i].AddComponent<ThreeGlassesSubCamera>();
                 subCameraScript.type = (ThreeGlassesSubCamera.CameraType)i;
                 if(!flipDisplay)
@@ -155,7 +156,7 @@ namespace ThreeGlasses
             subCamera[0].transform.localPosition = -eyeDis;
             subCamera[1].transform.localPosition = eyeDis;
 
-            // 对场景下的所有添加了subCamera脚本的相机做设置
+            // set the camera who bind ThreeGlassesSubCamera
             ThreeGlassesSubCamera[] cams = GameObject.FindObjectsOfType(typeof(ThreeGlassesSubCamera)) as ThreeGlassesSubCamera[];
             foreach(var cam in cams)
             {
@@ -176,7 +177,7 @@ namespace ThreeGlasses
         {
             while (true)
             {
-                // 在所有绘制之后，OnRenderImage之后
+                // after OnRenderImage
                 yield return new WaitForEndOfFrame();
 
                 ThreeGlassesDllInterface.UpdateTextureFromUnity(renderTexture[0].GetNativeTexturePtr(),
@@ -185,7 +186,7 @@ namespace ThreeGlasses
                 GL.IssuePluginEvent(ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
 
 
-                // 更新主相机旋转角度
+                // update headdisplay position and rotation
                 var hmd = new float[] { 0, 0, 0, 0, 0, 0, 0 };
                 float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 0 };
                 float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 0 };
@@ -194,7 +195,7 @@ namespace ThreeGlasses
                 transform.localRotation = new Quaternion(hmd[5], hmd[4], hmd[3], -hmd[6]);
 
 
-                // 更新手柄信息
+                // update wand info
                 if (enableJoypad)
                 {
                     joyPad[0].pack.position = new Vector3(wand_left[0], wand_left[1], wand_left[2]);

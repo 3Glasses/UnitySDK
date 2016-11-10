@@ -15,8 +15,7 @@ namespace ThreeGlasses
         // Update is called once per frame
         void LateUpdate()
         {
-            ThreeGlassesWand.Wand pack = new ThreeGlassesWand.Wand();
-            pack = ThreeGlassesCamera.joyPad[(int)type].pack;
+            ThreeGlassesWand.Wand pack = new ThreeGlassesWand.Wand(ThreeGlassesCamera.joyPad[(int)type].pack);
             gameObject.BroadcastMessage("OnWandChange", pack, SendMessageOptions.DontRequireReceiver);
         }
 
