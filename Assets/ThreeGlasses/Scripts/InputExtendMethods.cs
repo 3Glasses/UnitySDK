@@ -50,5 +50,6 @@ namespace ThreeGlasses
             Quaternion temp = ThreeGlassesCamera.joyPad[(int)type].pack.rotation;
             return new Quaternion(temp.x, temp.y, temp.z, temp.w);
         }
+
     }
 }
