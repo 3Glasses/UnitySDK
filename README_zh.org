@@ -3,8 +3,7 @@
 [[./README/icon.png]]
 * 3GlassesSDK
 *[[http://www.3glasses.com/][官方主页]]* | *[[./README.org][English Manual]]*
-** 安装
-下载最新的releases包，然后双击导入资源文件。
+
 ** 使用
 从主菜单选择 3Glasses>EnableHeadDisplay
 
