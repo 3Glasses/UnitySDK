@@ -1,0 +1,37 @@
+#+STYLE: <link rel="stylesheet" type="text/css" href="./README/org-manual.css" />
+
+[[./README/icon.png]]
+* 3GlassesSDK
+*[[http://www.3glasses.com/][官方主页]]* | *[[./README.org][English Manual]]*
+** 安装
+下载最新的releases包，然后双击导入资源文件。
+** 使用
+从主菜单选择 3Glasses>EnableHeadDisplay
+
+[[./README/EnableHeadDisplay.png]]
+
+确保EnableHeadDisplay菜单选项已被勾选。
+
+现在Three3GlassesCamera脚本已经绑定到你的主相机上了，这里有一些选项可以影响头显的行为
+
+[[./README/TreeGlassesCameraProperty.png]]
+*** 参数:
+  #+ATTR_HTML: :border 2 :rules all :frame border
+  | 参数:                     | 描述                                |
+  |---------------------------+-------------------------------------|
+  | Eye Distance              | 头显内部左右相机的距离              |
+  | Layer Mask                | 头显可以看到的层                    |
+  | Enable JoyPad             | 使用3Glasses的Wand手柄              |
+  | Manual Update HeadDisplay | 手动 (自己写代码) 更新头显transform |
+  | Only Head Display         | 仅头显显示绑定的相机在显示器不显示  |
+  | Flip Display              | 当头显渲染上下颠倒时勾选            |
+
+头显设备会自动更新绑定的主相机的Transform，你可以通过获取主相机的Transform拿到头显的Transform。
+** 获取Wand手柄的输入
+InputExtendMethods类定义了一些获取手柄信息的方法，如下：
+#+BEGIN_SRC csharp
+  // 这里是获取wand手柄上back按键的状态 (按键按下返回true)
+  TGInput.GetKey(InputType.LeftWand, InputKey.WandBack);
+  // 返回遥感的x,y值，这两个值都在-1--1之间
+  Vector2 v = TGInput.GetStick(InputType.LeftWand);
+#+END_SRC
