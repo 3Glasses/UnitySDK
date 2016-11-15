@@ -13,11 +13,15 @@ namespace ThreeGlasses
         private float near, far;
         private float fieldOfView = 90;
         private string[] cameraName = new string[]{"leftCamera", "rightCamera"};
-        
+        private Camera thisCam;
+        private Camera[] subCameraCam = new Camera[CAMERA_NUM];
+        private ThreeGlassesSubCamera[] subCameraScript = new ThreeGlassesSubCamera[CAMERA_NUM];
+
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
         private uint renderWidth = 2880;
         private uint renderHeight = 1440;
+
         // eye's distance
         public float eyeDistance = 0.1f;
        
@@ -25,6 +29,9 @@ namespace ThreeGlasses
 
         // whether to active the wand
         public bool enableJoypad = true;
+
+        public bool manualUpdateHeadTransform = false;
+
         const int JOYPAD_NUM = 2;
         public static ThreeGlassesWand[] joyPad = new ThreeGlassesWand[JOYPAD_NUM];
 
@@ -85,9 +92,9 @@ namespace ThreeGlasses
         void VRCameraInit ()
         {
             // get maincamera's nearClip and farClip
-            Camera thiscam = GetComponent<Camera>();
-            near = thiscam.nearClipPlane;
-            far = thiscam.farClipPlane;
+            thisCam = GetComponent<Camera>();
+            near = thisCam.nearClipPlane;
+            far = thisCam.farClipPlane;
             fieldOfView = (float)(ThreeGlassesDllInterface.SZVRPluginGetFOV());
 
             // get components
@@ -137,12 +144,12 @@ namespace ThreeGlasses
                 
                 // rename，add ThreeGlassesSubCamera
                 subCamera[i].name = cameraName[i];
-                Camera cam = subCamera[i].AddComponent<Camera>();
-                cam.fieldOfView = fieldOfView;
-                cam.nearClipPlane = near;
-                cam.farClipPlane = far;
-                cam.cullingMask = thiscam.cullingMask;
-                cam.depth = thiscam.depth;
+                subCameraCam[i] = subCamera[i].AddComponent<Camera>();
+                subCameraCam[i].fieldOfView = fieldOfView;
+                subCameraCam[i].nearClipPlane = near;
+                subCameraCam[i].farClipPlane = far;
+                subCameraCam[i].cullingMask = layerMask;
+                subCameraCam[i].depth = thisCam.depth;
                 subCamera[i].transform.SetParent(this.transform);
 
                 // add the components
@@ -152,12 +159,11 @@ namespace ThreeGlasses
                 }
 
                 // add subCamera script after add all component
-                ThreeGlassesSubCamera subCameraScript = subCamera[i].AddComponent<ThreeGlassesSubCamera>();
-                subCameraScript.type = (ThreeGlassesSubCamera.CameraType)i;
-                if(!flipDisplay)
-                {
-                    subCameraScript.Flip = true;
-                }
+                subCameraScript[i] = subCamera[i].AddComponent<ThreeGlassesSubCamera>();
+                subCameraScript[i].type = (ThreeGlassesSubCamera.CameraType)i;
+                
+                subCameraScript[i].Flip = !flipDisplay;
+                
             }
 
             var eyeDis = new Vector3(eyeDistance/2, 0, 0);
@@ -178,7 +184,7 @@ namespace ThreeGlasses
                 tempCamera.targetTexture = renderTexture[(int)cam.type];
             }
 
-            thiscam.enabled = !onlyHeadDisplay;
+            thisCam.enabled = !onlyHeadDisplay;
         }
         
         private IEnumerator CallPluginAtEndOfFrames()
@@ -198,8 +204,11 @@ namespace ThreeGlasses
                 float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 0 };
                 float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 0 };
                 ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
-                transform.localPosition = new Vector3(-hmd[0] / 1000.0f, hmd[1] / 1000.0f, -hmd[2] / 1000.0f);
-                transform.localRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
+                if (!manualUpdateHeadTransform)
+                {
+                    transform.localPosition = new Vector3(-hmd[0] / 1000.0f, hmd[1] / 1000.0f, -hmd[2] / 1000.0f);
+                    transform.localRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
+                }
 
                 // update wand info
                 if (!enableJoypad) continue;
@@ -220,6 +229,21 @@ namespace ThreeGlasses
             }
         }
 
+        void Update()
+        {
+            for (int i = 0; i < CAMERA_NUM; i++)
+            {
+                subCameraScript[i].Flip = !flipDisplay;
+                subCameraCam[i].cullingMask = layerMask;
+            }
+            
+            // update eyedistance
+            var eyeDis = new Vector3(eyeDistance / 2, 0, 0);
+            subCamera[0].transform.localPosition = -eyeDis;
+            subCamera[1].transform.localPosition = eyeDis;
+
+            thisCam.enabled = !onlyHeadDisplay;
+        }
         // get
         public RenderTexture LeftEyeRT
         {

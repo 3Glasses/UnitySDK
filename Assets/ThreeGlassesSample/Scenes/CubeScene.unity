@@ -234,6 +234,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   enableJoypad: 1
+  manualUpdateHeadTransform: 0
   onlyHeadDisplay: 0
   flipDisplay: 0
 --- !u!81 &1508485605
