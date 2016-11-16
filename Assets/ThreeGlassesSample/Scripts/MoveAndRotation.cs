@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WandRight : MonoBehaviour {
+public class MoveAndRotation : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

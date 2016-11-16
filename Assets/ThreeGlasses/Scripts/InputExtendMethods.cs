@@ -51,5 +51,16 @@ namespace ThreeGlasses
             return new Quaternion(temp.x, temp.y, temp.z, temp.w);
         }
 
+        public static Vector3 GetHeadDisplayPosition()
+        {
+            return ThreeGlassesCamera.headDisplayPosition;
+        }
+
+        public static Quaternion GetHeadDisplayRotation()
+        {
+            return ThreeGlassesCamera.headDisplayRotation;
+        }
+        
+
     }
 }
