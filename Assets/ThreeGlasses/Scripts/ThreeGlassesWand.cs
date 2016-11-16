@@ -49,6 +49,13 @@ namespace ThreeGlasses
         {
             if (0 == ThreeGlassesDllInterface.GetWandInput((uint)pack.type, keyStatusTemp, stickTemp))
             {
+//                 int left = (int)Mathf.Clamp(((stickTemp[1] - 127) * 1.2f), -128, 128);
+//                 int right = (int)Mathf.Clamp(((stickTemp[2] - 127) * 1.2f), -128, 128);
+//                 left /= 16;//-8~8
+//                 right /= 16;
+// 
+//                 pack.stick[0] = left / 8.0f;
+//                 pack.stick[1] = -right / 8.0f;
                 pack.stick[0] = ((stickTemp[1] / (float)255.0) - 0.5f)*2.0f;
                 pack.stick[1] = (-(stickTemp[2] / (float)255.0) + 0.5f)*2.0f;
 
