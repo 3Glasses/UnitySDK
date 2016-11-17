@@ -43,6 +43,16 @@ public class WandController : MonoBehaviour {
 
             float intensity = TGInput.GetTriggerProcess(inputType);
             mat.SetColor("_Color", new Color(intensity, intensity, intensity, 1));
+
+            // change bullet type
+            if (TGInput.GetKey(inputType, InputKey.WandLeftSide))
+            {
+                bulletType = (bulletType+3)%4;
+            }
+            if (TGInput.GetKey(inputType, InputKey.WandRightSide))
+            {
+                bulletType = (++bulletType) % 4;
+            }
             // create a bullet
             currRate += Time.deltaTime;
             if (currRate > fireRate)

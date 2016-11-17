@@ -33,7 +33,7 @@ namespace ThreeGlasses
         public bool enableJoypad = true;
 
         const int JOYPAD_NUM = 2;
-        public static ThreeGlassesWand[] joyPad = new ThreeGlassesWand[JOYPAD_NUM];
+        public static ThreeGlassesWand[] joyPad = new ThreeGlassesWand[JOYPAD_NUM] { null, null};
 
         // maincamera can displayer
         public bool onlyHeadDisplay = false;

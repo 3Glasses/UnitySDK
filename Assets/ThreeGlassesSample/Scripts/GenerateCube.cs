@@ -25,6 +25,9 @@ public class GenerateCube : MonoBehaviour {
                     Transform cube = GameObject.CreatePrimitive(PrimitiveType.Cube).GetComponent<Transform>();
                     cube.position = new Vector3(origin + x * step, origin + y * step, origin + z * step);
                     cube.rotation = Quaternion.identity;
+                    Rigidbody rb = cube.gameObject.AddComponent<Rigidbody>();
+                    rb.useGravity = false;
+                    rb.constraints = RigidbodyConstraints.FreezePosition;
                     cube.parent = gameObject.transform;
                     if ((int)(Random.value + 0.5) == 1)
                     {
