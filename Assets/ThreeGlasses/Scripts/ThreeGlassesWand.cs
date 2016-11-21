@@ -34,13 +34,13 @@ namespace ThreeGlasses
             public Wand()
             {
                 type = InputType.LeftWand;
-                position = new Vector3(0, 0, 0);
-                rotation = new Quaternion();
+                position = Vector3.zero;
+                rotation = Quaternion.identity;
                 for (int i=0; i<KEY_NUM; i++)
                 {
                     keyStatus[i] = 0;
                 }
-                stick = new Vector2(0, 0);
+                stick = Vector2.zero;
                 triggerProcess = 0;
             }
         }
