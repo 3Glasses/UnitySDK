@@ -20,7 +20,7 @@ namespace ThreeGlasses
             Flip = false;
         }
 
-        void Awake()
+        void Start()
         {
             material = new Material(Shader.Find("Hidden/ThreeGlasses/ReverseUV"));
         }
