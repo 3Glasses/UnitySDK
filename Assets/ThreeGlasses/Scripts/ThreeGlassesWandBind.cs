@@ -8,6 +8,12 @@ namespace ThreeGlasses
         public InputType type = InputType.LeftWand;
         public bool sendToChildren = true;
         public bool updateSelf = true;
+        public enum UpdateType
+        {
+            Local,
+            World
+        };
+        public UpdateType updateType = UpdateType.Local;
         private Transform tran;
         // Use this for initialization
         void Start()
@@ -27,8 +33,17 @@ namespace ThreeGlasses
             }
             if (updateSelf)
             {
-                tran.localPosition = pack.position;
-                tran.localRotation = pack.rotation;
+                if (updateType == UpdateType.Local)
+                {
+                    tran.localPosition = pack.position;
+                    tran.localRotation = pack.rotation;
+                }
+                else
+                {
+                    tran.position = pack.position;
+                    tran.rotation = pack.rotation;
+                }
+                
             }
         }
 
