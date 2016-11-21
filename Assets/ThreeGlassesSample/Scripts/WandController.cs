@@ -99,8 +99,8 @@ public class WandController : MonoBehaviour {
         // it is same as the get version which is in the Update function. just a sample
         if (useType == UseType.UseCallback && inputType == InputType.RightWand)
         {
-            transform.localPosition = origin + pack.position;
-            transform.rotation = pack.rotation;
+//             transform.localPosition = origin + pack.position;
+//             transform.rotation = pack.rotation;
 
             float intensity = pack.triggerProcess;
             mat.SetColor("_Color", new Color(intensity, intensity, intensity, 1));
