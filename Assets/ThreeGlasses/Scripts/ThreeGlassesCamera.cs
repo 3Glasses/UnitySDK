@@ -201,14 +201,13 @@ namespace ThreeGlasses
                 GL.IssuePluginEvent(ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
 
                 // update headdisplay position and rotation
-                var hmd = new float[] { 0, 0, 0, 0, 0, 0,10 };
+                var hmd = new float[] { 0, 0, 0, 0, 0, 0, 1};
                 float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 1 };
                 float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 1 };
                 ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
                 
                 headDisplayPosition = new Vector3(-hmd[0] / 1000.0f, hmd[1] / 1000.0f, -hmd[2] / 1000.0f);
                 headDisplayRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
-
 
                 thisCam.transform.localPosition = headDisplayPosition;
                 thisCam.transform.localRotation = headDisplayRotation;

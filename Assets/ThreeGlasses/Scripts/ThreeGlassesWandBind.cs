@@ -8,6 +8,7 @@ namespace ThreeGlasses
         public InputType type = InputType.LeftWand;
         public bool sendToChildren = true;
         public bool updateSelf = true;
+        private Vector3 origin;
         public enum UpdateType
         {
             Local,
@@ -19,6 +20,7 @@ namespace ThreeGlasses
         void Start()
         {
             tran = GetComponent<Transform>();
+            origin = tran.localPosition;
         }
         // Update is called once per frame
         void LateUpdate()
@@ -35,12 +37,12 @@ namespace ThreeGlasses
             {
                 if (updateType == UpdateType.Local)
                 {
-                    tran.localPosition = pack.position;
+                    tran.localPosition = origin + pack.position;
                     tran.localRotation = pack.rotation;
                 }
                 else
                 {
-                    tran.position = pack.position;
+                    tran.position = origin + pack.position;
                     tran.rotation = pack.rotation;
                 }
                 
