@@ -23,7 +23,7 @@ public class WandController : MonoBehaviour {
 
     private Transform trans;
     private Material mat;
-    public Transform mainCam;
+    public Transform headDisplay;
     // Use this for initialization
     void Start () {
         trans = GetComponent<Transform>();
@@ -39,10 +39,20 @@ public class WandController : MonoBehaviour {
         {
             // set transform
             transform.localPosition = origin + TGInput.GetPosition(inputType);
-            transform.rotation = TGInput.GetRotation(inputType);
+            transform.localRotation = TGInput.GetRotation(inputType);
 
             float intensity = TGInput.GetTriggerProcess(inputType);
             mat.SetColor("_Color", new Color(intensity, intensity, intensity, 1));
+
+            // change bullet type
+            if (TGInput.GetKey(inputType, InputKey.WandLeftSide))
+            {
+                bulletType = (bulletType+3)%4;
+            }
+            if (TGInput.GetKey(inputType, InputKey.WandRightSide))
+            {
+                bulletType = (++bulletType) % 4;
+            }
             // create a bullet
             currRate += Time.deltaTime;
             if (currRate > fireRate)
@@ -64,18 +74,18 @@ public class WandController : MonoBehaviour {
         }
 
         // move control
-        if(mainCam != null)
+        if(headDisplay != null)
         {
             Vector2 dir = TGInput.GetStick(inputType);
             if (inputType == InputType.LeftWand)
             {
                 dir = dir * moveSpeed * Time.deltaTime;
-                mainCam.Translate(new Vector3(dir.x, 0, dir.y));
+                headDisplay.Translate(new Vector3(dir.x, 0, dir.y));
             }
             else if (inputType == InputType.RightWand)
             {
-                mainCam.Rotate(mainCam.up, dir.x * rotateSpeed * Time.deltaTime);
-                mainCam.Rotate(mainCam.right, -dir.y * rotateSpeed * Time.deltaTime);
+                headDisplay.Rotate(headDisplay.up, dir.x * rotateSpeed * Time.deltaTime);
+                headDisplay.Rotate(headDisplay.right, -dir.y * rotateSpeed * Time.deltaTime);
             }  
         }
     }
@@ -89,8 +99,6 @@ public class WandController : MonoBehaviour {
         // it is same as the get version which is in the Update function. just a sample
         if (useType == UseType.UseCallback && inputType == InputType.RightWand)
         {
-            transform.localPosition = origin + pack.position;
-            transform.rotation = pack.rotation;
 
             float intensity = pack.triggerProcess;
             mat.SetColor("_Color", new Color(intensity, intensity, intensity, 1));

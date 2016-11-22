@@ -18,6 +18,7 @@ namespace ThreeGlasses
         private ThreeGlassesSubCamera[] subCameraScript = new ThreeGlassesSubCamera[CAMERA_NUM];
         public static Vector3 headDisplayPosition = new Vector3();
         public static Quaternion headDisplayRotation = new Quaternion();
+        public bool alignHeadDisplay = true;
 
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
@@ -33,7 +34,7 @@ namespace ThreeGlasses
         public bool enableJoypad = true;
 
         const int JOYPAD_NUM = 2;
-        public static ThreeGlassesWand[] joyPad = new ThreeGlassesWand[JOYPAD_NUM];
+        public static ThreeGlassesWand[] joyPad = new ThreeGlassesWand[JOYPAD_NUM] { null, null};
 
         // maincamera can displayer
         public bool onlyHeadDisplay = false;
@@ -200,16 +201,17 @@ namespace ThreeGlasses
                 GL.IssuePluginEvent(ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
 
                 // update headdisplay position and rotation
-                var hmd = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-                float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-                float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+                var hmd = new float[] { 0, 0, 0, 0, 0, 0, 1};
+                float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 1 };
+                float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 1 };
                 ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
                 
                 headDisplayPosition = new Vector3(-hmd[0] / 1000.0f, hmd[1] / 1000.0f, -hmd[2] / 1000.0f);
                 headDisplayRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
-                subCamera[0].transform.localPosition = subCamera[1].transform.localPosition = headDisplayPosition;
-                subCamera[0].transform.localRotation = subCamera[1].transform.localRotation = headDisplayRotation;
-                
+
+                thisCam.transform.localPosition = headDisplayPosition;
+                thisCam.transform.localRotation = headDisplayRotation;
+
 
                 // update wand info
                 if (!enableJoypad) continue;

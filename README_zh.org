@@ -16,21 +16,44 @@
 [[./README/TreeGlassesCameraProperty.png]]
 *** 参数:
   #+ATTR_HTML: :border 2 :rules all :frame border
-  | 参数:                     | 描述                                |
+  | 参数                      | 描述                                |
   |---------------------------+-------------------------------------|
   | Eye Distance              | 头显内部左右相机的距离              |
   | Layer Mask                | 头显可以看到的层                    |
   | Enable JoyPad             | 使用3Glasses的Wand手柄              |
-  | Manual Update HeadDisplay | 手动 (自己写代码) 更新头显transform |
   | Only Head Display         | 仅头显显示绑定的相机在显示器不显示  |
   | Flip Display              | 当头显渲染上下颠倒时勾选            |
-
-头显设备会自动更新绑定的主相机的Transform，你可以通过获取主相机的Transform拿到头显的Transform。
+** 获取头显的位置和旋转信息
+#+BEGIN_SRC csharp
+Vector3 pos = GetHeadDisplayPosition();
+Quaternion rotate = GetHeadDisplayRotation();
+#+END_SRC
 ** 获取Wand手柄的输入
+有两种方法获取手柄信息：
+*** Get
 InputExtendMethods类定义了一些获取手柄信息的方法，如下：
 #+BEGIN_SRC csharp
   // 这里是获取wand手柄上back按键的状态 (按键按下返回true)
   TGInput.GetKey(InputType.LeftWand, InputKey.WandBack);
   // 返回遥感的x,y值，这两个值都在-1--1之间
   Vector2 v = TGInput.GetStick(InputType.LeftWand);
+#+END_SRC
+*** Bind Script
+将ThreeGlassesWandBind.cs脚本绑定到定义的手柄上。
+
+[[./README/TreeGlassesWandBindProperty.png]]
+**** 参数
+#+ATTR_HTML: :border 2 :rules all :frame border
+| 参数             | 描述                             |
+|------------------+----------------------------------|
+| Type             | 手柄类型                         |
+| Send To Children | 是否将获取的手柄信息传递给子对象 |
+| Update Self      | 是否更新自己的位置和旋转         |
+
+手柄对象的子对象只要实现OnWandChange方法就可以获取手柄的详细信息了。
+#+BEGIN_SRC csharp
+  void OnWandChange(ThreeGlassesWand.Wand pack)
+  {
+      // do somethng
+  }
 #+END_SRC
