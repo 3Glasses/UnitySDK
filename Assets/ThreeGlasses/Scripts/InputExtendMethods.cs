@@ -42,28 +42,17 @@ namespace ThreeGlasses
         // get stick rang=0-1.0
         public static Vector2 GetStick(InputType type)
         {
-            if (ThreeGlassesCamera.joyPad[(int)type] == null)
-                return new Vector2(0.0f, 0.0f);
-            
-            return ThreeGlassesCamera.joyPad[(int)type].GetStick();
+            return ThreeGlassesCamera.joyPad[(int)type] == null ? Vector2.zero : ThreeGlassesCamera.joyPad[(int)type].GetStick();
         }
 
         public static Vector3 GetPosition(InputType type)
         {
-            if (ThreeGlassesCamera.joyPad[(int)type] == null)
-                return new Vector3(0.0f, 0.0f, 0.0f);
-            
-            Vector3 temp = ThreeGlassesCamera.joyPad[(int)type].pack.position;
-            return new Vector3(temp.x, temp.y, temp.z);
+            return ThreeGlassesCamera.joyPad[(int) type] == null ? Vector3.zero : ThreeGlassesCamera.joyPad[(int)type].pack.position;
         }
 
         public static Quaternion GetRotation(InputType type)
         {
-            if (ThreeGlassesCamera.joyPad[(int)type] == null)
-                return new Quaternion(0.0f, 0.0f, 0.0f, 0.0f);
-            
-            Quaternion temp = ThreeGlassesCamera.joyPad[(int)type].pack.rotation;
-            return new Quaternion(temp.x, temp.y, temp.z, temp.w);
+            return ThreeGlassesCamera.joyPad[(int)type] == null ? Quaternion.identity : ThreeGlassesCamera.joyPad[(int) type].pack.rotation;
         }
 
         public static Vector3 GetHeadDisplayPosition()

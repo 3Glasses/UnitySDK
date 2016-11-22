@@ -116,25 +116,20 @@ namespace ThreeGlasses
             // script component
             foreach (var com in coms)
             {
-               
                 if (com is MonoBehaviour)
                 {
-                        
                     if (com != this)
                     {
                         System.Type t = com.GetType();
-
-
-                        MemberInfo meth = t.GetMethod("OnRenderImage", BindingFlags.Instance |
-                                                      BindingFlags.NonPublic | BindingFlags.Public);
+                        MemberInfo meth = t.GetMethod("OnRenderImage",
+                            BindingFlags.Instance |
+                            BindingFlags.NonPublic | BindingFlags.Public);
                         if (meth != null)
                         {
                             needAdd.Add(com);
                         }
                     }
-                      
                 }
-                
             }
 
             // create and set camera
@@ -216,14 +211,14 @@ namespace ThreeGlasses
                 // update wand info
                 if (!enableJoypad) continue;
                 joyPad[0].pack.position = new Vector3(
-                    wand_left[0]/1000.0f,
-                    wand_left[1]/1000.0f,
-                    wand_left[2]/1000.0f);
+                    wand_left[0],
+                    wand_left[1],
+                    wand_left[2]) / 700.0f;
                 joyPad[0].pack.rotation = new Quaternion(wand_left[3], wand_left[5], -wand_left[4], -wand_left[6]);
                 joyPad[1].pack.position = new Vector3(
-                    wand_right[0]/1000.0f,
-                    wand_right[1]/1000.0f,
-                    wand_right[2]/1000.0f);
+                    wand_right[0],
+                    wand_right[1],
+                    wand_right[2]) / 700.0f;
                 joyPad[1].pack.rotation = new Quaternion(wand_right[3], wand_right[5],-wand_right[4], -wand_right[6]);
                 for (var i = 0; i < JOYPAD_NUM; i++)
                 {
