@@ -29,5 +29,10 @@ namespace ThreeGlasses
             }
             return copy;
         }
+
+        public static bool CheckNaN(Vector3 vec)
+        {
+            return !float.IsNaN(vec.x) && !float.IsNaN(vec.y) && !float.IsNaN(vec.z);
+        }
     }
 }

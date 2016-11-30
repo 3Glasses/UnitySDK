@@ -201,25 +201,41 @@ namespace ThreeGlasses
                 float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 1 };
                 ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
                 
-                headDisplayPosition = new Vector3(-hmd[0] / 1000.0f, hmd[1] / 1000.0f, -hmd[2] / 1000.0f);
+                var hmdPosition = new Vector3(hmd[0] / 700.0f, hmd[1] / 700.0f, -hmd[2] / 700.0f);
                 headDisplayRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
 
-                thisCam.transform.localPosition = headDisplayPosition;
+                if (ThreeGlassesUtils.CheckNaN(hmdPosition))
+                {
+                    thisCam.transform.localPosition = headDisplayPosition = hmdPosition;
+                }
                 thisCam.transform.localRotation = headDisplayRotation;
-
 
                 // update wand info
                 if (!enableJoypad) continue;
-                joyPad[0].pack.position = new Vector3(
+                var leftWandPosition = new Vector3(
                     wand_left[0],
                     wand_left[1],
-                    wand_left[2]) / 700.0f;
-                joyPad[0].pack.rotation = new Quaternion(wand_left[3], wand_left[5], -wand_left[4], -wand_left[6]);
-                joyPad[1].pack.position = new Vector3(
+                    wand_left[2]) / -700.0f;
+                if (ThreeGlassesUtils.CheckNaN(leftWandPosition))
+                {
+                    joyPad[0].pack.position = leftWandPosition;
+                }
+
+                joyPad[0].pack.rotation = 
+                    new Quaternion(-wand_left[5], wand_left[3], -wand_left[4], wand_left[6]) * Quaternion.AngleAxis(180.0f , new Vector3(0,1,0));
+
+                var rightWandPosition = new Vector3(
                     wand_right[0],
                     wand_right[1],
-                    wand_right[2]) / 700.0f;
-                joyPad[1].pack.rotation = new Quaternion(wand_right[3], wand_right[5],-wand_right[4], -wand_right[6]);
+                    wand_right[2]) / -700.0f;
+                if (ThreeGlassesUtils.CheckNaN(rightWandPosition))
+                {
+                    joyPad[1].pack.position = rightWandPosition;
+                }
+
+                joyPad[1].pack.rotation = 
+                    new Quaternion(-wand_right[5], wand_right[3], -wand_right[4], wand_right[6]) * Quaternion.AngleAxis(180.0f, new Vector3(0, 1, 0));
+
                 for (var i = 0; i < JOYPAD_NUM; i++)
                 {
                     joyPad[i].Update();
