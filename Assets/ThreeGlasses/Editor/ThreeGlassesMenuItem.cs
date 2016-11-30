@@ -15,14 +15,14 @@ namespace ThreeGlasses
         [MenuItem(kEnableHeadDisplay, true)]
         public static bool ToggleSimulationModeValidate()
         {
-            Menu.SetChecked(kEnableHeadDisplay, GameObject.FindObjectOfType(typeof(ThreeGlassesCamera)) != null);
+            Menu.SetChecked(kEnableHeadDisplay, GameObject.FindObjectOfType(typeof(ThreeGlassesManager)) != null);
             return true;
         }
 
         [MenuItem(kEnableHeadDisplay)]
 		public static void ToggleSimulationMode ()
 		{
-            if(GameObject.FindObjectOfType(typeof(ThreeGlassesCamera)) != null)
+            if(GameObject.FindObjectOfType(typeof(ThreeGlassesManager)) != null)
             {
                 clear3Glasses();
             }
@@ -60,14 +60,14 @@ namespace ThreeGlasses
             }
 
             // bind script
-            Undo.AddComponent<ThreeGlassesCamera>(cam.gameObject);
+            Undo.AddComponent<ThreeGlassesManager>(cam.gameObject);
             
             Selection.activeGameObject = cam.gameObject;
         }
         public static void clear3Glasses()
         {
             // remove ThreeGlassesCamera form maincamera
-            Component[] objects = GameObject.FindObjectsOfType<ThreeGlassesCamera>();
+            Component[] objects = GameObject.FindObjectsOfType<ThreeGlassesManager>();
             foreach (var item in objects)
             {
                 Undo.DestroyObjectImmediate(item);

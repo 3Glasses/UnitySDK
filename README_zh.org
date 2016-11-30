@@ -11,7 +11,7 @@
 
 确保EnableHeadDisplay菜单选项已被勾选。
 
-现在Three3GlassesCamera脚本已经绑定到你的主相机上了，这里有一些选项可以影响头显的行为
+现在Three3GlassesManager脚本已经绑定到你的主相机上了，这里有一些选项可以影响头显的行为
 
 [[./README/TreeGlassesCameraProperty.png]]
 *** 参数:

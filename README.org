@@ -11,7 +11,7 @@ Select 3Glasses>EnableHeadDisplay from the main menu.
 
 Make sure the EnableHeadDisplay is selected in the 3Glasses drop-down box.
 
-Now the Three3GlassesCamera script is bind in your main camera, and there are some Properties can control the HeadDisplay's behavior.
+Now the Three3GlassesManager script is bind in your main camera, and there are some Properties can control the HeadDisplay's behavior.
 
 [[./README/TreeGlassesCameraProperty.png]]
 *** Properties:
