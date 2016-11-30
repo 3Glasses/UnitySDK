@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace ThreeGlasses
 {
-    public class ThreeGlassesCamera : MonoBehaviour {
+    public class ThreeGlassesManager : MonoBehaviour {
         // camera
         const int CAMERA_NUM = 2;
         private GameObject[] subCamera = new GameObject[CAMERA_NUM];
