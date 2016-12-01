@@ -69,7 +69,7 @@ namespace ThreeGlasses
                 {
                     renderTexture[i] = new RenderTexture((int)renderWidth / 2,
                         (int)renderHeight, 24,
-                        RenderTextureFormat.ARGB32,
+                        RenderTextureFormat.Default,
                         RenderTextureReadWrite.Default);
                     renderTexture[i].Create();
                 }
