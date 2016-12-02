@@ -43,11 +43,11 @@ The InputExtendMethods class definit some methods for get the wand's info. you c
 Bind the ThreeGlassesWandBind.cs on your wand object.
 
 [[./README/TreeGlassesWandBindProperty.png]]
-**** 参数
+**** Option
 #+ATTR_HTML: :border 2 :rules all :frame border
-| 参数             | 描述                             |
+| Option           | Description                      |
 |------------------+----------------------------------|
-| Type             | wand's type                  |
+| Type             | wand's type                      |
 | Send To Children | send wand's info to all children |
 | Update Self      | update the position and rotation |
 
