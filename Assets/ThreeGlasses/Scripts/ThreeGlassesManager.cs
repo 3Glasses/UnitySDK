@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace ThreeGlasses
 {
-    public class ThreeGlassesCamera : MonoBehaviour {
+    public class ThreeGlassesManager : MonoBehaviour {
         // camera
         const int CAMERA_NUM = 2;
         private GameObject[] subCamera = new GameObject[CAMERA_NUM];
@@ -16,6 +16,9 @@ namespace ThreeGlasses
         private Camera thisCam;
         private Camera[] subCameraCam = new Camera[CAMERA_NUM];
         private ThreeGlassesSubCamera[] subCameraScript = new ThreeGlassesSubCamera[CAMERA_NUM];
+        public static Vector3 headDisplayPosition = new Vector3();
+        public static Quaternion headDisplayRotation = new Quaternion();
+        public bool alignHeadDisplay = true;
 
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
@@ -30,10 +33,8 @@ namespace ThreeGlasses
         // whether to active the wand
         public bool enableJoypad = true;
 
-        public bool manualUpdateHeadTransform = false;
-
         const int JOYPAD_NUM = 2;
-        public static ThreeGlassesWand[] joyPad = new ThreeGlassesWand[JOYPAD_NUM];
+        public static ThreeGlassesWand[] joyPad = new ThreeGlassesWand[JOYPAD_NUM] { null, null};
 
         // maincamera can displayer
         public bool onlyHeadDisplay = false;
@@ -68,7 +69,7 @@ namespace ThreeGlasses
                 {
                     renderTexture[i] = new RenderTexture((int)renderWidth / 2,
                         (int)renderHeight, 24,
-                        RenderTextureFormat.BGRA32,
+                        RenderTextureFormat.Default,
                         RenderTextureReadWrite.Default);
                     renderTexture[i].Create();
                 }
@@ -115,25 +116,20 @@ namespace ThreeGlasses
             // script component
             foreach (var com in coms)
             {
-               
                 if (com is MonoBehaviour)
                 {
-                        
                     if (com != this)
                     {
                         System.Type t = com.GetType();
-
-
-                        MemberInfo meth = t.GetMethod("OnRenderImage", BindingFlags.Instance |
-                                                      BindingFlags.NonPublic | BindingFlags.Public);
+                        MemberInfo meth = t.GetMethod("OnRenderImage",
+                            BindingFlags.Instance |
+                            BindingFlags.NonPublic | BindingFlags.Public);
                         if (meth != null)
                         {
                             needAdd.Add(com);
                         }
                     }
-                      
                 }
-                
             }
 
             // create and set camera
@@ -200,28 +196,46 @@ namespace ThreeGlasses
                 GL.IssuePluginEvent(ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
 
                 // update headdisplay position and rotation
-                var hmd = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-                float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 0 };
-                float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 0 };
+                var hmd = new float[] { 0, 0, 0, 0, 0, 0, 1};
+                float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 1 };
+                float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 1 };
                 ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
-                if (!manualUpdateHeadTransform)
+                
+                var hmdPosition = new Vector3(hmd[0] / 700.0f, hmd[1] / 700.0f, -hmd[2] / 700.0f);
+                headDisplayRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
+
+                if (ThreeGlassesUtils.CheckNaN(hmdPosition))
                 {
-                    transform.localPosition = new Vector3(-hmd[0] / 1000.0f, hmd[1] / 1000.0f, -hmd[2] / 1000.0f);
-                    transform.localRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
+                    thisCam.transform.localPosition = headDisplayPosition = hmdPosition;
                 }
+                thisCam.transform.localRotation = headDisplayRotation;
 
                 // update wand info
                 if (!enableJoypad) continue;
-                joyPad[0].pack.position = new Vector3(
-                    wand_left[0]/1000.0f,
-                    wand_left[1]/1000.0f,
-                    wand_left[2]/1000.0f);
-                joyPad[0].pack.rotation = new Quaternion(wand_left[3], wand_left[5], -wand_left[4], -wand_left[6]);
-                joyPad[1].pack.position = new Vector3(
-                    wand_right[0]/1000.0f,
-                    wand_right[1]/1000.0f,
-                    wand_right[2]/1000.0f);
-                joyPad[1].pack.rotation = new Quaternion(wand_right[3], wand_right[5],-wand_right[4], -wand_right[6]);
+                var leftWandPosition = new Vector3(
+                    wand_left[0],
+                    wand_left[1],
+                    wand_left[2]) / -700.0f;
+                if (ThreeGlassesUtils.CheckNaN(leftWandPosition))
+                {
+                    joyPad[0].pack.position = leftWandPosition;
+                }
+
+                joyPad[0].pack.rotation = 
+                    new Quaternion(-wand_left[5], wand_left[3], -wand_left[4], wand_left[6]) * Quaternion.AngleAxis(180.0f , new Vector3(0,1,0));
+
+                var rightWandPosition = new Vector3(
+                    wand_right[0],
+                    wand_right[1],
+                    wand_right[2]) / -700.0f;
+                if (ThreeGlassesUtils.CheckNaN(rightWandPosition))
+                {
+                    joyPad[1].pack.position = rightWandPosition;
+                }
+
+                joyPad[1].pack.rotation = 
+                    new Quaternion(-wand_right[5], wand_right[3], -wand_right[4], wand_right[6]) * Quaternion.AngleAxis(180.0f, new Vector3(0, 1, 0));
+
                 for (var i = 0; i < JOYPAD_NUM; i++)
                 {
                     joyPad[i].Update();

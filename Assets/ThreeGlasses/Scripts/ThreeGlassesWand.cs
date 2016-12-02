@@ -18,6 +18,7 @@ namespace ThreeGlasses
             public Vector2 stick;
             public float triggerProcess;
 
+
             public Wand(Wand wand)
             {
                 type = wand.type;
@@ -30,7 +31,18 @@ namespace ThreeGlasses
                     keyStatus[i] = wand.keyStatus[i];
                 }
             }
-            public Wand() {}
+            public Wand()
+            {
+                type = InputType.LeftWand;
+                position = Vector3.zero;
+                rotation = Quaternion.identity;
+                for (int i=0; i<KEY_NUM; i++)
+                {
+                    keyStatus[i] = 0;
+                }
+                stick = Vector2.zero;
+                triggerProcess = 0;
+            }
         }
 
         public Wand pack = new Wand();
@@ -49,6 +61,13 @@ namespace ThreeGlasses
         {
             if (0 == ThreeGlassesDllInterface.GetWandInput((uint)pack.type, keyStatusTemp, stickTemp))
             {
+                //                 int left = (int)Mathf.Clamp(((stickTemp[1] - 127) * 1.2f), -128, 128);
+                //                 int right = (int)Mathf.Clamp(((stickTemp[2] - 127) * 1.2f), -128, 128);
+                //                 left /= 16;//-8~8
+                //                 right /= 16;
+                // 
+                //                 pack.stick[0] = left / 8.0f;
+                //                 pack.stick[1] = -right / 8.0f;
                 pack.stick[0] = ((stickTemp[1] / (float)255.0) - 0.5f)*2.0f;
                 pack.stick[1] = (-(stickTemp[2] / (float)255.0) + 0.5f)*2.0f;
 

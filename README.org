@@ -2,7 +2,7 @@
 
 [[./README/icon.png]]
 * 3GlassesSDK
-*[[http://www.3glasses.com/][Home Page]]* | *[[/README_zh.org][中文手册]]*
+*[[http://dev.vrshow.com/][Home Page]]* | *[[/README_zh.org][中文手册]]*
 
 ** How to Use
 Select 3Glasses>EnableHeadDisplay from the main menu.
@@ -11,7 +11,7 @@ Select 3Glasses>EnableHeadDisplay from the main menu.
 
 Make sure the EnableHeadDisplay is selected in the 3Glasses drop-down box.
 
-Now the Three3GlassesCamera script is bind in your main camera, and there are some Properties can control the HeadDisplay's behavior.
+Now the Three3GlassesManager script is bind in your main camera, and there are some Properties can control the HeadDisplay's behavior.
 
 [[./README/TreeGlassesCameraProperty.png]]
 *** Properties:
@@ -21,16 +21,40 @@ Now the Three3GlassesCamera script is bind in your main camera, and there are so
   | Eye Distance              | The distance between the left and right camera in the HeadDisplay.                                     |
   | Layer Mask                | Includes or omits layers of objects to be rendered by the HeadDisplay device                           |
   | Enable JoyPad             | Enable the 3Glasses Wand                                                                               |
-  | Manual Update HeadDisplay | Update the HeadDisplay's transform by youself,if checked the HeadDisplay will not automatically update |
   | Only Head Display         | If checked it will cancel the display of the maincamera                                                |
   | Flip Display              | If render is upside down you can check it                                                              |
 
-The HeadDisplay Device will automatically update the main camera's transform, so you can get the HeadDisplay's transform pass get the main camera's transform.
+** Get HeadDisplay Info
+#+BEGIN_SRC csharp
+Vector3 pos = GetHeadDisplayPosition();
+Quaternion rotate = GetHeadDisplayRotation();
+#+END_SRC
 ** Get Wand Input
+There are two ways to get wand's info:
+*** Get
 The InputExtendMethods class definit some methods for get the wand's info. you can get the info like this:
 #+BEGIN_SRC csharp
   // get the back key status (down is true)
   TGInput.GetKey(InputType.LeftWand, InputKey.WandBack);
   // get the stick's info,Both the X axis and the Y axis are limited to between -1 and 1.
   Vector2 v = TGInput.GetStick(InputType.LeftWand);
+#+END_SRC
+*** Bind Script
+Bind the ThreeGlassesWandBind.cs on your wand object.
+
+[[./README/TreeGlassesWandBindProperty.png]]
+**** Option
+#+ATTR_HTML: :border 2 :rules all :frame border
+| Option           | Description                      |
+|------------------+----------------------------------|
+| Type             | wand's type                      |
+| Send To Children | send wand's info to all children |
+| Update Self      | update the position and rotation |
+
+The children of the object who bind the ThreeGlassesWandBind.cs can implement OnWandChange for get the wand's info.
+#+BEGIN_SRC csharp
+  void OnWandChange(ThreeGlassesWand.Wand pack)
+  {
+      // do somethng
+  }
 #+END_SRC

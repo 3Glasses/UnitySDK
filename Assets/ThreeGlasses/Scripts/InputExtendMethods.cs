@@ -24,32 +24,47 @@ namespace ThreeGlasses
     {
         public static bool GetKey(InputType type, InputKey key)
         {
-            return ThreeGlassesCamera.joyPad[(int)type].GetKey(key);
+            if (ThreeGlassesManager.joyPad[(int)type] == null)
+                return false;
+            
+            return ThreeGlassesManager.joyPad[(int)type].GetKey(key);
         }
         
         // get trigger process rang=0-1.0
         public static float GetTriggerProcess(InputType type)
         {
-            return ThreeGlassesCamera.joyPad[(int)type].GetTriggerProcess();
+            if (ThreeGlassesManager.joyPad[(int)type] == null)
+                return 0.0f;
+            
+            return ThreeGlassesManager.joyPad[(int)type].GetTriggerProcess();
         }
 
         // get stick rang=0-1.0
         public static Vector2 GetStick(InputType type)
         {
-            return ThreeGlassesCamera.joyPad[(int)type].GetStick();
+            return ThreeGlassesManager.joyPad[(int)type] == null ? Vector2.zero : ThreeGlassesManager.joyPad[(int)type].GetStick();
         }
 
         public static Vector3 GetPosition(InputType type)
         {
-            Vector3 temp = ThreeGlassesCamera.joyPad[(int)type].pack.position;
-            return new Vector3(temp.x, temp.y, temp.z);
+            return ThreeGlassesManager.joyPad[(int) type] == null ? Vector3.zero : ThreeGlassesManager.joyPad[(int)type].pack.position;
         }
 
         public static Quaternion GetRotation(InputType type)
         {
-            Quaternion temp = ThreeGlassesCamera.joyPad[(int)type].pack.rotation;
-            return new Quaternion(temp.x, temp.y, temp.z, temp.w);
+            return ThreeGlassesManager.joyPad[(int)type] == null ? Quaternion.identity : ThreeGlassesManager.joyPad[(int) type].pack.rotation;
         }
+
+        public static Vector3 GetHeadDisplayPosition()
+        {
+            return ThreeGlassesManager.headDisplayPosition;
+        }
+
+        public static Quaternion GetHeadDisplayRotation()
+        {
+            return ThreeGlassesManager.headDisplayRotation;
+        }
+        
 
     }
 }

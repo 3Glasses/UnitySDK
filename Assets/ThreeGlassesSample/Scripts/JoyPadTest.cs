@@ -3,28 +3,38 @@ using System.Collections;
 using ThreeGlasses;
 
 public class JoyPadTest : MonoBehaviour {
+    public float rate = 1.0f;
+    private float currRate = 0.0f;
 	// Update is called once per frame
 	void Update ()
     {
-        for (int i = 0; i < 2; i++)
+        currRate += Time.deltaTime;
+        if(currRate > rate)
         {
-            InputType type = (InputType)i;
-            for (int j = 0; j < (int)InputKey.InputNum; j++)
+            currRate = 0.0f;
+            for (int i = 0; i < 2; i++)
             {
-                
-                InputKey key = (InputKey)j;
-                bool keystatus = TGInput.GetKey(type, key);
-                if(keystatus)
+                InputType type = (InputType)i;
+                for (int j = 0; j < (int)InputKey.InputNum; j++)
                 {
-                    ThreeGlassesUtils.Log("type=" + (InputType)i + "key=" + key);
-                }
-            }
 
-//             ThreeGlassesUtils.Log("type=" + (InputType)i
-//                                       +"         trigger process=" + TGInput.GetTriggerProcess(type)
-//                                       + "         stick=" + TGInput.GetStick(type));
+                    InputKey key = (InputKey)j;
+                    bool keystatus = TGInput.GetKey(type, key);
+                    if (keystatus)
+                    {
+                        ThreeGlassesUtils.Log("type=" + (InputType)i + "key=" + key);
+                    }
+                }
+
+                //                 ThreeGlassesUtils.Log("type=" + (InputType)i
+                //                                           + "         trigger process=" + TGInput.GetTriggerProcess(type)
+                //                                           + "         stick=" + TGInput.GetStick(type));
+                ThreeGlassesUtils.Log("type=" + (InputType)i + "         trigger position=" + TGInput.GetPosition(type) + "    rotation" + TGInput.GetRotation(type));
+            }
         }
 
+        //transform.position = TGInput.GetPosition(InputType.LeftWand);
+        transform.rotation = TGInput.GetRotation(InputType.RightWand);
     }
 
     void OnWandChange(ThreeGlassesWand.Wand pack)
