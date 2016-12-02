@@ -2,7 +2,7 @@
 
 [[./README/icon.png]]
 * 3GlassesSDK
-*[[http://www.3glasses.com/][Home Page]]* | *[[/README_zh.org][中文手册]]*
+*[[http://dev.vrshow.com/][Home Page]]* | *[[/README_zh.org][中文手册]]*
 
 ** How to Use
 Select 3Glasses>EnableHeadDisplay from the main menu.
