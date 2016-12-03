@@ -24,6 +24,9 @@ namespace ThreeGlasses
         [DllImport(Dllname)]
         public static extern void SZVRPluginDiasbleATW();
 
+        [DllImport(Dllname, EntryPoint = "GetHMDPresent")]
+        public static extern void GetHMDPresent(uint[] status);
+
         [DllImport(Dllname)]
         public static extern void GetTrackedPost(float[] hmd, float[] controllerLeft, float[] controllerRight);
 

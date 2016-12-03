@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
+// ReSharper disable NotAccessedField.Local
 
 namespace ThreeGlasses
 {
@@ -24,7 +25,10 @@ namespace ThreeGlasses
         private static extern bool EnumThreadWindows(uint dwThreadId, EnumWindowsProc lpEnumFunc, IntPtr lParam);
         
         private const string UnityWindowClassName = "UnityWndClass";
+
+#if !UNITY_EDITOR
         private IntPtr _windowHandle = IntPtr.Zero;
+#endif
 
 	    void Awake ()
         {
@@ -38,7 +42,7 @@ namespace ThreeGlasses
             ThreeGlassesDllInterface.SZVRPluginDestroy();
         }
 
-        // Use this for initialization
+#if !UNITY_EDITOR
         public IEnumerator Start ()
         {
             var threadId = GetCurrentThreadId();
@@ -54,12 +58,11 @@ namespace ThreeGlasses
             
             yield return new WaitForSeconds(2.0f);
 
-#if !UNITY_EDITOR
             if (_windowHandle != IntPtr.Zero)
             {
                 SetForegroundWindow(_windowHandle);
             }
-#endif
         }
+#endif
     }
 }

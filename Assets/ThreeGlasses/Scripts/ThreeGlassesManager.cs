@@ -258,6 +258,16 @@ namespace ThreeGlasses
 
             thisCam.enabled = !onlyHeadDisplay;
         }
+
+        void OnDestroy()
+        {
+            for (var i = 0; i < CAMERA_NUM; i++)
+            {
+                renderTexture[i].Release();
+                renderTexture[i] = null;
+            }
+        }
+
         // get
         public RenderTexture LeftEyeRT
         {
@@ -268,5 +278,11 @@ namespace ThreeGlasses
             get { return renderTexture[1]; }
         }
 
+        public static bool GetHMDPresent()
+        {
+            uint[] status = { 0 };
+            ThreeGlassesDllInterface.GetHMDPresent(status);
+            return status[0] != 1;
+        }
     }
 }
