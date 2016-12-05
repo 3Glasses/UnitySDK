@@ -222,7 +222,7 @@ namespace ThreeGlasses
                 }
 
                 joyPad[0].pack.rotation = 
-                    new Quaternion(-wand_left[5], wand_left[3], -wand_left[4], wand_left[6]) * Quaternion.AngleAxis(180.0f , new Vector3(0,1,0));
+                    new Quaternion(wand_left[3], -wand_left[4], wand_left[5], -wand_left[6]);
 
                 var rightWandPosition = new Vector3(
                     wand_right[0],
@@ -234,7 +234,7 @@ namespace ThreeGlasses
                 }
 
                 joyPad[1].pack.rotation = 
-                    new Quaternion(-wand_right[5], wand_right[3], -wand_right[4], wand_right[6]) * Quaternion.AngleAxis(180.0f, new Vector3(0, 1, 0));
+                    new Quaternion(wand_right[3], -wand_right[4], wand_right[5], -wand_right[6]);
 
                 for (var i = 0; i < JOYPAD_NUM; i++)
                 {
