@@ -1,4 +1,4 @@
-﻿Shader "Hidden/ThreeGlasses/ReverseUV"
+﻿Shader "Hidden/ThreeGlasses/DepthComposite"
 {
 	Properties
 	{
@@ -8,8 +8,7 @@
 	{
 		// No culling or depth
 		Cull Off ZWrite Off ZTest Always
-
-		Pass
+		Pass 
 		{
 			CGPROGRAM
 			#pragma vertex vert
@@ -29,19 +28,33 @@
 				float4 vertex : SV_POSITION;
 			};
 
+			sampler2D _MainTex;
+			float4 _MainTex_TexelSize;
+			sampler2D _CameraDepthTexture;
+
 			v2f vert (appdata v)
 			{
 				v2f o;
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 				o.uv = v.uv;
+
+#if defined (UNITY_UV_STARTS_AT_TOP) // fix DX uv
+				o.uv = float2(v.uv.x, 1 - v.uv.y);
+#else
+				o.uv = v.uv;
+#endif
 				return o;
 			}
 			
-			sampler2D _MainTex;
-
-			fixed4 frag (v2f i) : SV_Target
+			float getDepth(float2 uv)
 			{
-				fixed4 col = tex2D(_MainTex, float2(i.uv.x,1.0 - i.uv.y));
+				return tex2D(_CameraDepthTexture, uv).x;
+			}
+
+			float4 frag (v2f i) : COLOR
+			{
+				float depth = 1.0 - getDepth(i.uv);
+				float4 col = float4(tex2D(_MainTex, i.uv.xy).rgb, depth);
 				return col;
 			}
 			ENDCG

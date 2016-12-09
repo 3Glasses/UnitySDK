@@ -24,6 +24,9 @@ namespace ThreeGlasses
         [DllImport(Dllname)]
         public static extern void SZVRPluginDiasbleATW();
 
+        [DllImport(Dllname, EntryPoint = "GetHMDPresent")]
+        public static extern void GetHMDPresent(uint[] status);
+
         [DllImport(Dllname)]
         public static extern void GetTrackedPost(float[] hmd, float[] controllerLeft, float[] controllerRight);
 
@@ -54,7 +57,9 @@ namespace ThreeGlasses
         public static extern void GetRenderSize(uint[] bufferSize);
 
         [DllImport(Dllname)]
-        public static extern void UpdateTextureFromUnity(System.IntPtr leftIntPtr, System.IntPtr rigthIntPtr);
+        public static extern void UpdateTextureFromUnity(
+            System.IntPtr leftIntPtr,
+            System.IntPtr rigthIntPtr);
 
         [DllImport(Dllname)]
         public static extern System.IntPtr GetRenderEventFunc();

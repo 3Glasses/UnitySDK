@@ -22,6 +22,7 @@ namespace ThreeGlasses
 
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
+
         private uint renderWidth = 2880;
         private uint renderHeight = 1440;
 
@@ -39,13 +40,10 @@ namespace ThreeGlasses
         // maincamera can displayer
         public bool onlyHeadDisplay = false;
 
-        // when display upside down use it
-        public bool flipDisplay = false;
-
         void Awake()
         {
             // create life manager object
-            if(GameObject.FindObjectOfType(typeof(ThreeGlassesHeadDisplayLife)) == null)
+            if (GameObject.FindObjectOfType(typeof(ThreeGlassesHeadDisplayLife)) == null)
             {
                 GameObject life = new GameObject("ThreeGlassesHeadDisplayLife");
                 life.AddComponent<ThreeGlassesHeadDisplayLife>();
@@ -67,8 +65,10 @@ namespace ThreeGlasses
 
                 for (var i = 0; i < CAMERA_NUM; i++)
                 {
-                    renderTexture[i] = new RenderTexture((int)renderWidth / 2,
-                        (int)renderHeight, 24,
+                    renderTexture[i] = new RenderTexture(
+                        (int)renderWidth / 2,
+                        (int)renderHeight,
+                        24,
                         RenderTextureFormat.Default,
                         RenderTextureReadWrite.Default);
                     renderTexture[i].Create();
@@ -97,7 +97,7 @@ namespace ThreeGlasses
             near = thisCam.nearClipPlane;
             far = thisCam.farClipPlane;
             fieldOfView = (float)(ThreeGlassesDllInterface.SZVRPluginGetFOV());
-
+            
             // get components
             ArrayList needAdd = new ArrayList();
             System.Type[] needAddTypes = new System.Type[] { typeof(GUILayer), typeof(FlareLayer)};
@@ -157,9 +157,6 @@ namespace ThreeGlasses
                 // add subCamera script after add all component
                 subCameraScript[i] = subCamera[i].AddComponent<ThreeGlassesSubCamera>();
                 subCameraScript[i].type = (ThreeGlassesSubCamera.CameraType)i;
-                
-                subCameraScript[i].Flip = !flipDisplay;
-                
             }
 
             var eyeDis = new Vector3(eyeDistance/2, 0, 0);
@@ -177,7 +174,7 @@ namespace ThreeGlasses
                     continue;
                 }
 
-                tempCamera.targetTexture = renderTexture[(int)cam.type];
+                tempCamera.targetTexture = renderTexture[(int) cam.type];
             }
 
             thisCam.enabled = !onlyHeadDisplay;
@@ -189,11 +186,13 @@ namespace ThreeGlasses
             {
                 // after OnRenderImage
                 yield return new WaitForEndOfFrame();
+                
+                ThreeGlassesDllInterface.UpdateTextureFromUnity(
+                    renderTexture[0].GetNativeTexturePtr(),
+                    renderTexture[1].GetNativeTexturePtr());
 
-                ThreeGlassesDllInterface.UpdateTextureFromUnity(renderTexture[0].GetNativeTexturePtr(),
-                                                                renderTexture[1].GetNativeTexturePtr());
-
-                GL.IssuePluginEvent(ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
+                GL.IssuePluginEvent(
+                    ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
 
                 // update headdisplay position and rotation
                 var hmd = new float[] { 0, 0, 0, 0, 0, 0, 1};
@@ -222,7 +221,7 @@ namespace ThreeGlasses
                 }
 
                 joyPad[0].pack.rotation = 
-                    new Quaternion(-wand_left[5], wand_left[3], -wand_left[4], wand_left[6]) * Quaternion.AngleAxis(180.0f , new Vector3(0,1,0));
+                    new Quaternion(wand_left[3], -wand_left[4], wand_left[5], -wand_left[6]);
 
                 var rightWandPosition = new Vector3(
                     wand_right[0],
@@ -234,7 +233,7 @@ namespace ThreeGlasses
                 }
 
                 joyPad[1].pack.rotation = 
-                    new Quaternion(-wand_right[5], wand_right[3], -wand_right[4], wand_right[6]) * Quaternion.AngleAxis(180.0f, new Vector3(0, 1, 0));
+                    new Quaternion(wand_right[3], -wand_right[4], wand_right[5], -wand_right[6]);
 
                 for (var i = 0; i < JOYPAD_NUM; i++)
                 {
@@ -247,7 +246,6 @@ namespace ThreeGlasses
         {
             for (int i = 0; i < CAMERA_NUM; i++)
             {
-                subCameraScript[i].Flip = !flipDisplay;
                 subCameraCam[i].cullingMask = layerMask;
             }
             
@@ -258,6 +256,16 @@ namespace ThreeGlasses
 
             thisCam.enabled = !onlyHeadDisplay;
         }
+
+        void OnDestroy()
+        {
+            for (var i = 0; i < CAMERA_NUM; i++)
+            {
+                renderTexture[i].Release();
+                renderTexture[i] = null;
+            }
+        }
+
         // get
         public RenderTexture LeftEyeRT
         {
@@ -268,5 +276,11 @@ namespace ThreeGlasses
             get { return renderTexture[1]; }
         }
 
+        public static bool GetHMDPresent()
+        {
+            uint[] status = { 0 };
+            ThreeGlassesDllInterface.GetHMDPresent(status);
+            return status[0] != 1;
+        }
     }
 }

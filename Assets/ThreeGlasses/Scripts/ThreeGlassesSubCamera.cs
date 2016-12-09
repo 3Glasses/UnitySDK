@@ -15,29 +15,14 @@ namespace ThreeGlasses
         };
         public CameraType type = CameraType.Screen;
 
-        public ThreeGlassesSubCamera()
-        {
-            Flip = false;
-        }
-
         void Start()
         {
-            material = new Material(Shader.Find("Hidden/ThreeGlasses/ReverseUV"));
+            material = new Material(Shader.Find("Hidden/ThreeGlasses/DepthComposite"));
         }
 
         void OnRenderImage(RenderTexture src, RenderTexture dst)
         {
-            if(Flip)
-            {
-                Graphics.Blit(src, dst, material);
-            }
-            else
-            {
-                Graphics.Blit(src, dst);
-            }
-            
+            Graphics.Blit(src, dst, material);
         }
-
-        public bool Flip { get; set; }
     }
 }
