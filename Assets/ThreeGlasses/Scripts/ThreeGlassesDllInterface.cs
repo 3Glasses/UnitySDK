@@ -57,7 +57,11 @@ namespace ThreeGlasses
         public static extern void GetRenderSize(uint[] bufferSize);
 
         [DllImport(Dllname)]
-        public static extern void UpdateTextureFromUnity(System.IntPtr leftIntPtr, System.IntPtr rigthIntPtr);
+        public static extern void UpdateTextureFromUnity(
+            System.IntPtr leftIntPtr,
+            System.IntPtr rigthIntPtr,
+            System.IntPtr leftDepthIntPtr,
+            System.IntPtr rigthDepthIntPtr);
 
         [DllImport(Dllname)]
         public static extern System.IntPtr GetRenderEventFunc();
