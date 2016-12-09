@@ -189,9 +189,7 @@ namespace ThreeGlasses
                 
                 ThreeGlassesDllInterface.UpdateTextureFromUnity(
                     renderTexture[0].GetNativeTexturePtr(),
-                    renderTexture[1].GetNativeTexturePtr(),
-                    renderTexture[0].GetNativeDepthBufferPtr(),
-                    renderTexture[1].GetNativeDepthBufferPtr());
+                    renderTexture[1].GetNativeTexturePtr());
 
                 GL.IssuePluginEvent(
                     ThreeGlassesDllInterface.GetRenderEventFunc(), 1);

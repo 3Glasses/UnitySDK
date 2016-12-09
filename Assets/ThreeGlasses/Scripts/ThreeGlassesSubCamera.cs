@@ -22,13 +22,7 @@ namespace ThreeGlasses
 
         void OnRenderImage(RenderTexture src, RenderTexture dst)
         {
-            RenderTexture rt = RenderTexture.GetTemporary(src.width, dst.height, 0, RenderTextureFormat.ARGB32);
-
-            Graphics.Blit(rt, rt, material, 0); // Clear
-            Graphics.Blit(src, rt, material, 1);
-            Graphics.Blit(rt, dst);
-
-            RenderTexture.ReleaseTemporary(rt);
-       }
+            Graphics.Blit(src, dst, material);
+        }
     }
 }
