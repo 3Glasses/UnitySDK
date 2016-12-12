@@ -25,8 +25,8 @@
   | Flip Display              | 当头显渲染上下颠倒时勾选            |
 ** 获取头显的位置和旋转信息
 #+BEGIN_SRC csharp
-Vector3 pos = GetHeadDisplayPosition();
-Quaternion rotate = GetHeadDisplayRotation();
+Vector3 pos = TGInput.GetHeadDisplayPosition();
+Quaternion rotate = TGInput.GetHeadDisplayRotation();
 #+END_SRC
 ** 获取Wand手柄的输入
 有两种方法获取手柄信息：

@@ -26,8 +26,8 @@ Now the Three3GlassesManager script is bind in your main camera, and there are s
 
 ** Get HeadDisplay Info
 #+BEGIN_SRC csharp
-Vector3 pos = GetHeadDisplayPosition();
-Quaternion rotate = GetHeadDisplayRotation();
+Vector3 pos = TGInput.GetHeadDisplayPosition();
+Quaternion rotate = TGInput.GetHeadDisplayRotation();
 #+END_SRC
 ** Get Wand Input
 There are two ways to get wand's info:
