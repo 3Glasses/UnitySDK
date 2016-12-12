@@ -39,9 +39,7 @@
 				o.uv = v.uv;
 
 #if defined (UNITY_UV_STARTS_AT_TOP) // fix DX uv
-				o.uv = float2(v.uv.x, 1 - v.uv.y);
-#else
-				o.uv = v.uv;
+				o.uv = float2(o.uv.x, 1 - o.uv.y);
 #endif
 				return o;
 			}
