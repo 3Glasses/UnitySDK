@@ -25,6 +25,10 @@
   | Flip Display              | 当头显渲染上下颠倒时勾选            |
 ** 获取头显的位置和旋转信息
 #+BEGIN_SRC csharp
+using ThreeGlasses;
+
+//...
+
 Vector3 pos = TGInput.GetHeadDisplayPosition();
 Quaternion rotate = TGInput.GetHeadDisplayRotation();
 #+END_SRC
@@ -33,10 +37,14 @@ Quaternion rotate = TGInput.GetHeadDisplayRotation();
 *** Get
 InputExtendMethods类定义了一些获取手柄信息的方法，如下：
 #+BEGIN_SRC csharp
-  // 这里是获取wand手柄上back按键的状态 (按键按下返回true)
-  TGInput.GetKey(InputType.LeftWand, InputKey.WandBack);
-  // 返回遥感的x,y值，这两个值都在-1--1之间
-  Vector2 v = TGInput.GetStick(InputType.LeftWand);
+using ThreeGlasses;
+
+//...
+
+// 这里是获取wand手柄上back按键的状态 (按键按下返回true)
+TGInput.GetKey(InputType.LeftWand, InputKey.WandBack);
+// 返回遥感的x,y值，这两个值都在-1--1之间
+Vector2 v = TGInput.GetStick(InputType.LeftWand);
 #+END_SRC
 *** Bind Script
 将ThreeGlassesWandBind.cs脚本绑定到定义的手柄上。
