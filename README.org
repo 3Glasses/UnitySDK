@@ -26,18 +26,26 @@ Now the Three3GlassesManager script is bind in your main camera, and there are s
 
 ** Get HeadDisplay Info
 #+BEGIN_SRC csharp
-Vector3 pos = GetHeadDisplayPosition();
-Quaternion rotate = GetHeadDisplayRotation();
+using ThreeGlasses;
+
+//...
+
+Vector3 pos = TGInput.GetHeadDisplayPosition();
+Quaternion rotate = TGInput.GetHeadDisplayRotation();
 #+END_SRC
 ** Get Wand Input
 There are two ways to get wand's info:
 *** Get
 The InputExtendMethods class definit some methods for get the wand's info. you can get the info like this:
 #+BEGIN_SRC csharp
-  // get the back key status (down is true)
-  TGInput.GetKey(InputType.LeftWand, InputKey.WandBack);
-  // get the stick's info,Both the X axis and the Y axis are limited to between -1 and 1.
-  Vector2 v = TGInput.GetStick(InputType.LeftWand);
+using ThreeGlasses;
+
+//...
+
+// get the back key status (down is true)
+TGInput.GetKey(InputType.LeftWand, InputKey.WandBack);
+// get the stick's info,Both the X axis and the Y axis are limited to between -1 and 1.
+Vector2 v = TGInput.GetStick(InputType.LeftWand);
 #+END_SRC
 *** Bind Script
 Bind the ThreeGlassesWandBind.cs on your wand object.
