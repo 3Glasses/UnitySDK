@@ -22,7 +22,6 @@
   | Layer Mask                | 头显可以看到的层                    |
   | Enable JoyPad             | 使用3Glasses的Wand手柄              |
   | Only Head Display         | 仅头显显示绑定的相机在显示器不显示  |
-  | Flip Display              | 当头显渲染上下颠倒时勾选            |
 ** 获取头显的位置和旋转信息
 #+BEGIN_SRC csharp
 using ThreeGlasses;
