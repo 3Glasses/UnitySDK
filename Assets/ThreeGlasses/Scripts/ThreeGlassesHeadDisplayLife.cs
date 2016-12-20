@@ -19,6 +19,9 @@ namespace ThreeGlasses
         [DllImport("user32.dll")]
         static extern IntPtr SetForegroundWindow(IntPtr hwnd);
 
+        [DllImport("user32.dll")]
+        static extern IntPtr ShowWindow(IntPtr hwnd, int cmdShow);
+
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);     [DllImport("user32.dll")]
 
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -28,23 +31,12 @@ namespace ThreeGlasses
 
 #if !UNITY_EDITOR
         private IntPtr _windowHandle = IntPtr.Zero;
+        private const int SW_SHOWNORMAL = 1;
 #endif
 
-	    void Awake ()
+        void Awake ()
         {
-            ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife init");
-            ThreeGlassesDllInterface.SZVRPluginInit();
-        }
-
-        void OnApplicationQuit()
-        {
-            ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife application quit");
-            ThreeGlassesDllInterface.SZVRPluginDestroy();
-        }
-
 #if !UNITY_EDITOR
-        public IEnumerator Start ()
-        {
             var threadId = GetCurrentThreadId();
             EnumThreadWindows(threadId, (hWnd, lParam) =>
             {
@@ -55,14 +47,24 @@ namespace ThreeGlasses
                 _windowHandle = hWnd;
                 return false;
             }, IntPtr.Zero);
-            
-            yield return new WaitForSeconds(2.0f);
+#endif
 
+            ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife init");
+            ThreeGlassesDllInterface.SZVRPluginInit();
+
+#if !UNITY_EDITOR
             if (_windowHandle != IntPtr.Zero)
             {
+                ShowWindow(_windowHandle, SW_SHOWNORMAL);
                 SetForegroundWindow(_windowHandle);
             }
-        }
 #endif
+        }
+
+        void OnApplicationQuit()
+        {
+            ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife application quit");
+            ThreeGlassesDllInterface.SZVRPluginDestroy();
+        }
     }
 }
