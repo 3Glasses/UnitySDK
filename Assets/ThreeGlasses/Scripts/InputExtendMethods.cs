@@ -64,7 +64,10 @@ namespace ThreeGlasses
         {
             return ThreeGlassesManager.headDisplayRotation;
         }
-        
-
+			
+		public static Transform GetHeadDisplayTransform()
+		{
+			return ThreeGlassesManager.GetHeadDisplayTransform();
+		}
     }
 }
