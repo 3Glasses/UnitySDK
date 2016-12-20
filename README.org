@@ -22,8 +22,7 @@ Now the Three3GlassesManager script is bind in your main camera, and there are s
   | Layer Mask                | Includes or omits layers of objects to be rendered by the HeadDisplay device                           |
   | Enable JoyPad             | Enable the 3Glasses Wand                                                                               |
   | Only Head Display         | If checked it will cancel the display of the maincamera                                                |
-  | Flip Display              | If render is upside down you can check it                                                              |
-
+  
 ** Get HeadDisplay Info
 #+BEGIN_SRC csharp
 Vector3 pos = GetHeadDisplayPosition();
