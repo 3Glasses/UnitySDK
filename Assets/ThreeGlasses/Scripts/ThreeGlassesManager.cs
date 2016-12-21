@@ -201,7 +201,7 @@ namespace ThreeGlasses
                 ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
                 
                 var hmdPosition = new Vector3(hmd[0] / 700.0f, hmd[1] / 700.0f, -hmd[2] / 700.0f);
-                headDisplayRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
+                headDisplayRotation = new Quaternion(hmd[3], -hmd[4], hmd[5], -hmd[6]);
 
                 if (ThreeGlassesUtils.CheckNaN(hmdPosition))
                 {
