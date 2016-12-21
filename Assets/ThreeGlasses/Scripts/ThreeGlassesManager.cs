@@ -13,7 +13,7 @@ namespace ThreeGlasses
         private float near, far;
         private float fieldOfView = 90;
         private string[] cameraName = new string[]{"leftCamera", "rightCamera"};
-        private Camera thisCam;
+        private static Camera thisCam;
         private Camera[] subCameraCam = new Camera[CAMERA_NUM];
         private ThreeGlassesSubCamera[] subCameraScript = new ThreeGlassesSubCamera[CAMERA_NUM];
         public static Vector3 headDisplayPosition = new Vector3();
@@ -275,12 +275,18 @@ namespace ThreeGlasses
         {
             get { return renderTexture[1]; }
         }
-
+			
+		public static Transform GetHeadDisplayTransform()
+		{
+			return thisCam.transform;
+		}
+		// no wear headdisplay
         public static bool GetHMDPresent()
         {
             uint[] status = { 0 };
             ThreeGlassesDllInterface.GetHMDPresent(status);
             return status[0] != 1;
         }
+			
     }
 }
