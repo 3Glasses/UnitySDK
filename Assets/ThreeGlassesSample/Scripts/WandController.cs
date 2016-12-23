@@ -68,7 +68,6 @@ public class WandController : MonoBehaviour {
                     Rigidbody rb = bullet.AddComponent<Rigidbody>();
                     rb.AddForce(transform.forward*bulletSpeed, ForceMode.VelocityChange);
                     Destroy(bullet, 10.0f);
-                    
                 }
             }
         }

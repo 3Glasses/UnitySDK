@@ -34,5 +34,9 @@ namespace ThreeGlasses
         {
             return !float.IsNaN(vec.x) && !float.IsNaN(vec.y) && !float.IsNaN(vec.z);
         }
+		public static bool CheckNaN(Quaternion q)
+		{
+			return !float.IsNaN(q.x) && !float.IsNaN(q.y) && !float.IsNaN(q.z) && !float.IsNaN(q.w);
+		}
     }
 }

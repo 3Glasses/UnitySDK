@@ -113,7 +113,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 23838979}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.74}
+  m_LocalPosition: {x: 0, y: 0, z: 2.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -406,7 +406,6 @@ MonoBehaviour:
     m_Bits: 4294967295
   enableJoypad: 1
   onlyHeadDisplay: 0
-  flipDisplay: 0
 --- !u!81 &1508485605
 AudioListener:
   m_ObjectHideFlags: 0
