@@ -9,6 +9,12 @@ namespace ThreeGlasses
         public bool sendToChildren = true;
         public bool updateSelf = true;
         private Vector3 origin;
+		public float moveScale = 1.0f;
+		public float MoveScale
+		{
+			get{ return moveScale; }
+			set{ moveScale = value; }
+		}
         public enum UpdateType
         {
             Local,
@@ -37,12 +43,12 @@ namespace ThreeGlasses
             {
                 if (updateType == UpdateType.Local)
                 {
-                    tran.localPosition = origin + pack.position;
+					tran.localPosition = origin + pack.position*moveScale;
                     tran.localRotation = pack.rotation;
                 }
                 else
                 {
-                    tran.position = origin + pack.position;
+					tran.position = origin + pack.position*moveScale;
                     tran.rotation = pack.rotation;
                 }
                 
