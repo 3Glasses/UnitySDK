@@ -59,7 +59,7 @@ namespace ThreeGlasses
         {
             // update position
             float x = 0, y = 0, z = 0, w = 1;
-            if (ThreeGlassesDllInterface.szvrGetWandsPositonWithVector((int)pack.type, ref x, ref y, ref z))
+            if (0 == ThreeGlassesDllInterface.szvrGetWandsPositonWithVector((int)pack.type, ref x, ref y, ref z))
             {
                 Vector3 vec = new Vector3(-x, y, -z);
                 if (ThreeGlassesUtils.CheckNaN(vec))
@@ -68,7 +68,7 @@ namespace ThreeGlasses
                 }
             }
             // update rotation
-            if (ThreeGlassesDllInterface.szvrGetWandsOrientationWithQuat((int)pack.type, ref x, ref y, ref z, ref w))
+            if (0 == ThreeGlassesDllInterface.szvrGetWandsOrientationWithQuat((int)pack.type, ref x, ref y, ref z, ref w))
             {
                 Quaternion quat = new Quaternion(x, -y, z, -w);
                 if (ThreeGlassesUtils.CheckNaN(quat))
@@ -79,15 +79,13 @@ namespace ThreeGlasses
 
             // update key
             int trigger_value = 0;
-            if (ThreeGlassesDllInterface.szvrGetWandsTriggerValue((int)pack.type, ref trigger_value))
+            if (0 == ThreeGlassesDllInterface.szvrGetWandsTriggerValue((int)pack.type, ref trigger_value))
             {
                 pack.triggerProcess = 1.0f - (trigger_value / (float)255.0);
             }
             
             int stick_x = 128, stick_y = 128;
-            pack.stick[0] = 0;
-            pack.stick[1] = 0;
-            if (ThreeGlassesDllInterface.szvrGetWandsStickValue((int)pack.type, ref stick_x, ref stick_y))
+            int temp = ThreeGlassesDllInterface.szvrGetWandsStickValue((int)pack.type, ref stick_x, ref stick_y);
             {
                 //                 int left = (int)Mathf.Clamp(((stickTemp[1] - 127) * 1.2f), -128, 128);
                 //                 int right = (int)Mathf.Clamp(((stickTemp[2] - 127) * 1.2f), -128, 128);
@@ -98,11 +96,11 @@ namespace ThreeGlasses
                 //                 pack.stick[1] = -right / 8.0f;
                 pack.stick[0] = ((stick_x / (float)255.0) - 0.5f)*2.0f;
                 pack.stick[1] = (-(stick_y / (float)255.0) + 0.5f)*2.0f;
-                Debug.Log("type=" + pack.type);
+                Debug.Log("type=" + pack.type + "   temp=" + temp);
             }
 
             int keyStatus = 0;
-            if (ThreeGlassesDllInterface.szvrGetWandsButtonState((int)pack.type, ref keyStatus))
+            if (0 == ThreeGlassesDllInterface.szvrGetWandsButtonState((int)pack.type, ref keyStatus))
             {
                 pack.keyStatus = keyStatus;
             }
