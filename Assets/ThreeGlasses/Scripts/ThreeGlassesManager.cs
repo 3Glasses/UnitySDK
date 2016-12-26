@@ -18,7 +18,8 @@ namespace ThreeGlasses
         private ThreeGlassesSubCamera[] subCameraScript = new ThreeGlassesSubCamera[CAMERA_NUM];
         public static Vector3 headDisplayPosition = new Vector3();
         public static Quaternion headDisplayRotation = new Quaternion();
-        public bool alignHeadDisplay = true;
+		public bool freezePosition = false;
+		public bool freezeRotation = false;
 
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
@@ -203,37 +204,48 @@ namespace ThreeGlasses
                 var hmdPosition = new Vector3(hmd[0] / 700.0f, hmd[1] / 700.0f, -hmd[2] / 700.0f);
                 headDisplayRotation = new Quaternion(hmd[3], -hmd[4], hmd[5], -hmd[6]);
 
-                if (ThreeGlassesUtils.CheckNaN(hmdPosition))
+				if (!freezePosition && ThreeGlassesUtils.CheckNaN(hmdPosition))
                 {
                     thisCam.transform.localPosition = headDisplayPosition = hmdPosition;
                 }
-                thisCam.transform.localRotation = headDisplayRotation;
+
+				if (!freezeRotation)
+				{
+					thisCam.transform.localRotation = headDisplayRotation;	
+				}
 
                 // update wand info
                 if (!enableJoypad) continue;
                 var leftWandPosition = new Vector3(
-                    wand_left[0],
+                    -wand_left[0],
                     wand_left[1],
-                    wand_left[2]) / -700.0f;
+                    -wand_left[2]) / 1000.0f;
                 if (ThreeGlassesUtils.CheckNaN(leftWandPosition))
                 {
                     joyPad[0].pack.position = leftWandPosition;
                 }
 
-                joyPad[0].pack.rotation = 
-                    new Quaternion(wand_left[3], -wand_left[4], wand_left[5], -wand_left[6]);
+                 
+				var leftWandRotation = new Quaternion(wand_left[3], -wand_left[4], wand_left[5], -wand_left[6]);
+				if (ThreeGlassesUtils.CheckNaN(leftWandRotation))
+				{
+					joyPad[0].pack.rotation = leftWandRotation;
+				}
 
                 var rightWandPosition = new Vector3(
-                    wand_right[0],
+                    -wand_right[0],
                     wand_right[1],
-                    wand_right[2]) / -700.0f;
+                    -wand_right[2]) / 1000.0f;
                 if (ThreeGlassesUtils.CheckNaN(rightWandPosition))
                 {
                     joyPad[1].pack.position = rightWandPosition;
                 }
-
-                joyPad[1].pack.rotation = 
-                    new Quaternion(wand_right[3], -wand_right[4], wand_right[5], -wand_right[6]);
+					
+				var rightWandRotation = new Quaternion(wand_right[3], -wand_right[4], wand_right[5], -wand_right[6]);
+				if (ThreeGlassesUtils.CheckNaN(leftWandRotation))
+				{
+					joyPad[1].pack.rotation = rightWandRotation;
+				}
 
                 for (var i = 0; i < JOYPAD_NUM; i++)
                 {
