@@ -38,40 +38,47 @@ namespace ThreeGlasses
         // [DllImport(Dllname)]
         // public static extern unsigned short szvrGetDeviceFirmwareVersion();
         [DllImport(Dllname)]
-        public static extern bool szvrGetHmdDongleCheck();
+        public static extern int szvrGetHmdDongleCheck();
         [DllImport(Dllname)]
         public static extern void szvrSetHmdDonglePower(bool bOn);
         [DllImport(Dllname)]
-        public static extern bool szvrGetHmdLightSensorStatus();
+        public static extern uint szvrGetHmdLightSensorStatus();
 
 
         [DllImport(Dllname)]
-        public static extern bool szvrGetHmdMenuButtonStatus();
+        public static extern uint szvrGetHmdMenuButtonStatus();
 
         [DllImport(Dllname)]
-        public static extern bool szvrGetHmdPowerButtonStatus();
+        public static extern uint szvrGetHmdPowerButtonStatus();
 
         [DllImport(Dllname)]
-        public static extern bool szvrGetHmdConnectStatus();
+        public static extern uint szvrGetHmdConnectStatus();
         
         [DllImport(Dllname)]
-        public static extern bool szvrGetHmdOrientationWithQuat(ref float x, ref float y, ref float z, ref float w);
+        public static extern uint szvrGetHmdOrientationWithQuat(ref float x, ref float y, ref float z, ref float w);
         [DllImport(Dllname)]
-        public static extern bool szvrGetHmdPostionWithVector(ref float x, ref float y, ref float z);
+        public static extern uint szvrGetHmdPostionWithVector(ref float x, ref float y, ref float z);
 
         [DllImport(Dllname)]
-        public static extern bool szvrGetHmdTouchPadValue(ref float x, ref float y);
+        public static extern uint szvrGetHmdTouchPadValue(ref float x, ref float y);
         [DllImport(Dllname)]
-        public static extern bool szvrResetHmdOrientationData();
+        public static extern uint szvrResetHmdOrientationData();
         
-        [DllImport(Dllname)]
-        public static extern bool szvrGetWandsOrientationWithQuat(int iHand, ref float x, ref float y, ref float z, ref float w);
-        [DllImport(Dllname)]
-        public static extern bool szvrGetWandsPositonWithVector(int iHand, ref float x, ref float y, ref float z);
-
         // wand
         [DllImport(Dllname)]
-        public static extern bool szvrGetWandsButtonState(int iHand, ref int btn_mask);
+        public static extern uint szvrGetWandsButtonState(int iHand, ref int btn_mask);
+
+        [DllImport(Dllname)]
+        public static extern uint szvrGetWandsOrientationWithQuat(int iHand, ref float x, ref float y, ref float z, ref float w);
+        [DllImport(Dllname)]
+        public static extern uint szvrGetWandsPositonWithVector(int iHand, ref float x, ref float y, ref float z);
+        
+        [DllImport(Dllname)]
+        public static extern uint szvrGetWandsTriggerValue(int iHand, ref int trigger_value); 
+
+        [DllImport(Dllname)]
+        public static extern uint szvrGetWandsStickValue(int iHand, ref int stick_x, ref int stick_y);
+
         /* 
          * Return Value(uint):
 		 *   0: success to get the value
@@ -92,8 +99,8 @@ namespace ThreeGlasses
          *   value[1] = x coordinate;
          *   value[2] = y coordinate;
          */
-        [DllImport(Dllname)]
-        public static extern uint GetWandInput(uint side, uint[] buttoms, byte[] value);
+        // [DllImport(Dllname)]
+        // public static extern uint GetWandInput(uint side, uint[] buttoms, byte[] value);
 
         [DllImport(Dllname)]
         public static extern void GetRenderSize(uint[] bufferSize);
@@ -109,11 +116,11 @@ namespace ThreeGlasses
 
 		// no vrshow
         [DllImport(Dllname)]
-		public static extern bool szvrInitDevices();
+		public static extern uint szvrInitDevices();
 
 
 		[DllImport(Dllname)]
-		public static extern bool szvrShutdownDevices();
+		public static extern uint szvrShutdownDevices();
 
     }
 
