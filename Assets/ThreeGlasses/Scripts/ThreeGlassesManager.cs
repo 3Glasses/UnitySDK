@@ -197,25 +197,19 @@ namespace ThreeGlasses
 
                 // update headdisplay position and rotation
                 float x = 0, y = 0, z = 0, w = 1;
-                ThreeGlassesDllInterface.szvrGetHmdOrientationWithQuat(ref x, ref y, ref z, ref w);
-                Debug.Log("w = " + w);
-                // var hmd = new float[] { 0, 0, 0, 0, 0, 0, 1};
-                // float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 1 };
-                // float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 1 };
-                // ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
+                ThreeGlassesDllInterface.szvrGetHmdPostionWithVector(ref x, ref y, ref z);
+                var hmdPosition = new Vector3(x, y, -z);
+				if (!freezePosition && ThreeGlassesUtils.CheckNaN(hmdPosition))
+                {
+                    thisCam.transform.localPosition = headDisplayPosition = hmdPosition;
+                }
                 
-                // var hmdPosition = new Vector3(hmd[0] / 700.0f, hmd[1] / 700.0f, -hmd[2] / 700.0f);
-                // headDisplayRotation = new Quaternion(hmd[3], -hmd[4], hmd[5], -hmd[6]);
-
-				// if (!freezePosition && ThreeGlassesUtils.CheckNaN(hmdPosition))
-                // {
-                //     thisCam.transform.localPosition = headDisplayPosition = hmdPosition;
-                // }
-
-				// if (!freezeRotation)
-				// {
-				// 	thisCam.transform.localRotation = headDisplayRotation;	
-				// }
+                ThreeGlassesDllInterface.szvrGetHmdOrientationWithQuat(ref x, ref y, ref z, ref w);
+                var headDisplayRotation = new Quaternion(x, y, -z, -w);
+                if (!freezeRotation)
+				{
+					thisCam.transform.localRotation = headDisplayRotation;	
+				}
 
                 // // update wand info
                 // if (!enableJoypad) continue;
