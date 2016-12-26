@@ -212,42 +212,11 @@ namespace ThreeGlasses
 				}
 
                 // // update wand info
-                // if (!enableJoypad) continue;
-                // var leftWandPosition = new Vector3(
-                //     -wand_left[0],
-                //     wand_left[1],
-                //     -wand_left[2]) / 1000.0f;
-                // if (ThreeGlassesUtils.CheckNaN(leftWandPosition))
-                // {
-                //     joyPad[0].pack.position = leftWandPosition;
-                // }
-
-                 
-				// var leftWandRotation = new Quaternion(wand_left[3], -wand_left[4], wand_left[5], -wand_left[6]);
-				// if (ThreeGlassesUtils.CheckNaN(leftWandRotation))
-				// {
-				// 	joyPad[0].pack.rotation = leftWandRotation;
-				// }
-
-                // var rightWandPosition = new Vector3(
-                //     -wand_right[0],
-                //     wand_right[1],
-                //     -wand_right[2]) / 1000.0f;
-                // if (ThreeGlassesUtils.CheckNaN(rightWandPosition))
-                // {
-                //     joyPad[1].pack.position = rightWandPosition;
-                // }
-					
-				// var rightWandRotation = new Quaternion(wand_right[3], -wand_right[4], wand_right[5], -wand_right[6]);
-				// if (ThreeGlassesUtils.CheckNaN(leftWandRotation))
-				// {
-				// 	joyPad[1].pack.rotation = rightWandRotation;
-				// }
-
-                // for (var i = 0; i < JOYPAD_NUM; i++)
-                // {
-                //     joyPad[i].Update();
-                // }
+                if (!enableJoypad) continue;
+                for (var i = 0; i < JOYPAD_NUM; i++)
+                {
+                    joyPad[i].Update();
+                }
             }
         }
 

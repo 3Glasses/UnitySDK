@@ -6,6 +6,14 @@ namespace ThreeGlasses
         private const int KEY_NUM = 6;
         private const uint KEY_DOWN = 1;
 
+        public const int WANDS_BUTTON_MASK_MENU = 0x01;
+        public const int WANDS_BUTTON_MASK_BACK = 0x02;
+        public const int WANDS_BUTTON_MASK_LEFT_HANDLE = 0x04;
+        public const int WANDS_BUTTON_MASK_RIGHT_HANDLE = 0x08;
+        public const int WANDS_BUTTON_MASK_TRIGGER_PRESSED = 0x10;
+        public const int WANDS_BUTTON_MASK_TRIGGER_PRESS_END = 0x20;
+
+
         public class Wand
         {
             public InputType type = InputType.LeftWand;
@@ -13,7 +21,7 @@ namespace ThreeGlasses
             public Vector3 position;
             public Quaternion rotation;
             // key status
-            public uint[] keyStatus = new uint[KEY_NUM];
+            public int keyStatus;
             // stick status
             public Vector2 stick;
             public float triggerProcess;
@@ -26,30 +34,20 @@ namespace ThreeGlasses
                 rotation = wand.rotation;
                 stick = new Vector2(wand.stick.x, wand.stick.y);
                 triggerProcess = wand.triggerProcess;
-                for (int i = 0; i < KEY_NUM; i++)
-                {
-                    keyStatus[i] = wand.keyStatus[i];
-                }
+                keyStatus = wand.keyStatus;
             }
             public Wand()
             {
                 type = InputType.LeftWand;
                 position = Vector3.zero;
                 rotation = Quaternion.identity;
-                for (int i=0; i<KEY_NUM; i++)
-                {
-                    keyStatus[i] = 0;
-                }
+                keyStatus = 0;
                 stick = Vector2.zero;
                 triggerProcess = 0;
             }
         }
 
         public Wand pack = new Wand();
-        
-        // temp save
-        private uint[] keyStatusTemp = new uint[KEY_NUM];
-        private byte[] stickTemp = new byte[3];
 
         public ThreeGlassesWand(InputType type)
         {
@@ -59,7 +57,37 @@ namespace ThreeGlasses
         // update wand info
         public void Update()
         {
-            if (0 == ThreeGlassesDllInterface.GetWandInput((uint)pack.type, keyStatusTemp, stickTemp))
+            // update position
+            float x = 0, y = 0, z = 0, w = 1;
+            if (ThreeGlassesDllInterface.szvrGetWandsPositonWithVector((int)pack.type, ref x, ref y, ref z))
+            {
+                Vector3 vec = new Vector3(-x, y, -z);
+                if (ThreeGlassesUtils.CheckNaN(vec))
+                {
+                    pack.position = vec;
+                }
+            }
+            // update rotation
+            if (ThreeGlassesDllInterface.szvrGetWandsOrientationWithQuat((int)pack.type, ref x, ref y, ref z, ref w))
+            {
+                Quaternion quat = new Quaternion(x, -y, z, -w);
+                if (ThreeGlassesUtils.CheckNaN(quat))
+                {
+                    pack.rotation = quat;
+                }
+            }
+
+            // update key
+            int trigger_value = 0;
+            if (ThreeGlassesDllInterface.szvrGetWandsTriggerValue((int)pack.type, ref trigger_value))
+            {
+                pack.triggerProcess = 1.0f - (trigger_value / (float)255.0);
+            }
+            
+            int stick_x = 128, stick_y = 128;
+            pack.stick[0] = 0;
+            pack.stick[1] = 0;
+            if (ThreeGlassesDllInterface.szvrGetWandsStickValue((int)pack.type, ref stick_x, ref stick_y))
             {
                 //                 int left = (int)Mathf.Clamp(((stickTemp[1] - 127) * 1.2f), -128, 128);
                 //                 int right = (int)Mathf.Clamp(((stickTemp[2] - 127) * 1.2f), -128, 128);
@@ -68,22 +96,37 @@ namespace ThreeGlasses
                 // 
                 //                 pack.stick[0] = left / 8.0f;
                 //                 pack.stick[1] = -right / 8.0f;
-                pack.stick[0] = ((stickTemp[1] / (float)255.0) - 0.5f)*2.0f;
-                pack.stick[1] = (-(stickTemp[2] / (float)255.0) + 0.5f)*2.0f;
+                pack.stick[0] = ((stick_x / (float)255.0) - 0.5f)*2.0f;
+                pack.stick[1] = (-(stick_y / (float)255.0) + 0.5f)*2.0f;
+                Debug.Log("type=" + pack.type);
+            }
 
-                pack.triggerProcess = 1.0f - (stickTemp[0] / (float)255.0);
-
-                for (int i = 0; i < KEY_NUM; i++)
-                {
-                    pack.keyStatus[i] = keyStatusTemp[i];
-                }
-            }            
+            int keyStatus = 0;
+            if (ThreeGlassesDllInterface.szvrGetWandsButtonState((int)pack.type, ref keyStatus))
+            {
+                pack.keyStatus = keyStatus;
+            }
         }
         
         // get key status up=false  down=true
         public bool GetKey(InputKey key)
         {
-            return pack.keyStatus[(int)key] > 0;
+            switch (key)
+            {
+                case InputKey.WandMenu:
+                    return (pack.keyStatus & WANDS_BUTTON_MASK_MENU) != 0;
+                case InputKey.WandBack:
+                    return (pack.keyStatus & WANDS_BUTTON_MASK_BACK) != 0;
+                case InputKey.WandLeftSide:
+                    return (pack.keyStatus & WANDS_BUTTON_MASK_LEFT_HANDLE) != 0;
+                case InputKey.WandRightSide:
+                    return (pack.keyStatus & WANDS_BUTTON_MASK_RIGHT_HANDLE) != 0;
+                case InputKey.WandTriggerWeak:
+                    return (pack.keyStatus & WANDS_BUTTON_MASK_TRIGGER_PRESSED) != 0;
+                case InputKey.WandTriggerStrong:
+                    return (pack.keyStatus & WANDS_BUTTON_MASK_TRIGGER_PRESS_END) != 0;
+            }
+            return false;
         }
         
         // get trigger process rang=0-1.0

@@ -64,14 +64,21 @@ namespace ThreeGlasses
         [DllImport(Dllname)]
         public static extern bool szvrResetHmdOrientationData();
         
+        // wand
+        [DllImport(Dllname)]
+        public static extern bool szvrGetWandsButtonState(int iHand, ref int btn_mask);
+
         [DllImport(Dllname)]
         public static extern bool szvrGetWandsOrientationWithQuat(int iHand, ref float x, ref float y, ref float z, ref float w);
         [DllImport(Dllname)]
         public static extern bool szvrGetWandsPositonWithVector(int iHand, ref float x, ref float y, ref float z);
-
-        // wand
+        
         [DllImport(Dllname)]
-        public static extern bool szvrGetWandsButtonState(int iHand, ref int btn_mask);
+        public static extern bool szvrGetWandsTriggerValue(int iHand, ref int trigger_value); 
+
+        [DllImport(Dllname)]
+        public static extern bool szvrGetWandsStickValue(int iHand, ref int stick_x, ref int stick_y);
+
         /* 
          * Return Value(uint):
 		 *   0: success to get the value
