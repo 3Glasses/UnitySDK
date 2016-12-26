@@ -275,6 +275,7 @@ MonoBehaviour:
   type: 1
   sendToChildren: 1
   updateSelf: 1
+  moveScale: 2
   updateType: 0
 --- !u!1 &975063839
 GameObject:
@@ -399,7 +400,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 579a149931b7acc4ea253a99edec0bdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alignHeadDisplay: 1
+  freezePosition: 0
+  freezeRotation: 0
   eyeDistance: 0.1
   layerMask:
     serializedVersion: 2

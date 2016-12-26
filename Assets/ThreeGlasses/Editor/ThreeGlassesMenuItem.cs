@@ -12,14 +12,14 @@ namespace ThreeGlasses
     {
         const string kEnableHeadDisplay = "3Glasses/EnableHeadDisplay";
 
-        [UnityEditor.MenuItem(kEnableHeadDisplay, true)]
+        [UnityEditor.MenuItem(kEnableHeadDisplay, true, 1)]
         public static bool ToggleSimulationModeValidate()
         {
             Menu.SetChecked(kEnableHeadDisplay, GameObject.FindObjectOfType(typeof(ThreeGlassesManager)) != null);
             return true;
         }
 
-        [UnityEditor.MenuItem(kEnableHeadDisplay)]
+        [UnityEditor.MenuItem(kEnableHeadDisplay, false, 1)]
 		public static void ToggleSimulationMode ()
 		{
             if(GameObject.FindObjectOfType(typeof(ThreeGlassesManager)) != null)
