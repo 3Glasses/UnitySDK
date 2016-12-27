@@ -65,6 +65,7 @@ namespace ThreeGlasses
                 if (ThreeGlassesUtils.CheckNaN(vec))
                 {
                     pack.position = vec;
+                    Debug.Log("type=" + pack.type + "    vec=" + vec);
                 }
             }
             // update rotation
