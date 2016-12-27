@@ -61,7 +61,7 @@ namespace ThreeGlasses
             float x = 0, y = 0, z = 0, w = 1;
             if (0 == ThreeGlassesDllInterface.szvrGetWandsPositonWithVector((int)pack.type, ref x, ref y, ref z))
             {
-                Vector3 vec = new Vector3(-x, y, -z);
+                Vector3 vec = new Vector3(x, y, z)/-1000f;
                 if (ThreeGlassesUtils.CheckNaN(vec))
                 {
                     pack.position = vec;
