@@ -198,7 +198,7 @@ namespace ThreeGlasses
                 // update headdisplay position and rotation
                 float x = 0, y = 0, z = 0, w = 1;
                 ThreeGlassesDllInterface.szvrGetHmdPostionWithVector(ref x, ref y, ref z);
-                var hmdPosition = new Vector3(x, y, -z);
+                var hmdPosition = new Vector3(x, y, -z)/1000f;
 				if (!freezePosition && ThreeGlassesUtils.CheckNaN(hmdPosition))
                 {
                     thisCam.transform.localPosition = headDisplayPosition = hmdPosition;
