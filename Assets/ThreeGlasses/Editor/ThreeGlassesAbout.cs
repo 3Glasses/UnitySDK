@@ -13,7 +13,7 @@ public class ThreeGlassesAbout : EditorWindow
         texture = Resources.Load("ThreeGlasses/Image/eye") as Texture;
     }
     
-	[MenuItem("3Glasses/About", false, 2)]
+    [UnityEditor.MenuItem("3Glasses/About", false, 2)]
     static void Init()
     {
         Rect wr = new Rect(0, 0, 400, 150);
