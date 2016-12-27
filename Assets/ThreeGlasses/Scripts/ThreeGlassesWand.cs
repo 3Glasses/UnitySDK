@@ -65,7 +65,7 @@ namespace ThreeGlasses
                 if (ThreeGlassesUtils.CheckNaN(vec))
                 {
                     pack.position = vec;
-                    Debug.Log("type=" + pack.type + "    vec=" + vec);
+                    // Debug.Log("type=" + pack.type + "    vec=" + vec);
                 }
             }
             // update rotation
@@ -97,7 +97,6 @@ namespace ThreeGlasses
                 //                 pack.stick[1] = -right / 8.0f;
                 pack.stick[0] = ((stick_x / (float)255.0) - 0.5f)*2.0f;
                 pack.stick[1] = (-(stick_y / (float)255.0) + 0.5f)*2.0f;
-                // Debug.Log("type=" + pack.type + "   temp=" + temp);
             }
 
             int keyStatus = 0;
