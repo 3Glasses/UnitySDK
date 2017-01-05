@@ -247,6 +247,11 @@ Prefab:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114000014065254188, guid: 72b83458ff498ac479f387b5ae78d37c,
+        type: 2}
+      propertyPath: moveScale
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 135000012605723628, guid: 72b83458ff498ac479f387b5ae78d37c, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 72b83458ff498ac479f387b5ae78d37c, type: 2}
@@ -544,6 +549,11 @@ Prefab:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 114000014065254188, guid: 72b83458ff498ac479f387b5ae78d37c,
+        type: 2}
+      propertyPath: moveScale
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 135000012605723628, guid: 72b83458ff498ac479f387b5ae78d37c, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 72b83458ff498ac479f387b5ae78d37c, type: 2}
