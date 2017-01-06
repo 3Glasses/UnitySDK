@@ -209,7 +209,7 @@ namespace ThreeGlasses
                 }
                 
                 ThreeGlassesDllInterface.szvrGetHmdOrientationWithQuat(ref x, ref y, ref z, ref w);
-                var headDisplayRotation = new Quaternion(x, y, -z, -w);
+                headDisplayRotation = new Quaternion(x, y, -z, -w);
                 if (!freezeRotation)
 				{
 					thisCam.transform.localRotation = headDisplayRotation;	
