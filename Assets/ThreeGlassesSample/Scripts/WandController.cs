@@ -39,7 +39,7 @@ public class WandController : MonoBehaviour {
         if (useType == UseType.UseGet)
         {
             // set transform
-            transform.localPosition = origin + TGInput.GetPosition(inputType);
+            transform.localPosition = origin + TGInput.GetPosition(inputType)*moveScale;
             transform.localRotation = TGInput.GetRotation(inputType);
 
             float intensity = TGInput.GetTriggerProcess(inputType);

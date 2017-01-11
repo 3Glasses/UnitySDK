@@ -50,6 +50,10 @@ namespace ThreeGlasses
                 life.AddComponent<ThreeGlassesHeadDisplayLife>();
                 GameObject.DontDestroyOnLoad(life);
             }
+
+            // lock cursor
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         void Start ()
@@ -205,7 +209,7 @@ namespace ThreeGlasses
                 }
                 
                 ThreeGlassesDllInterface.szvrGetHmdOrientationWithQuat(ref x, ref y, ref z, ref w);
-                var headDisplayRotation = new Quaternion(x, y, -z, -w);
+                headDisplayRotation = new Quaternion(x, y, -z, -w);
                 if (!freezeRotation)
 				{
 					thisCam.transform.localRotation = headDisplayRotation;	
