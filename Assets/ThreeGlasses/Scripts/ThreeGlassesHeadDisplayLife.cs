@@ -1,4 +1,4 @@
-﻿#define VR_SHOW
+﻿#define NO_VR_SHOW
 using UnityEngine;
 using System.Collections;
 using System;
@@ -52,7 +52,7 @@ namespace ThreeGlasses
 #endif
 
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife init");
-            #if VR_SHOW
+            #if NO_VR_SHOW
             ThreeGlassesDllInterface.szvrInitDevices();
             #endif
             ThreeGlassesDllInterface.SZVRPluginInit();
@@ -70,8 +70,8 @@ namespace ThreeGlasses
         {
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife application quit");
             ThreeGlassesDllInterface.SZVRPluginDestroy();
-            #if VR_SHOW
-			ThreeGlassesDllInterface.szvrShutdownDevices();
+            #if NO_VR_SHOW
+            ThreeGlassesDllInterface.szvrShutdownDevices();
             #endif
         }
     }
