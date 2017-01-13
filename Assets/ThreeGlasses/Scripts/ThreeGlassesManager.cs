@@ -13,12 +13,13 @@ namespace ThreeGlasses
         private float near, far;
         private float fieldOfView = 90;
         private string[] cameraName = new string[]{"leftCamera", "rightCamera"};
-        private Camera thisCam;
+        private static Camera thisCam;
         private Camera[] subCameraCam = new Camera[CAMERA_NUM];
         private ThreeGlassesSubCamera[] subCameraScript = new ThreeGlassesSubCamera[CAMERA_NUM];
         public static Vector3 headDisplayPosition = new Vector3();
         public static Quaternion headDisplayRotation = new Quaternion();
-        public bool alignHeadDisplay = true;
+		public bool freezePosition = false;
+		public bool freezeRotation = false;
 
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
@@ -49,6 +50,10 @@ namespace ThreeGlasses
                 life.AddComponent<ThreeGlassesHeadDisplayLife>();
                 GameObject.DontDestroyOnLoad(life);
             }
+
+            // lock cursor
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         void Start ()
@@ -195,46 +200,23 @@ namespace ThreeGlasses
                     ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
 
                 // update headdisplay position and rotation
-                var hmd = new float[] { 0, 0, 0, 0, 0, 0, 1};
-                float[] wand_left = new float[] { 0, 0, 0, 0, 0, 0, 1 };
-                float[] wand_right = new float[] { 0, 0, 0, 0, 0, 0, 1 };
-                ThreeGlassesDllInterface.GetTrackedPost(hmd, wand_left, wand_right);
-                
-                var hmdPosition = new Vector3(hmd[0] / 700.0f, hmd[1] / 700.0f, -hmd[2] / 700.0f);
-                headDisplayRotation = new Quaternion(hmd[3], hmd[4], -hmd[5], -hmd[6]);
-
-                if (ThreeGlassesUtils.CheckNaN(hmdPosition))
+                float x = 0, y = 0, z = 0, w = 1;
+                ThreeGlassesDllInterface.szvrGetHmdPostionWithVector(ref x, ref y, ref z);
+                var hmdPosition = new Vector3(x, y, -z)/1000f;
+				if (!freezePosition && ThreeGlassesUtils.CheckNaN(hmdPosition))
                 {
                     thisCam.transform.localPosition = headDisplayPosition = hmdPosition;
                 }
-                thisCam.transform.localRotation = headDisplayRotation;
+                
+                ThreeGlassesDllInterface.szvrGetHmdOrientationWithQuat(ref x, ref y, ref z, ref w);
+                headDisplayRotation = new Quaternion(x, y, -z, -w);
+                if (!freezeRotation)
+				{
+					thisCam.transform.localRotation = headDisplayRotation;	
+				}
 
-                // update wand info
+                // // update wand info
                 if (!enableJoypad) continue;
-                var leftWandPosition = new Vector3(
-                    wand_left[0],
-                    wand_left[1],
-                    wand_left[2]) / -700.0f;
-                if (ThreeGlassesUtils.CheckNaN(leftWandPosition))
-                {
-                    joyPad[0].pack.position = leftWandPosition;
-                }
-
-                joyPad[0].pack.rotation = 
-                    new Quaternion(wand_left[3], -wand_left[4], wand_left[5], -wand_left[6]);
-
-                var rightWandPosition = new Vector3(
-                    wand_right[0],
-                    wand_right[1],
-                    wand_right[2]) / -700.0f;
-                if (ThreeGlassesUtils.CheckNaN(rightWandPosition))
-                {
-                    joyPad[1].pack.position = rightWandPosition;
-                }
-
-                joyPad[1].pack.rotation = 
-                    new Quaternion(wand_right[3], -wand_right[4], wand_right[5], -wand_right[6]);
-
                 for (var i = 0; i < JOYPAD_NUM; i++)
                 {
                     joyPad[i].Update();
@@ -275,12 +257,18 @@ namespace ThreeGlasses
         {
             get { return renderTexture[1]; }
         }
-
+			
+		public static Transform GetHeadDisplayTransform()
+		{
+			return thisCam.transform;
+		}
+		// no wear headdisplay
         public static bool GetHMDPresent()
         {
             uint[] status = { 0 };
             ThreeGlassesDllInterface.GetHMDPresent(status);
             return status[0] != 1;
         }
+			
     }
 }

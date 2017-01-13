@@ -8,6 +8,7 @@ public class WandController : MonoBehaviour {
     public float moveSpeed = 5.0f;
     public float rotateSpeed = 20f;
     private float currRate = 0.0f;
+	public float moveScale = 2.0f;
     public enum UseType
     {
         UseGet = 0,
@@ -38,7 +39,7 @@ public class WandController : MonoBehaviour {
         if (useType == UseType.UseGet)
         {
             // set transform
-            transform.localPosition = origin + TGInput.GetPosition(inputType);
+            transform.localPosition = origin + TGInput.GetPosition(inputType)*moveScale;
             transform.localRotation = TGInput.GetRotation(inputType);
 
             float intensity = TGInput.GetTriggerProcess(inputType);
@@ -68,7 +69,6 @@ public class WandController : MonoBehaviour {
                     Rigidbody rb = bullet.AddComponent<Rigidbody>();
                     rb.AddForce(transform.forward*bulletSpeed, ForceMode.VelocityChange);
                     Destroy(bullet, 10.0f);
-                    
                 }
             }
         }
@@ -109,7 +109,7 @@ public class WandController : MonoBehaviour {
                 currRate -= fireRate;
 
 
-                if (pack.keyStatus[(int)InputKey.WandTriggerStrong] > 0)
+                if (TGInput.GetKey(inputType, InputKey.WandTriggerStrong))
                 {
                     GameObject bullet = GameObject.CreatePrimitive((PrimitiveType)bulletType);
                     bullet.transform.position = firePos.position;
@@ -117,7 +117,6 @@ public class WandController : MonoBehaviour {
                     Rigidbody rb = bullet.AddComponent<Rigidbody>();
                     rb.AddForce(transform.forward * bulletSpeed, ForceMode.VelocityChange);
                     Destroy(bullet, 10.0f);
-
                 }
             }
         }

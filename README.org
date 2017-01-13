@@ -16,14 +16,15 @@ Now the Three3GlassesManager script is bind in your main camera, and there are s
 [[./README/TreeGlassesCameraProperty.png]]
 *** Properties:
   #+ATTR_HTML: :border 2 :rules all :frame border
-  | Property:                 | Discription                                                                                            |
-  |---------------------------+--------------------------------------------------------------------------------------------------------|
-  | Eye Distance              | The distance between the left and right camera in the HeadDisplay.                                     |
-  | Layer Mask                | Includes or omits layers of objects to be rendered by the HeadDisplay device                           |
-  | Enable JoyPad             | Enable the 3Glasses Wand                                                                               |
-  | Only Head Display         | If checked it will cancel the display of the maincamera                                                |
-  | Flip Display              | If render is upside down you can check it                                                              |
-
+  | Property:         | Discription                                                                  |
+  |-------------------+------------------------------------------------------------------------------|
+  | FreezePosition    | freeze the headdisplay's position                                            |
+  | FreezeRotation    | freeze the headdisplay's rotation                                            |
+  | Eye Distance      | The distance between the left and right camera in the HeadDisplay.           |
+  | Layer Mask        | Includes or omits layers of objects to be rendered by the HeadDisplay device |
+  | Enable JoyPad     | Enable the 3Glasses Wand                                                     |
+  | Only Head Display | If checked it will cancel the display of the maincamera                      |
+  
 ** Get HeadDisplay Info
 #+BEGIN_SRC csharp
 using ThreeGlasses;
@@ -58,6 +59,8 @@ Bind the ThreeGlassesWandBind.cs on your wand object.
 | Type             | wand's type                      |
 | Send To Children | send wand's info to all children |
 | Update Self      | update the position and rotation |
+| Move Scale       | scale wand's position            |
+| Update Type      | update local or world            |
 
 The children of the object who bind the ThreeGlassesWandBind.cs can implement OnWandChange for get the wand's info.
 #+BEGIN_SRC csharp

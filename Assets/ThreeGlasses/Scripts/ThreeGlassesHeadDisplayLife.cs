@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿#define NO_VR_SHOW
+using UnityEngine;
 using System.Collections;
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
 // ReSharper disable NotAccessedField.Local
+
 
 namespace ThreeGlasses
 {
@@ -50,6 +52,9 @@ namespace ThreeGlasses
 #endif
 
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife init");
+            #if NO_VR_SHOW
+            ThreeGlassesDllInterface.szvrInitDevices();
+            #endif
             ThreeGlassesDllInterface.SZVRPluginInit();
 
 #if !UNITY_EDITOR
@@ -65,6 +70,9 @@ namespace ThreeGlasses
         {
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife application quit");
             ThreeGlassesDllInterface.SZVRPluginDestroy();
+            #if NO_VR_SHOW
+            ThreeGlassesDllInterface.szvrShutdownDevices();
+            #endif
         }
     }
 }
