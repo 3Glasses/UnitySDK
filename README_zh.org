@@ -18,7 +18,6 @@
 
    [[./README/TreeGlassesCameraProperty.png]]
 
-
    这里有一些选项可以影响头显的行为
    #+ATTR_HTML: :border 2 :rules all :frame border
    | 参数              | 描述                               |
