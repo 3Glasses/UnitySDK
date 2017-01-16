@@ -10,27 +10,27 @@
 3. 这时可以在menu菜单中看到3Glasses的menu，如果没有重复以上步骤。
 4. 从menu菜单中选择 3Glasses>EnableHeadDisplay
 
-   #+ATTR_HTML: :center
    [[./README/EnableHeadDisplay.png]]
 
    确保EnableHeadDisplay菜单选项已被勾选。
-*** 脚本参数
-现在Three3GlassesManager脚本已经绑定到你的主相机上了。
 
-[[./README/TreeGlassesCameraProperty.png]]
+   现在Three3GlassesManager脚本已经绑定到你的主相机上了。
+
+   [[./README/TreeGlassesCameraProperty.png]]
 
 
-这里有一些选项可以影响头显的行为
-#+ATTR_HTML: :border 2 :rules all :frame border
-  | 参数              | 描述                               |
-  |-------------------+------------------------------------|
-  | FreezePosition    | 头盔的位置变动不会更新             |
-  | FreezeRotation    | 头盔的旋转变动不会更新             |
-  | Eye Distance      | 头显内部左右相机的距离             |
-  | Layer Mask        | 头显可以看到的层                   |
-  | Enable JoyPad     | 使用3Glasses的Wand手柄             |
-  | Only Head Display | 仅头显显示，绑定的相机在显示器不显示 |
+   这里有一些选项可以影响头显的行为
+   #+ATTR_HTML: :border 2 :rules all :frame border
+   | 参数              | 描述                               |
+   |-------------------+--------------------------------------|
+   | FreezePosition    | 头盔的位置变动不会更新               |
+   | FreezeRotation    | 头盔的旋转变动不会更新               |
+   | Eye Distance      | 头显内部左右相机的距离               |
+   | Layer Mask        | 头显可以看到的层                     |
+   | Enable JoyPad     | 使用3Glasses的Wand手柄               |
+   | Only Head Display | 仅头显显示，绑定的相机在显示器不显示 |
 ** 使用
+可以使用TGInput类获取头盔和手柄的信息，具体实例如下：
 *** 获取头显的位置和旋转信息
 #+BEGIN_SRC csharp
 using ThreeGlasses;
