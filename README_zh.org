@@ -4,17 +4,19 @@
 * 3GlassesSDK
 *[[http://dev.vrshow.com/][开发者主页]]* | *[[./README.org][English Manual]]*
 
-** 使用
-从主菜单选择 3Glasses>EnableHeadDisplay
+** 接入
+1. 如果之前有安装过3Glasses的SDK，请先在项目中删除干净。
+2. 导入release的unity包，或直接将Assets/ThreeGlasses拷贝到自己项目的Assests文件夹下。
+3. 这时可以在menu菜单中看到3Glasses的menu，如果没有重复以上步骤。
+4. 从menu菜单中选择 3Glasses>EnableHeadDisplay
+   [[./README/EnableHeadDisplay.png]]
 
-[[./README/EnableHeadDisplay.png]]
-
-确保EnableHeadDisplay菜单选项已被勾选。
-
+   确保EnableHeadDisplay菜单选项已被勾选。
+*** 脚本参数
 现在Three3GlassesManager脚本已经绑定到你的主相机上了，这里有一些选项可以影响头显的行为
 
 [[./README/TreeGlassesCameraProperty.png]]
-*** 参数:
+
   #+ATTR_HTML: :border 2 :rules all :frame border
   | 参数              | 描述                               |
   |-------------------+------------------------------------|
@@ -23,8 +25,9 @@
   | Eye Distance      | 头显内部左右相机的距离             |
   | Layer Mask        | 头显可以看到的层                   |
   | Enable JoyPad     | 使用3Glasses的Wand手柄             |
-  | Only Head Display | 仅头显显示绑定的相机在显示器不显示 |
-** 获取头显的位置和旋转信息
+  | Only Head Display | 仅头显显示，绑定的相机在显示器不显示 |
+** 使用
+*** 获取头显的位置和旋转信息
 #+BEGIN_SRC csharp
 using ThreeGlasses;
 
@@ -33,9 +36,9 @@ using ThreeGlasses;
 Vector3 pos = TGInput.GetHeadDisplayPosition();
 Quaternion rotate = TGInput.GetHeadDisplayRotation();
 #+END_SRC
-** 获取Wand手柄的输入
+*** 获取Wand手柄的输入
 有两种方法获取手柄信息：
-*** Get
+**** 直接Get的方式
 InputExtendMethods类定义了一些获取手柄信息的方法，如下：
 #+BEGIN_SRC csharp
 using ThreeGlasses;
@@ -47,11 +50,12 @@ TGInput.GetKey(InputType.LeftWand, InputKey.WandBack);
 // 返回遥感的x,y值，这两个值都在-1--1之间
 Vector2 v = TGInput.GetStick(InputType.LeftWand);
 #+END_SRC
-*** Bind Script
-将ThreeGlassesWandBind.cs脚本绑定到定义的手柄上。
+**** 绑定脚本方式
+将ThreeGlassesWandBind.cs脚本绑定到GameObject上。
 
 [[./README/TreeGlassesWandBindProperty.png]]
-**** 参数
+
+脚本参数
 #+ATTR_HTML: :border 2 :rules all :frame border
 | 参数             | 描述                             |
 |------------------+----------------------------------|
@@ -61,10 +65,13 @@ Vector2 v = TGInput.GetStick(InputType.LeftWand);
 | Move Scale       | 手柄移动的放大系数               |
 | Update Type      | 更新本地坐标还是世界坐标         |
 
+
 手柄对象的子对象只要实现OnWandChange方法就可以获取手柄的详细信息了。
 #+BEGIN_SRC csharp
   void OnWandChange(ThreeGlassesWand.Wand pack)
   {
       // do somethng
+      // pack.position or rotation
+      // pack.GetKey(InputKey.xxx);
   }
 #+END_SRC

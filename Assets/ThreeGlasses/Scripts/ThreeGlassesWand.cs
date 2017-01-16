@@ -45,6 +45,27 @@ namespace ThreeGlasses
                 stick = Vector2.zero;
                 triggerProcess = 0;
             }
+
+            // get key status up=false  down=true
+            public bool GetKey(InputKey key)
+            {
+                switch (key)
+                {
+                    case InputKey.WandMenu:
+                        return (keyStatus & WANDS_BUTTON_MASK_MENU) != 0;
+                    case InputKey.WandBack:
+                        return (keyStatus & WANDS_BUTTON_MASK_BACK) != 0;
+                    case InputKey.WandLeftSide:
+                        return (keyStatus & WANDS_BUTTON_MASK_LEFT_HANDLE) != 0;
+                    case InputKey.WandRightSide:
+                        return (keyStatus & WANDS_BUTTON_MASK_RIGHT_HANDLE) != 0;
+                    case InputKey.WandTriggerWeak:
+                        return (keyStatus & WANDS_BUTTON_MASK_TRIGGER_PRESSED) != 0;
+                    case InputKey.WandTriggerStrong:
+                        return (keyStatus & WANDS_BUTTON_MASK_TRIGGER_PRESS_END) != 0;
+                }
+                return false;
+            }
         }
 
         public Wand pack = new Wand();
@@ -109,22 +130,7 @@ namespace ThreeGlasses
         // get key status up=false  down=true
         public bool GetKey(InputKey key)
         {
-            switch (key)
-            {
-                case InputKey.WandMenu:
-                    return (pack.keyStatus & WANDS_BUTTON_MASK_MENU) != 0;
-                case InputKey.WandBack:
-                    return (pack.keyStatus & WANDS_BUTTON_MASK_BACK) != 0;
-                case InputKey.WandLeftSide:
-                    return (pack.keyStatus & WANDS_BUTTON_MASK_LEFT_HANDLE) != 0;
-                case InputKey.WandRightSide:
-                    return (pack.keyStatus & WANDS_BUTTON_MASK_RIGHT_HANDLE) != 0;
-                case InputKey.WandTriggerWeak:
-                    return (pack.keyStatus & WANDS_BUTTON_MASK_TRIGGER_PRESSED) != 0;
-                case InputKey.WandTriggerStrong:
-                    return (pack.keyStatus & WANDS_BUTTON_MASK_TRIGGER_PRESS_END) != 0;
-            }
-            return false;
+            return pack.GetKey(key);
         }
         
         // get trigger process rang=0-1.0

@@ -109,7 +109,7 @@ public class WandController : MonoBehaviour {
                 currRate -= fireRate;
 
 
-                if (TGInput.GetKey(inputType, InputKey.WandTriggerStrong))
+                if (pack.GetKey(InputKey.WandTriggerStrong))
                 {
                     GameObject bullet = GameObject.CreatePrimitive((PrimitiveType)bulletType);
                     bullet.transform.position = firePos.position;
