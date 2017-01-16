@@ -10,16 +10,17 @@
 3. 这时可以在menu菜单中看到3Glasses的menu，如果没有重复以上步骤。
 4. 从menu菜单中选择 3Glasses>EnableHeadDisplay
 
+   #+ATTR_HTML: :align center
    [[./README/EnableHeadDisplay.png]]
 
    确保EnableHeadDisplay菜单选项已被勾选。
 *** 脚本参数
-现在Three3GlassesManager脚本已经绑定到你的主相机上了，这里有一些选项可以影响头显的行为
+现在Three3GlassesManager脚本已经绑定到你的主相机上了。
 
 [[./README/TreeGlassesCameraProperty.png]]
 
-
-  #+ATTR_HTML: :border 2 :rules all :frame border
+这里有一些选项可以影响头显的行为
+#+ATTR_HTML: :border 2 :rules all :frame border
   | 参数              | 描述                               |
   |-------------------+------------------------------------|
   | FreezePosition    | 头盔的位置变动不会更新             |
