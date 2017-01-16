@@ -10,13 +10,14 @@
 3. 这时可以在menu菜单中看到3Glasses的menu，如果没有重复以上步骤。
 4. 从menu菜单中选择 3Glasses>EnableHeadDisplay
 
-       [[./README/EnableHeadDisplay.png]]
+   #+ATTR_HTML: :align right
+   [[./README/EnableHeadDisplay.png]]
 
    确保EnableHeadDisplay菜单选项已被勾选。
-**** 脚本参数
+*** 脚本参数
 现在Three3GlassesManager脚本已经绑定到你的主相机上了。
 
-    [[./README/TreeGlassesCameraProperty.png]]
+[[./README/TreeGlassesCameraProperty.png]]
 
 
 这里有一些选项可以影响头显的行为
@@ -30,7 +31,7 @@
   | Enable JoyPad     | 使用3Glasses的Wand手柄             |
   | Only Head Display | 仅头显显示，绑定的相机在显示器不显示 |
 ** 使用
-**** 获取头显的位置和旋转信息
+*** 获取头显的位置和旋转信息
 #+BEGIN_SRC csharp
 using ThreeGlasses;
 
@@ -39,7 +40,7 @@ using ThreeGlasses;
 Vector3 pos = TGInput.GetHeadDisplayPosition();
 Quaternion rotate = TGInput.GetHeadDisplayRotation();
 #+END_SRC
-**** 获取Wand手柄的输入
+*** 获取Wand手柄的输入
 有两种方法获取手柄信息：
 **** 直接Get的方式
 InputExtendMethods类定义了一些获取手柄信息的方法，如下：
