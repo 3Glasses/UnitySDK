@@ -1,12 +1,8 @@
-
-using UnityEngine;
-using System.Collections;
 using System.Runtime.InteropServices;
-using System;
 
 namespace ThreeGlasses
 {
-    public class ThreeGlassesDllInterface
+    public static class ThreeGlassesDllInterface
     {
         private const string Dllname = "SZVRUnityPlugin";
 
@@ -107,6 +103,9 @@ namespace ThreeGlasses
         public static extern void GetRenderSize(uint[] bufferSize);
 
         [DllImport(Dllname)]
+        public static extern void StereoRenderBegin();
+
+        [DllImport(Dllname)]
         public static extern void UpdateTextureFromUnity(
             System.IntPtr leftIntPtr,
             System.IntPtr rigthIntPtr);
@@ -114,15 +113,12 @@ namespace ThreeGlasses
         [DllImport(Dllname)]
         public static extern System.IntPtr GetRenderEventFunc();
 
-
-		// no vrshow
+        // no vrshow
         [DllImport(Dllname)]
 		public static extern uint szvrInitDevices();
 
 
 		[DllImport(Dllname)]
 		public static extern uint szvrShutdownDevices();
-
     }
-
 }

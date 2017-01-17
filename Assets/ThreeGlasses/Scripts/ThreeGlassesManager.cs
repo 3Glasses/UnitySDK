@@ -237,6 +237,8 @@ namespace ThreeGlasses
             subCamera[1].transform.localPosition = eyeDis;
 
             thisCam.enabled = !onlyHeadDisplay;
+
+            ThreeGlassesDllInterface.StereoRenderBegin();
         }
 
         void OnDestroy()
