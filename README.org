@@ -52,7 +52,8 @@ Vector2 v = TGInput.GetStick(InputType.LeftWand);
 Bind the ThreeGlassesWandBind.cs on your wand object.
 
 [[./README/TreeGlassesWandBindProperty.png]]
-**** Option
+
+Option
 #+ATTR_HTML: :border 2 :rules all :frame border
 | Option           | Description                      |
 |------------------+----------------------------------|
@@ -64,8 +65,10 @@ Bind the ThreeGlassesWandBind.cs on your wand object.
 
 The children of the object who bind the ThreeGlassesWandBind.cs can implement OnWandChange for get the wand's info.
 #+BEGIN_SRC csharp
-  void OnWandChange(ThreeGlassesWand.Wand pack)
-  {
-      // do somethng
-  }
+    void OnWandChange(ThreeGlassesWand.Wand pack)
+    {
+        // do somethng
+        // pack.position or rotation
+        // pack.GetKey(InputKey.xxx);
+    }
 #+END_SRC
