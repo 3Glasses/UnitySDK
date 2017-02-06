@@ -46,7 +46,7 @@ namespace ThreeGlasses
             // create life manager object
             if (GameObject.FindObjectOfType(typeof(ThreeGlassesHeadDisplayLife)) == null)
             {
-                GameObject life = new GameObject("ThreeGlassesHeadDisplayLife");
+                var life = new GameObject("ThreeGlassesHeadDisplayLife");
                 life.AddComponent<ThreeGlassesHeadDisplayLife>();
                 GameObject.DontDestroyOnLoad(life);
             }
@@ -54,6 +54,9 @@ namespace ThreeGlasses
             // lock cursor
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+            
+            // disable vsync
+            QualitySettings.vSyncCount = 0;
         }
 
         void Start ()

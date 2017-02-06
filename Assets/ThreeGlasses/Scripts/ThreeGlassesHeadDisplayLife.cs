@@ -24,8 +24,9 @@ namespace ThreeGlasses
         [DllImport("user32.dll")]
         static extern IntPtr ShowWindow(IntPtr hwnd, int cmdShow);
 
-        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);     [DllImport("user32.dll")]
+        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
+        [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool EnumThreadWindows(uint dwThreadId, EnumWindowsProc lpEnumFunc, IntPtr lParam);
         
