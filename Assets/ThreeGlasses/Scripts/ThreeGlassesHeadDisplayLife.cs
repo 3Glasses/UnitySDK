@@ -1,4 +1,4 @@
-﻿#define VR_SHOW
+﻿//#define VR_SHOW
 using UnityEngine;
 using System.Collections;
 using System;
