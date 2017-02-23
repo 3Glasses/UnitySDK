@@ -96,6 +96,8 @@ namespace ThreeGlasses
         public static extern void UpdateTextureFromUnity(
                                                          System.IntPtr leftIntPtr,
                                                          System.IntPtr rigthIntPtr);
+        [DllImport(Dllname)]
+        public static extern void StereoRenderBegin();
 
         [DllImport(Dllname)]
         public static extern System.IntPtr GetRenderEventFunc();
