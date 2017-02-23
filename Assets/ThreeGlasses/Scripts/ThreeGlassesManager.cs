@@ -45,17 +45,20 @@ namespace ThreeGlasses
         // hmd button
         public const int HMD_BUTTON_MASK_MENU = 0x01;
         public const int HMD_BUTTON_MASK_EXIT = 0x02;
-        static private int hmdKeyStatus = 0;
+
+        private static int hmdKeyStatus = 0;
         //hmd touchpad
-        static private Vector2 hmdTouchPad;
+        private static Vector2 hmdTouchPad;
 
         static public string hmdName = "no name";
         static System.IntPtr strPtr;
+
 
         void Awake()
         {
             // check hmd status
             bool result = false;
+            strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
             if (0 != ThreeGlassesDllInterface.SZVR_GetHMDConnectionStatus(ref result) || !result)
             {
                 Debug.LogWarning("The Helmet Mounted Display is not connect");
@@ -65,6 +68,11 @@ namespace ThreeGlasses
             strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
             ThreeGlassesDllInterface.SZVR_GetHMDDevName(strPtr);
             hmdName = Marshal.PtrToStringAnsi(strPtr);
+            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDDevName(strPtr))
+            {
+                hmdName = Marshal.PtrToStringAnsi(strPtr, 64);
+            }
+                
             if (hmdName.Length <= 0)
             {
                 hmdName = "no name";
@@ -105,6 +113,7 @@ namespace ThreeGlasses
                         24,
                         RenderTextureFormat.Default,
                         RenderTextureReadWrite.Default);
+                    renderTexture[i].antiAliasing = 2;
                     renderTexture[i].Create();
                 }
             }

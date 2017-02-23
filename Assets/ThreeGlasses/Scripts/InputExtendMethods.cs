@@ -50,7 +50,7 @@ namespace ThreeGlasses
             }
             return Quaternion.identity;
         }
-            
+
         public static bool GetKey(InputType type, InputKey key)
         {
             switch (type)
