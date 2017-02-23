@@ -14,7 +14,7 @@ namespace ThreeGlasses
         private float near, far;
         private float fieldOfView = 90;
         private string[] cameraName = new string[]{"leftCamera", "rightCamera"};
-        private static Camera thisCam;
+        private Camera thisCam;
         private Camera[] subCameraCam = new Camera[CAMERA_NUM];
         private ThreeGlassesSubCamera[] subCameraScript = new ThreeGlassesSubCamera[CAMERA_NUM];
         public static Vector3 hmdPosition = new Vector3();
@@ -45,24 +45,30 @@ namespace ThreeGlasses
         // hmd button
         public const int HMD_BUTTON_MASK_MENU = 0x01;
         public const int HMD_BUTTON_MASK_EXIT = 0x02;
-        static private int hmdKeyStatus = 0;
-        //hmd touchpad
-        static private Vector2 hmdTouchPad;
 
-        static public string hmdName = "no name";
-        static System.IntPtr strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
+        private static int hmdKeyStatus = 0;
+        //hmd touchpad
+        private static Vector2 hmdTouchPad;
+
+        public static string hmdName = "";
+        private static System.IntPtr strPtr;
 
         void Awake()
         {
             // check hmd status
             bool result = false;
+            strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
             if (0 != ThreeGlassesDllInterface.SZVR_GetHMDConnectionStatus(ref result) || !result)
             {
                 Debug.LogWarning("The Helmet Mounted Display is not connect");
             }
 
             // get hmd name
-            hmdName = Marshal.PtrToStringAnsi(strPtr);
+            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDDevName(strPtr))
+            {
+                hmdName = Marshal.PtrToStringAnsi(strPtr, 64);
+            }
+
             if (hmdName.Length <= 0)
             {
                 hmdName = "no name";
@@ -103,6 +109,7 @@ namespace ThreeGlasses
                         24,
                         RenderTextureFormat.Default,
                         RenderTextureReadWrite.Default);
+                    renderTexture[i].antiAliasing = 2;
                     renderTexture[i].Create();
                 }
             }
@@ -377,6 +384,8 @@ namespace ThreeGlasses
                 renderTexture[i].Release();
                 renderTexture[i] = null;
             }
+
+            System.Runtime.InteropServices.Marshal.FreeHGlobal(strPtr);
         }
 
         // get
@@ -389,10 +398,6 @@ namespace ThreeGlasses
             get { return renderTexture[1]; }
         }
 			
-		public static Transform GetHMDTransform()
-		{
-			return thisCam.transform;
-		}
 		// no wear headdisplay
         public static bool GetHMDPresent()
         {
