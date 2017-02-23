@@ -265,8 +265,9 @@ namespace ThreeGlasses
             hmdRotation = new Quaternion(rotate[0], rotate[1], -rotate[2], -rotate[3]);
             if (!freezeRotation)
             {
-                thisCam.transform.localRotation = hmdRotation;  
+                thisCam.transform.localRotation = hmdRotation;
             }
+            ThreeGlassesDllInterface.StereoRenderBegin();
 
             bool[] button = { false, false };
             ThreeGlassesDllInterface.SZVR_GetHMDMenuButton(ref button[0]);
