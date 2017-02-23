@@ -12,10 +12,11 @@ public class JoyPadTest : MonoBehaviour {
         if(currRate > rate)
         {
             currRate = 0.0f;
+            int wandKeyNum = InputKey.WandTriggerStrong - InputKey.WandMenu + 1;
             for (int i = 0; i < 2; i++)
             {
                 InputType type = (InputType)i;
-                for (int j = 0; j < (int)InputKey.InputNum; j++)
+                for (int j = 0; j < (int)wandKeyNum; j++)
                 {
 
                     InputKey key = (InputKey)j;

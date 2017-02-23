@@ -35,6 +35,13 @@ public class WandController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
+        Debug.Log("HMD's name is " + TGInput.GetHMDName());
+        Debug.Log("HMD's touchpad " + TGInput.GetHMDTouchPad());
+        if (TGInput.GetKey(InputType.HMD, InputKey.HmdMenu))
+            Debug.Log("HMD's key menu is pressed ");
+        if (TGInput.GetKey(InputType.HMD, InputKey.HmdExit))
+            Debug.Log("HMD's key exit is pressed ");
+
         // by get way
         if (useType == UseType.UseGet)
         {
