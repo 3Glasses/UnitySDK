@@ -51,7 +51,7 @@ namespace ThreeGlasses
         private static Vector2 hmdTouchPad;
 
         static public string hmdName = "no name";
-        static System.IntPtr strPtr;
+        System.IntPtr strPtr;
 
 
         void Awake()
@@ -66,8 +66,6 @@ namespace ThreeGlasses
 
             // get hmd name
             strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
-            ThreeGlassesDllInterface.SZVR_GetHMDDevName(strPtr);
-            hmdName = Marshal.PtrToStringAnsi(strPtr);
             if (0 != ThreeGlassesDllInterface.SZVR_GetHMDDevName(strPtr))
             {
                 hmdName = Marshal.PtrToStringAnsi(strPtr, 64);
