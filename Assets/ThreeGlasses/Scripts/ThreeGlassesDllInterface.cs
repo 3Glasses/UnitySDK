@@ -1,124 +1,117 @@
+
+using UnityEngine;
+using System.Collections;
 using System.Runtime.InteropServices;
+using System;
 
 namespace ThreeGlasses
 {
-    public static class ThreeGlassesDllInterface
+    public class ThreeGlassesDllInterface
     {
         private const string Dllname = "SZVRUnityPlugin";
 
-		[DllImport(Dllname)]
+        // hmd ---------------------------------------------------------------------------------------
+        // init & destroy
+        [DllImport(Dllname)]
         public static extern void SZVRPluginInit();
-
         [DllImport(Dllname)]
         public static extern void SZVRPluginDestroy();
 
+        // self attr
         [DllImport(Dllname)]
-        public static extern uint SZVRPluginGetFOV();
+        public static extern uint SZVR_GetHMDConnectionStatus(ref bool result);
+        [DllImport(Dllname)]// IntPtr must Marshal.AllocHGlobal(64), Marshal.PtrToStringAnsi to string
+        public static extern uint SZVR_GetHMDDevName(System.IntPtr name);
+        // if light
+        [DllImport(Dllname)]
+        public static extern uint SZVR_GetHMDPresent(ref bool result);
 
+        // ATW
         [DllImport(Dllname)]
         public static extern void SZVRPluginEnableATW();
-
         [DllImport(Dllname)]
         public static extern void SZVRPluginDiasbleATW();
 
-        [DllImport(Dllname, EntryPoint = "GetHMDPresent")]
-        public static extern void GetHMDPresent(uint[] status);
+        // hmd rotation & position
+        [DllImport(Dllname)]
+        public static extern uint SZVR_GetHMDRotate(float[] rotate);//3
+        [DllImport(Dllname)]
+        public static extern uint SZVR_GetHMDPos(float[] pos);//4
 
-        // [DllImport(Dllname)]
-        // public static extern void GetTrackedPost(float[] hmd, float[] controllerLeft, float[] controllerRight);
+        // hmd touchpad
+        [DllImport(Dllname)]
+        public static extern uint SZVR_GetHMDTouchpad(byte[] result);//2
 
-        // hmd
-        // [DllImport(Dllname)]
-        // public static extern void szvrGetHmdSerialNumer(char* szSerialNumber);
-        // [DllImport(Dllname)]
-        // public static extern void szvrGetHmdProductName(char* szProductName);
-        // [DllImport(Dllname)]
-        // public static extern unsigned short szvrGetDeviceFirmwareVersion();
+        // hmd button
         [DllImport(Dllname)]
-        public static extern int szvrGetHmdDongleCheck();
+        public static extern uint SZVR_GetHMDMenuButton(ref bool result);
         [DllImport(Dllname)]
-        public static extern void szvrSetHmdDonglePower(bool bOn);
-        [DllImport(Dllname)]
-        public static extern uint szvrGetHmdLightSensorStatus();
+        public static extern uint SZVR_GetHMDExitButton(ref bool result);
 
 
+        // wand --------------------------------------------------------------------------------
+        // status
         [DllImport(Dllname)]
-        public static extern uint szvrGetHmdMenuButtonStatus();
+        public static extern uint SZVR_GetWandConnectionStatus(byte[] status);
 
+        // rotate & position
         [DllImport(Dllname)]
-        public static extern uint szvrGetHmdPowerButtonStatus();
+        public static extern uint SZVR_GetWandRotate(float[] result);//8
+        [DllImport(Dllname)]
+        public static extern uint SZVR_GetWandPos(float[] result);//6
 
+        // button
+        /*
+          first wand
+          0 Menu button;
+          1 Back button;
+          2 Left handle button;
+          3 Right handle button;
+          4 Trigger press down;
+          5 Trigger press all the way down;
+          second wand
+          6 Menu button;
+          7 Back button;
+          8 Left handle button;
+          9 Right handle button;
+          10 Trigger press down;
+          11 Trigger press all the way down;
+        */
         [DllImport(Dllname)]
-        public static extern uint szvrGetHmdConnectStatus();
-        
-        [DllImport(Dllname)]
-        public static extern uint szvrGetHmdOrientationWithQuat(ref float x, ref float y, ref float z, ref float w);
-        [DllImport(Dllname)]
-        public static extern uint szvrGetHmdPostionWithVector(ref float x, ref float y, ref float z);
+        public static extern uint SZVR_GetWandButton(byte[] result);
 
+        // trigger
         [DllImport(Dllname)]
-        public static extern uint szvrGetHmdTouchPadValue(ref float x, ref float y);
+        public static extern uint SZVR_GetWandTriggerProcess(byte[] result); //2
+        // stick
         [DllImport(Dllname)]
-        public static extern uint szvrResetHmdOrientationData();
-        
-        // wand
-        [DllImport(Dllname)]
-        public static extern uint szvrGetWandsButtonState(int iHand, ref int btn_mask);
+        public static extern uint SZVR_GetWandStick(byte[] result);//4
 
-        [DllImport(Dllname)]
-        public static extern uint szvrGetWandsOrientationWithQuat(int iHand, ref float x, ref float y, ref float z, ref float w);
-        [DllImport(Dllname)]
-        public static extern uint szvrGetWandsPositonWithVector(int iHand, ref float x, ref float y, ref float z);
-        
-        [DllImport(Dllname)]
-        public static extern uint szvrGetWandsTriggerValue(int iHand, ref int trigger_value); 
 
-        [DllImport(Dllname)]
-        public static extern uint szvrGetWandsStickValue(int iHand, ref int stick_x, ref int stick_y);
-
-        /* 
-         * Return Value(uint):
-		 *   0: success to get the value
-		 *   1: fail to get the value
-         * 
-         * side (uint):
-         *   0 for the first recognized controller, 1 for the second recognized controller
-         * buttoms ( uint array, length: 6) 
-         *   0: up, 1: down
-         *   buttoms[0] = Menu button;
-		 *   buttoms[1] = Back button;
-		 *   buttoms[2] = Left handle button;
-		 *   buttoms[3] = Right handle button;
-		 *   buttoms[4] = Trigger press down;
-		 *   buttoms[5] = Trigger press all the way down;
-         * value ( byte array, length: 3 )
-         *   value[0] = value pointer for output trigger press measuring value, range in (0 - 255)
-         *   value[1] = x coordinate;
-         *   value[2] = y coordinate;
-         */
-        // [DllImport(Dllname)]
-        // public static extern uint GetWandInput(uint side, uint[] buttoms, byte[] value);
-
+        // render ------------------------------------------------------------------------------
         [DllImport(Dllname)]
         public static extern void GetRenderSize(uint[] bufferSize);
 
         [DllImport(Dllname)]
-        public static extern void StereoRenderBegin();
-
-        [DllImport(Dllname)]
         public static extern void UpdateTextureFromUnity(
-            System.IntPtr leftIntPtr,
-            System.IntPtr rigthIntPtr);
+                                                         System.IntPtr leftIntPtr,
+                                                         System.IntPtr rigthIntPtr);
 
         [DllImport(Dllname)]
         public static extern System.IntPtr GetRenderEventFunc();
 
-        // no vrshow
+        [DllImport(Dllname)]
+        public static extern float GetHMDRenderFov();
+
+
+		// 3glasses sever -------------------------------------------------------------------------
         [DllImport(Dllname)]
 		public static extern uint szvrInitDevices();
 
 
 		[DllImport(Dllname)]
 		public static extern uint szvrShutdownDevices();
+
     }
+
 }

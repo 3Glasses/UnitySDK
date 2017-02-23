@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Reflection;
+using System.Runtime.InteropServices;
 // ReSharper disable IteratorNeverReturns
 // ReSharper disable InconsistentNaming
 
@@ -16,8 +17,8 @@ namespace ThreeGlasses
         private static Camera thisCam;
         private Camera[] subCameraCam = new Camera[CAMERA_NUM];
         private ThreeGlassesSubCamera[] subCameraScript = new ThreeGlassesSubCamera[CAMERA_NUM];
-        public static Vector3 headDisplayPosition = new Vector3();
-        public static Quaternion headDisplayRotation = new Quaternion();
+        public static Vector3 hmdPosition = new Vector3();
+        public static Quaternion hmdRotation = new Quaternion();
 		public bool freezePosition = false;
 		public bool freezeRotation = false;
 
@@ -41,12 +42,38 @@ namespace ThreeGlasses
         // maincamera can displayer
         public bool onlyHeadDisplay = false;
 
+        // hmd button
+        public const int HMD_BUTTON_MASK_MENU = 0x01;
+        public const int HMD_BUTTON_MASK_EXIT = 0x02;
+        static private int hmdKeyStatus = 0;
+        //hmd touchpad
+        static private Vector2 hmdTouchPad;
+
+        static public string hmdName = "no name";
+        static System.IntPtr strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
+
         void Awake()
         {
+            // check hmd status
+            bool result = false;
+            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDConnectionStatus(ref result) || !result)
+            {
+                Debug.LogWarning("The Helmet Mounted Display is not connect");
+            }
+
+            // get hmd name
+            hmdName = Marshal.PtrToStringAnsi(strPtr);
+            if (hmdName.Length <= 0)
+            {
+                hmdName = "no name";
+                Debug.LogWarning("can not get HMD's name");
+            }
+
+                
             // create life manager object
             if (GameObject.FindObjectOfType(typeof(ThreeGlassesHeadDisplayLife)) == null)
             {
-                var life = new GameObject("ThreeGlassesHeadDisplayLife");
+                GameObject life = new GameObject("ThreeGlassesHeadDisplayLife");
                 life.AddComponent<ThreeGlassesHeadDisplayLife>();
                 GameObject.DontDestroyOnLoad(life);
             }
@@ -54,9 +81,6 @@ namespace ThreeGlasses
             // lock cursor
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
-            
-            // disable vsync
-            QualitySettings.vSyncCount = 0;
         }
 
         void Start ()
@@ -104,8 +128,10 @@ namespace ThreeGlasses
             thisCam = GetComponent<Camera>();
             near = thisCam.nearClipPlane;
             far = thisCam.farClipPlane;
-            fieldOfView = (float)(ThreeGlassesDllInterface.SZVRPluginGetFOV());
-            
+            // todo
+//            fieldOfView = ThreeGlassesDllInterface.GetHMDRenderFov();
+            Debug.Log(fieldOfView);
+
             // get components
             ArrayList needAdd = new ArrayList();
             System.Type[] needAddTypes = new System.Type[] { typeof(GUILayer), typeof(FlareLayer)};
@@ -202,28 +228,9 @@ namespace ThreeGlasses
                 GL.IssuePluginEvent(
                     ThreeGlassesDllInterface.GetRenderEventFunc(), 1);
 
-                // update headdisplay position and rotation
-                float x = 0, y = 0, z = 0, w = 1;
-                ThreeGlassesDllInterface.szvrGetHmdPostionWithVector(ref x, ref y, ref z);
-                var hmdPosition = new Vector3(x, y, -z)/1000f;
-				if (!freezePosition && ThreeGlassesUtils.CheckNaN(hmdPosition))
-                {
-                    thisCam.transform.localPosition = headDisplayPosition = hmdPosition;
-                }
-                
-                ThreeGlassesDllInterface.szvrGetHmdOrientationWithQuat(ref x, ref y, ref z, ref w);
-                headDisplayRotation = new Quaternion(x, y, -z, -w);
-                if (!freezeRotation)
-				{
-					thisCam.transform.localRotation = headDisplayRotation;	
-				}
+                UpdateHMD();
 
-                // // update wand info
-                if (!enableJoypad) continue;
-                for (var i = 0; i < JOYPAD_NUM; i++)
-                {
-                    joyPad[i].Update();
-                }
+                UpdateWand();
             }
         }
 
@@ -240,10 +247,128 @@ namespace ThreeGlasses
             subCamera[1].transform.localPosition = eyeDis;
 
             thisCam.enabled = !onlyHeadDisplay;
-
-            ThreeGlassesDllInterface.StereoRenderBegin();
         }
 
+        void UpdateHMD()
+        {
+            // update hmd
+            float[] pos = {0, 0, 0};
+            ThreeGlassesDllInterface.SZVR_GetHMDPos(pos);
+            var hmdPosition = new Vector3(pos[0], pos[1], -pos[2])/1000f;
+            if (!freezePosition && ThreeGlassesUtils.CheckNaN(hmdPosition))
+            {
+                thisCam.transform.localPosition = hmdPosition;
+            }
+
+            float[] rotate = { 0, 0, 0, 1 };
+            ThreeGlassesDllInterface.SZVR_GetHMDRotate(rotate);
+            hmdRotation = new Quaternion(rotate[0], rotate[1], -rotate[2], -rotate[3]);
+            if (!freezeRotation)
+            {
+                thisCam.transform.localRotation = hmdRotation;  
+            }
+
+            bool[] button = { false, false };
+            ThreeGlassesDllInterface.SZVR_GetHMDMenuButton(ref button[0]);
+            ThreeGlassesDllInterface.SZVR_GetHMDExitButton(ref button[1]);
+            for (int i = 0; i < 2; i++)
+            {
+                if (button[i])
+                {
+                    hmdKeyStatus |= 1 << i;
+                }
+            }
+
+            // touchpad
+            byte[] touchPos = {0, 0};
+            ThreeGlassesDllInterface.SZVR_GetHMDTouchpad(touchPos);
+            hmdTouchPad[0] = ((touchPos[0] / (float)255.0) - 0.5f)*2.0f; 
+            hmdTouchPad[1] = (-(touchPos[1] / (float)255.0) + 0.5f)*2.0f;
+        }
+
+        void UpdateWand()
+        {
+            // update wand info
+            if (!enableJoypad) return;
+
+            byte[] connect = { 0, 0 };
+            if (0 == ThreeGlassesDllInterface.SZVR_GetWandConnectionStatus(connect))
+            {
+                if (connect[0] != 0 || connect[1] != 0)
+                {
+                    bool getRotate = false, getPos = false, getTrigger = false, getStick = false, getButton = false;
+                    float[] wandRotate = { 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
+                    float[] wandPos = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+                    byte[] trigger = { 0, 0 };
+                    byte[] stick = { 0, 0, 0, 0 };
+                    byte[] wandButton = new byte[12];
+                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandRotate(wandRotate))
+                    {
+                        getRotate = true;
+                    }
+                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandPos(wandPos))
+                    {
+                        getPos = true;
+                    }
+                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandTriggerProcess(trigger))
+                    {
+                        getTrigger = true;
+                    }
+                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandStick(stick))
+                    {
+                        getStick = true;
+                    }
+                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandButton(wandButton))
+                    {
+                        getButton = true;
+                    }
+
+                    for (var i = 0; i < JOYPAD_NUM; i++)
+                    {
+                        if (connect[i] != 0)
+                        {
+                            if (getRotate)
+                            {
+                                joyPad[i].UpdateRotate(wandRotate);
+                            }
+                            if (getPos)
+                            {
+                                joyPad[i].UpdatePos(wandPos);
+                            }
+                            if (getTrigger)
+                            {
+                                joyPad[i].UpdateTrigger(trigger);
+                            }
+                            if (getStick)
+                            {
+                                joyPad[i].UpdateStick(stick);
+                            }
+                            if (getButton)
+                            {
+                                joyPad[i].UpdateButton(wandButton);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        static public bool GetHmdKey(InputKey key)
+        {
+            switch (key)
+            {
+                case InputKey.HmdMenu:
+                    return (hmdKeyStatus & HMD_BUTTON_MASK_MENU) != 0;
+                case InputKey.HmdExit:
+                    return (hmdKeyStatus & HMD_BUTTON_MASK_EXIT) != 0;
+            }
+            return false;
+        }
+        static public Vector2 GetHmdTouchPad()
+        {
+            return hmdTouchPad;
+        }
+    
         void OnDestroy()
         {
             for (var i = 0; i < CAMERA_NUM; i++)
@@ -263,16 +388,19 @@ namespace ThreeGlasses
             get { return renderTexture[1]; }
         }
 			
-		public static Transform GetHeadDisplayTransform()
+		public static Transform GetHMDTransform()
 		{
 			return thisCam.transform;
 		}
 		// no wear headdisplay
         public static bool GetHMDPresent()
         {
-            uint[] status = { 0 };
-            ThreeGlassesDllInterface.GetHMDPresent(status);
-            return status[0] != 1;
+            bool status = false;
+            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDPresent(ref status))
+            {
+                status = false;
+            }
+            return status;
         }
 			
     }

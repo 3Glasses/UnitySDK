@@ -1,4 +1,4 @@
-﻿#define NO_VR_SHOW
+﻿//#define VR_SHOW
 using UnityEngine;
 using System.Collections;
 using System;
@@ -24,9 +24,8 @@ namespace ThreeGlasses
         [DllImport("user32.dll")]
         static extern IntPtr ShowWindow(IntPtr hwnd, int cmdShow);
 
-        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);     [DllImport("user32.dll")]
 
-        [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool EnumThreadWindows(uint dwThreadId, EnumWindowsProc lpEnumFunc, IntPtr lParam);
         
@@ -53,7 +52,7 @@ namespace ThreeGlasses
 #endif
 
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife init");
-            #if NO_VR_SHOW
+            #if VR_SHOW
             ThreeGlassesDllInterface.szvrInitDevices();
             #endif
             ThreeGlassesDllInterface.SZVRPluginInit();
@@ -71,8 +70,8 @@ namespace ThreeGlasses
         {
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife application quit");
             ThreeGlassesDllInterface.SZVRPluginDestroy();
-            #if NO_VR_SHOW
-            ThreeGlassesDllInterface.szvrShutdownDevices();
+            #if VR_SHOW
+			ThreeGlassesDllInterface.szvrShutdownDevices();
             #endif
         }
     }
