@@ -50,8 +50,9 @@ namespace ThreeGlasses
         //hmd touchpad
         private static Vector2 hmdTouchPad;
 
-        public static string hmdName = "";
-        private static System.IntPtr strPtr;
+        static public string hmdName = "no name";
+        System.IntPtr strPtr;
+
 
         void Awake()
         {
@@ -64,11 +65,12 @@ namespace ThreeGlasses
             }
 
             // get hmd name
+            strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
             if (0 != ThreeGlassesDllInterface.SZVR_GetHMDDevName(strPtr))
             {
                 hmdName = Marshal.PtrToStringAnsi(strPtr, 64);
             }
-
+                
             if (hmdName.Length <= 0)
             {
                 hmdName = "no name";
@@ -136,8 +138,7 @@ namespace ThreeGlasses
             near = thisCam.nearClipPlane;
             far = thisCam.farClipPlane;
             // todo
-//            fieldOfView = ThreeGlassesDllInterface.GetHMDRenderFov();
-            Debug.Log(fieldOfView);
+            fieldOfView = ThreeGlassesDllInterface.GetHMDRenderFov();
 
             // get components
             ArrayList needAdd = new ArrayList();
@@ -384,7 +385,6 @@ namespace ThreeGlasses
                 renderTexture[i].Release();
                 renderTexture[i] = null;
             }
-
             System.Runtime.InteropServices.Marshal.FreeHGlobal(strPtr);
         }
 
