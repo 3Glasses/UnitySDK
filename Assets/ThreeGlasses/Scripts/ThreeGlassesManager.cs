@@ -14,7 +14,7 @@ namespace ThreeGlasses
         private float near, far;
         private float fieldOfView = 90;
         private string[] cameraName = new string[]{"leftCamera", "rightCamera"};
-        private static Camera thisCam;
+        private Camera thisCam;
         private Camera[] subCameraCam = new Camera[CAMERA_NUM];
         private ThreeGlassesSubCamera[] subCameraScript = new ThreeGlassesSubCamera[CAMERA_NUM];
         public static Vector3 hmdPosition = new Vector3();
@@ -50,7 +50,7 @@ namespace ThreeGlasses
         static private Vector2 hmdTouchPad;
 
         static public string hmdName = "no name";
-        static System.IntPtr strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
+        static System.IntPtr strPtr;
 
         void Awake()
         {
@@ -62,6 +62,8 @@ namespace ThreeGlasses
             }
 
             // get hmd name
+            strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
+            ThreeGlassesDllInterface.SZVR_GetHMDDevName(strPtr);
             hmdName = Marshal.PtrToStringAnsi(strPtr);
             if (hmdName.Length <= 0)
             {
@@ -129,8 +131,7 @@ namespace ThreeGlasses
             near = thisCam.nearClipPlane;
             far = thisCam.farClipPlane;
             // todo
-//            fieldOfView = ThreeGlassesDllInterface.GetHMDRenderFov();
-            Debug.Log(fieldOfView);
+            fieldOfView = ThreeGlassesDllInterface.GetHMDRenderFov();
 
             // get components
             ArrayList needAdd = new ArrayList();
@@ -377,6 +378,7 @@ namespace ThreeGlasses
                 renderTexture[i].Release();
                 renderTexture[i] = null;
             }
+            System.Runtime.InteropServices.Marshal.FreeHGlobal(strPtr);
         }
 
         // get
@@ -389,10 +391,6 @@ namespace ThreeGlasses
             get { return renderTexture[1]; }
         }
 			
-		public static Transform GetHMDTransform()
-		{
-			return thisCam.transform;
-		}
 		// no wear headdisplay
         public static bool GetHMDPresent()
         {

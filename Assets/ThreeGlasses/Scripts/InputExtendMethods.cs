@@ -50,12 +50,7 @@ namespace ThreeGlasses
             }
             return Quaternion.identity;
         }
-
-        public static Transform GetHMDTransform()
-		{
-			return ThreeGlassesManager.GetHMDTransform();
-		}
-
+            
         public static bool GetKey(InputType type, InputKey key)
         {
             switch (type)
