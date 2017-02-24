@@ -22,6 +22,7 @@ namespace ThreeGlasses
 		public bool freezePosition = false;
 		public bool freezeRotation = false;
 
+        
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
         public enum AntiAliasingLevel
@@ -229,7 +230,67 @@ namespace ThreeGlasses
 
             thisCam.enabled = !onlyHeadDisplay;
         }
-        
+        public void Pasue()
+        {
+            // stop render HMD
+            StopAllCoroutines();
+
+            // all subcamera render to screen not rendertexture
+            ThreeGlassesSubCamera[] cams = GameObject.FindObjectsOfType(typeof(ThreeGlassesSubCamera)) as ThreeGlassesSubCamera[];
+            foreach(var cam in cams)
+            {
+                Camera tempCamera = cam.gameObject.GetComponent<Camera>();
+                if (ThreeGlassesSubCamera.CameraType.Screen != cam.type)
+                {
+                    tempCamera.targetTexture = null;
+                }
+            }
+
+            // destroy plugin
+            ThreeGlassesDllInterface.SZVRPluginDestroy();
+
+            // release rendtexture
+            for (var i = 0; i < CAMERA_NUM; i++)
+            {
+                renderTexture[i].Release();
+            }
+                
+        }
+        public void Resume()
+        {
+            // init plugin
+            ThreeGlassesDllInterface.SZVRPluginInit();
+
+            // create rendertexture
+            for (var i = 0; i < CAMERA_NUM; i++)
+            {
+//                renderTexture[i] = new RenderTexture(
+//                    (int)renderWidth / 2,
+//                    (int)renderHeight,
+//                    24,
+//                    RenderTextureFormat.Default,
+//                    RenderTextureReadWrite.Default);
+//                renderTexture[i].antiAliasing = (int)hmdAntiAliasingLevel;
+                renderTexture[i].Create();
+            }
+
+            // bind rendertexure
+            ThreeGlassesSubCamera[] cams = GameObject.FindObjectsOfType(typeof(ThreeGlassesSubCamera)) as ThreeGlassesSubCamera[];
+            foreach(var cam in cams)
+            {
+                Camera tempCamera = cam.gameObject.GetComponent<Camera>();
+                if (ThreeGlassesSubCamera.CameraType.Screen == cam.type)
+                {
+                    tempCamera.targetTexture = null;
+                    continue;
+                }
+                tempCamera.targetTexture = renderTexture[(int) cam.type];
+            }
+
+            // resume render HMD
+            StopAllCoroutines();
+            StartCoroutine(CallPluginAtEndOfFrames());
+        }
         private IEnumerator CallPluginAtEndOfFrames()
         {
             while (true)
