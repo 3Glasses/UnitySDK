@@ -41,7 +41,18 @@ public class WandController : MonoBehaviour {
 //            Debug.Log("HMD's key menu is pressed ");
 //        if (TGInput.GetKey(InputType.HMD, InputKey.HmdExit))
 //            Debug.Log("HMD's key exit is pressed ");
-
+        if(Input.GetKey(KeyCode.P))
+        {
+            Debug.Log("pasue");
+            ThreeGlassesManager manager = GameObject.FindObjectOfType(typeof(ThreeGlassesManager)) as ThreeGlassesManager;
+            manager.Pasue();
+        }
+        if(Input.GetKey(KeyCode.S))
+        {
+            Debug.Log("resume");
+            ThreeGlassesManager manager = GameObject.FindObjectOfType(typeof(ThreeGlassesManager)) as ThreeGlassesManager;
+            manager.Resume();
+        }
         // by get way
         if (useType == UseType.UseGet)
         {
