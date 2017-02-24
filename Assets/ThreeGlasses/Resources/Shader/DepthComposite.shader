@@ -1,4 +1,4 @@
-﻿Shader "Hidden/ThreeGlasses/DepthComposite"
+﻿Shader "ThreeGlasses/DepthComposite"
 {
 	Properties
 	{

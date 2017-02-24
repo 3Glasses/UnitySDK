@@ -1,16 +1,17 @@
-﻿#define NO_VR_SHOW
+﻿//#define VR_SHOW
 using UnityEngine;
 using System.Collections;
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
-// ReSharper disable NotAccessedField.Local
 
 
 namespace ThreeGlasses
 {
     public class ThreeGlassesHeadDisplayLife : MonoBehaviour
     {
+        [DllImport("3GlassesTracker.dll")]
+        static extern void main();
 
         [DllImport("kernel32.dll")]
         static extern uint GetCurrentThreadId();
@@ -24,11 +25,16 @@ namespace ThreeGlasses
         [DllImport("user32.dll")]
         static extern IntPtr ShowWindow(IntPtr hwnd, int cmdShow);
 
+        [DllImport("3GlassesTracker")]
+        static extern int HMDPresent(ref bool hmdPresent);
+
+
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);     [DllImport("user32.dll")]
 
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool EnumThreadWindows(uint dwThreadId, EnumWindowsProc lpEnumFunc, IntPtr lParam);
-        
+
+
         private const string UnityWindowClassName = "UnityWndClass";
 
 #if !UNITY_EDITOR
@@ -50,11 +56,11 @@ namespace ThreeGlasses
                 return false;
             }, IntPtr.Zero);
 #endif
+            bool result = false;
+            HMDPresent(ref result);
 
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife init");
-            #if NO_VR_SHOW
-            ThreeGlassesDllInterface.szvrInitDevices();
-            #endif
+
             ThreeGlassesDllInterface.SZVRPluginInit();
 
 #if !UNITY_EDITOR
@@ -70,9 +76,6 @@ namespace ThreeGlasses
         {
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife application quit");
             ThreeGlassesDllInterface.SZVRPluginDestroy();
-            #if NO_VR_SHOW
-            ThreeGlassesDllInterface.szvrShutdownDevices();
-            #endif
         }
     }
 }
