@@ -17,7 +17,7 @@ namespace ThreeGlasses
 
         void Start()
         {
-            material = new Material(Shader.Find("Hidden/ThreeGlasses/DepthComposite"));
+            material = new Material(Shader.Find("ThreeGlasses/DepthComposite"));
         }
 
         void OnRenderImage(RenderTexture src, RenderTexture dst)

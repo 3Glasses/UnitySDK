@@ -4,7 +4,7 @@ using UnityEditor;
 
 public class ThreeGlassesAbout : EditorWindow
 {
-	private string version = "7.0.0";
+	private string version = "7.0.1";
 	private string url = "https://github.com/3Glasses/UnitySDK";
     private Texture texture;
 

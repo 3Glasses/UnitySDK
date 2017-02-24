@@ -24,6 +24,15 @@ namespace ThreeGlasses
 
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
+        public enum AntiAliasingLevel
+        {
+            Disabled = 1,
+            Sample_2x = 2,
+            Sample_4x = 4,
+            Sample_8x = 8
+        };
+        public AntiAliasingLevel hmdAntiAliasingLevel = AntiAliasingLevel.Sample_2x;
+
 
         private uint renderWidth = 2880;
         private uint renderHeight = 1440;
@@ -56,28 +65,7 @@ namespace ThreeGlasses
 
         void Awake()
         {
-            // check hmd status
-            bool result = false;
-            strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
-            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDConnectionStatus(ref result) || !result)
-            {
-                Debug.LogWarning("The Helmet Mounted Display is not connect");
-            }
-
-            // get hmd name
-            strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
-            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDDevName(strPtr))
-            {
-                hmdName = Marshal.PtrToStringAnsi(strPtr, 64);
-            }
-                
-            if (hmdName.Length <= 0)
-            {
-                hmdName = "no name";
-                Debug.LogWarning("can not get HMD's name");
-            }
-
-                
+            
             // create life manager object
             if (GameObject.FindObjectOfType(typeof(ThreeGlassesHeadDisplayLife)) == null)
             {
@@ -94,6 +82,26 @@ namespace ThreeGlasses
         void Start ()
         {
             ThreeGlassesUtils.Log("MainCamera init");
+
+            // check hmd status
+            bool result = false;
+            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDConnectionStatus(ref result) || !result)
+            {
+                Debug.LogWarning("The Helmet Mounted Display is not connect");
+            }
+
+            // get hmd name
+            strPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(64);
+            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDDevName(strPtr))
+            {
+                hmdName = Marshal.PtrToStringAnsi(strPtr, 64);
+            }
+
+            if (hmdName == null || hmdName.Length <= 0)
+            {
+                hmdName = "no name";
+                Debug.LogWarning("can not get HMD's name");
+            }
             
             // init RenderTexture
             if (renderTexture[0] == null && renderTexture[1] == null)
@@ -111,7 +119,7 @@ namespace ThreeGlasses
                         24,
                         RenderTextureFormat.Default,
                         RenderTextureReadWrite.Default);
-                    renderTexture[i].antiAliasing = 2;
+                    renderTexture[i].antiAliasing = (int)hmdAntiAliasingLevel;
                     renderTexture[i].Create();
                 }
             }
@@ -382,8 +390,11 @@ namespace ThreeGlasses
         {
             for (var i = 0; i < CAMERA_NUM; i++)
             {
-                renderTexture[i].Release();
-                renderTexture[i] = null;
+                if (renderTexture[i] != null)
+                {
+                    renderTexture[i].Release();
+                    renderTexture[i] = null;   
+                }
             }
             System.Runtime.InteropServices.Marshal.FreeHGlobal(strPtr);
         }
