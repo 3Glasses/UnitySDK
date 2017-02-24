@@ -245,15 +245,16 @@ namespace ThreeGlasses
                     tempCamera.targetTexture = null;
                 }
             }
-            
+
+            // destroy plugin
+            ThreeGlassesDllInterface.SZVRPluginDestroy();
+
             // release rendtexture
             for (var i = 0; i < CAMERA_NUM; i++)
             {
                 renderTexture[i].Release();
             }
-
-            // destroy plugin
-            ThreeGlassesDllInterface.SZVRPluginDestroy();
+                
         }
         public void Resume()
         {
