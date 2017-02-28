@@ -146,8 +146,16 @@ namespace ThreeGlasses
             thisCam = GetComponent<Camera>();
             near = thisCam.nearClipPlane;
             far = thisCam.farClipPlane;
-            // todo
+
             fieldOfView = ThreeGlassesDllInterface.GetHMDRenderFov();
+            // ipd
+            // todo
+//            byte ipd = 0;
+//            if (ThreeGlassesDllInterface.SZVR_GetHMDDevIPD(ref ipd) == 0)
+//            {
+//                eyeDistance = (float)((570 + ipd) / 10.0f) / 1000.0f;
+//                Debug.Log(eyeDistance);
+//            }
 
             // get components
             ArrayList needAdd = new ArrayList();
