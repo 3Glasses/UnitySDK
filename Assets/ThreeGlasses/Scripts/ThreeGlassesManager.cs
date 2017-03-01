@@ -146,8 +146,6 @@ namespace ThreeGlasses
             thisCam = GetComponent<Camera>();
             near = thisCam.nearClipPlane;
             far = thisCam.farClipPlane;
-            // todo
-            fieldOfView = ThreeGlassesDllInterface.GetHMDRenderFov();
 
             // get components
             ArrayList needAdd = new ArrayList();
@@ -192,7 +190,6 @@ namespace ThreeGlasses
                 // rename，add ThreeGlassesSubCamera
                 subCamera[i].name = cameraName[i];
                 subCameraCam[i] = subCamera[i].AddComponent<Camera>();
-                subCameraCam[i].fieldOfView = fieldOfView;
                 subCameraCam[i].nearClipPlane = near;
                 subCameraCam[i].farClipPlane = far;
                 subCameraCam[i].cullingMask = layerMask;
