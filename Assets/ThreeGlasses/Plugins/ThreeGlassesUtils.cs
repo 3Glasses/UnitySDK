@@ -1,4 +1,4 @@
-﻿#define TGDEBUG
+﻿//#define TGDEBUG
 using UnityEngine;
 using System.Collections;
 using System.Diagnostics; // for ConditionalAttribute
@@ -12,9 +12,7 @@ namespace ThreeGlasses
         [ConditionalAttribute("TGDEBUG")]
         public static void Log(object msg)
         {
-#if UNITY_EDITOR
             UnityEngine.Debug.Log(msg);
-#endif
         }
 
         public static Component CopyComponent(Component original, GameObject destination)
