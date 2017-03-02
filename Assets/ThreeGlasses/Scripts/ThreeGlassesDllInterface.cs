@@ -92,6 +92,9 @@ namespace ThreeGlasses
 
         // render ------------------------------------------------------------------------------
         [DllImport(Dllname)]
+        public static extern void SZVRPluginProjection(float[] matrix);
+
+        [DllImport(Dllname)]
         public static extern void GetRenderSize(uint[] bufferSize);
 
         [DllImport(Dllname)]
@@ -103,9 +106,6 @@ namespace ThreeGlasses
 
         [DllImport(Dllname)]
         public static extern System.IntPtr GetRenderEventFunc();
-
-        [DllImport(Dllname)]
-        public static extern float GetHMDRenderFov();
 
 
 		// 3glasses sever -------------------------------------------------------------------------

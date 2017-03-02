@@ -147,16 +147,6 @@ namespace ThreeGlasses
             near = thisCam.nearClipPlane;
             far = thisCam.farClipPlane;
 
-            fieldOfView = ThreeGlassesDllInterface.GetHMDRenderFov();
-            // ipd
-            // todo
-//            byte ipd = 0;
-//            if (ThreeGlassesDllInterface.SZVR_GetHMDDevIPD(ref ipd) == 0)
-//            {
-//                eyeDistance = (float)((570 + ipd) / 10.0f) / 1000.0f;
-//                Debug.Log(eyeDistance);
-//            }
-
             // get components
             ArrayList needAdd = new ArrayList();
             System.Type[] needAddTypes = new System.Type[] { typeof(GUILayer), typeof(FlareLayer)};
@@ -200,7 +190,6 @@ namespace ThreeGlasses
                 // rename，add ThreeGlassesSubCamera
                 subCamera[i].name = cameraName[i];
                 subCameraCam[i] = subCamera[i].AddComponent<Camera>();
-                subCameraCam[i].fieldOfView = fieldOfView;
                 subCameraCam[i].nearClipPlane = near;
                 subCameraCam[i].farClipPlane = far;
                 subCameraCam[i].cullingMask = layerMask;
