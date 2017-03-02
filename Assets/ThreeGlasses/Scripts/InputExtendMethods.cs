@@ -81,22 +81,22 @@ namespace ThreeGlasses
         // get trigger process rang=0-1.0
         public static float GetTriggerProcess(InputType type)
         {
-            if (type != InputType.LeftWand || type != InputType.RightWand)
-                return 0.0f;
-            
-            if (ThreeGlassesManager.joyPad[(int)type] == null)
-                return 0.0f;
-            
-            return ThreeGlassesManager.joyPad[(int)type].GetTriggerProcess();
+            if (type == InputType.LeftWand || type == InputType.RightWand)
+            {
+                if (ThreeGlassesManager.joyPad[(int)type] != null)
+                    return ThreeGlassesManager.joyPad[(int)type].GetTriggerProcess();
+            } 
+                                
+            return 0.0f;           
         }
 
         // get stick rang=0-1.0
         public static Vector2 GetStick(InputType type)
         {
-            if (type != InputType.LeftWand || type != InputType.RightWand)
-                return new Vector2(0,0);
-            
-            return ThreeGlassesManager.joyPad[(int)type] == null ? Vector2.zero : ThreeGlassesManager.joyPad[(int)type].GetStick();
+            if (type == InputType.LeftWand || type == InputType.RightWand)
+                return ThreeGlassesManager.joyPad[(int)type] == null ? Vector2.zero : ThreeGlassesManager.joyPad[(int)type].GetStick();
+                
+            return new Vector2(0,0);
         }
 
     }

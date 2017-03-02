@@ -2,6 +2,7 @@
 using System.Collections;
 using ThreeGlasses;
 
+
 public class WandController : MonoBehaviour {
     private Vector3 origin;
     public float fireRate = 1.0f;
@@ -35,13 +36,17 @@ public class WandController : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-//        Debug.Log("HMD's name is " + TGInput.GetHMDName());
-//        Debug.Log("HMD's touchpad " + TGInput.GetHMDTouchPad());
-//        if (TGInput.GetKey(InputType.HMD, InputKey.HmdMenu))
-//            Debug.Log("HMD's key menu is pressed ");
-//        if (TGInput.GetKey(InputType.HMD, InputKey.HmdExit))
-//            Debug.Log("HMD's key exit is pressed ");
-
+        ThreeGlassesUtils.Log("HMD's name is " + TGInput.GetHMDName());
+        ThreeGlassesUtils.Log("HMD's touchpad " + TGInput.GetHMDTouchPad());
+        if (TGInput.GetKey(InputType.HMD, InputKey.HmdMenu))
+            ThreeGlassesUtils.Log("HMD's key menu is pressed ");
+        if (TGInput.GetKey(InputType.HMD, InputKey.HmdExit))
+            ThreeGlassesUtils.Log("HMD's key exit is pressed ");
+        for (int i = (int)InputKey.WandMenu; i <= (int)InputKey.WandTriggerStrong; i++)
+        {
+            if (TGInput.GetKey(InputType.LeftWand, (InputKey)i))
+                ThreeGlassesUtils.Log((InputKey)i + " is pressed");
+        }
         // by get way
         if (useType == UseType.UseGet)
         {

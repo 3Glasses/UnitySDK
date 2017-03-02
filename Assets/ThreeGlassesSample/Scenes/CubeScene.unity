@@ -407,6 +407,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   freezePosition: 0
   freezeRotation: 0
+  hmdAntiAliasingLevel: 2
   eyeDistance: 0.1
   layerMask:
     serializedVersion: 2

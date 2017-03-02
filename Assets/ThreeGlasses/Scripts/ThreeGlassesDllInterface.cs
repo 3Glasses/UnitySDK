@@ -22,6 +22,8 @@ namespace ThreeGlasses
         public static extern uint SZVR_GetHMDConnectionStatus(ref bool result);
         [DllImport(Dllname)]// IntPtr must Marshal.AllocHGlobal(64), Marshal.PtrToStringAnsi to string
         public static extern uint SZVR_GetHMDDevName(System.IntPtr name);
+        [DllImport(Dllname)]
+        public static extern uint SZVR_GetHMDDevIPD(ref byte value);
         // if light
         [DllImport(Dllname)]
         public static extern uint SZVR_GetHMDPresent(ref bool result);

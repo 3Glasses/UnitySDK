@@ -46,7 +46,7 @@ PlayerSettings:
   defaultScreenHeight: 768
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 600
-  m_StereoRenderingPath: 1
+  m_StereoRenderingPath: 0
   m_ActiveColorSpace: 0
   m_MTRendering: 1
   m_MobileMTRendering: 0
@@ -453,10 +453,8 @@ PlayerSettings:
   platformArchitecture: {}
   scriptingBackend:
     Android: 0
-    Metro: 2
     Standalone: 0
     WebGL: 1
-    WebPlayer: 0
   incrementalIl2cppBuild: {}
   additionalIl2CppArgs: 
   m_RenderingPath: 1
