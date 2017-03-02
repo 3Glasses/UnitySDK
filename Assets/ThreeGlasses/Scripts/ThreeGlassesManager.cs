@@ -402,6 +402,8 @@ namespace ThreeGlasses
                     }
                     if (0 == ThreeGlassesDllInterface.SZVR_GetWandStick(stick))
                     {
+                        ThreeGlassesUtils.Log("lwand="+ stick[0]+ "    "+stick[1]);
+                        ThreeGlassesUtils.Log("rwand="+ stick[2]+ "    "+stick[3]);
                         getStick = true;
                     }
                     if (0 == ThreeGlassesDllInterface.SZVR_GetWandButton(wandButton))
