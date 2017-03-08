@@ -22,7 +22,7 @@ namespace ThreeGlasses
 		public bool freezeRotation = false;
 
         [Range(1.0f, 4.0f)]
-        public float scaleRenderSize = 1.3f;
+        public float scaleRenderResolution = 1.3f;
         public bool AsynchronousProjection = false;
 
         // RenderTexture
@@ -57,7 +57,7 @@ namespace ThreeGlasses
 
         private static int hmdKeyStatus = 0;
         //hmd touchpad
-        private static Vector2 hmdTouchPad;
+        private static Vector2 hmdTouchPad = Vector2.zero;
 
         static public string hmdName = "no name";
         System.IntPtr strPtr;
@@ -65,7 +65,7 @@ namespace ThreeGlasses
 
         void Awake()
         {
-            ThreeGlassesHeadDisplayLife.scaleRenderSize = scaleRenderSize;
+            ThreeGlassesHeadDisplayLife.scaleRenderSize = scaleRenderResolution;
             ThreeGlassesHeadDisplayLife.AsynchronousProjection =
                 AsynchronousProjection;
 
