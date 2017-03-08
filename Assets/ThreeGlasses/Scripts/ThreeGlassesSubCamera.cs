@@ -1,58 +1,62 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
+// ReSharper disable UnusedMember.Global
+
 namespace ThreeGlasses
 {
     [RequireComponent(typeof(Camera))]
     public class ThreeGlassesSubCamera : MonoBehaviour
     {
-        private Material material;
-        private Matrix4x4 projection;
-        private Camera camera;
+        private Material _material;
+        private Matrix4x4 _projection;
+        private Camera _camera;
 
-        public enum CameraType
+        public enum CameraTypes
         {
             LeftEye = 0,
             RightEye = 1,
             Screen = 3
-        };
-        public CameraType type = CameraType.Screen;
+        }
+
+        // ReSharper disable once ConvertToConstant.Global
+        // ReSharper disable once FieldCanBeMadeReadOnly.Global
+        public CameraTypes CameraType = CameraTypes.Screen;
 
 
-        void Start()
+        public void Start()
         {
-            material = new Material(Shader.Find("ThreeGlasses/DepthComposite"));
-            camera = GetComponent<Camera>();
+            _material = new Material(Shader.Find("ThreeGlasses/DepthComposite"));
+            _camera = GetComponent<Camera>();
 
-            projection = Matrix4x4.zero;
+            _projection = Matrix4x4.zero;
             var proj = new float[16];
             ThreeGlassesDllInterface.SZVRPluginProjection(proj);
 
-            projection[0, 0] = proj[0];
-            projection[1, 1] = proj[5];
-            projection[0, 2] = proj[2];
-            projection[1, 2] = proj[6];
-            projection[2, 2] = proj[10];
-            projection[2, 3] = proj[11];
-            projection[3, 2] = proj[14];
+            _projection[0, 0] = proj[0];
+            _projection[1, 1] = proj[5];
+            _projection[0, 2] = proj[2];
+            _projection[1, 2] = proj[6];
+            _projection[2, 2] = proj[10];
+            _projection[2, 3] = proj[11];
+            _projection[3, 2] = proj[14];
 
-            var nearClipPlane = camera.nearClipPlane;
-            var farClipPlane = camera.farClipPlane;
+            var nearClipPlane = _camera.nearClipPlane;
+            var farClipPlane = _camera.farClipPlane;
 
-            projection[2, 2] = (nearClipPlane + farClipPlane) / (nearClipPlane - farClipPlane);
-            projection[2, 3] = 2 * nearClipPlane * farClipPlane / (nearClipPlane - farClipPlane);
+            _projection[2, 2] = (nearClipPlane + farClipPlane) / (nearClipPlane - farClipPlane);
+            _projection[2, 3] = 2 * nearClipPlane * farClipPlane / (nearClipPlane - farClipPlane);
         }
 
-        void OnPreCull()
+        public void OnPreCull()
         {
-            if (camera != null)
+            if (_camera != null)
             {
-                camera.projectionMatrix = projection;
+                _camera.projectionMatrix = _projection;
             }
         }
 
-        void OnRenderImage(RenderTexture src, RenderTexture dst)
+        public void OnRenderImage(RenderTexture src, RenderTexture dst)
         {
-            Graphics.Blit(src, dst, material);
+            Graphics.Blit(src, dst, _material);
         }
     }
 }

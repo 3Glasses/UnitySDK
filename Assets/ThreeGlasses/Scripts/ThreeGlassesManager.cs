@@ -12,7 +12,6 @@ namespace ThreeGlasses
         const int CAMERA_NUM = 2;
         private GameObject[] subCamera = new GameObject[CAMERA_NUM];
         private float near, far;
-        private float fieldOfView = 90;
         private string[] cameraName = new string[]{"leftCamera", "rightCamera"};
         private Camera thisCam;
         private Camera[] subCameraCam = new Camera[CAMERA_NUM];
@@ -22,7 +21,10 @@ namespace ThreeGlasses
 		public bool freezePosition = false;
 		public bool freezeRotation = false;
 
-        
+        [Range(1.0f, 4.0f)]
+        public float scaleRenderResolution = 1.3f;
+        public bool AsynchronousProjection = false;
+
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
         public enum AntiAliasingLevel
@@ -34,9 +36,6 @@ namespace ThreeGlasses
         };
         public AntiAliasingLevel hmdAntiAliasingLevel = AntiAliasingLevel.Sample_2x;
 
-
-        private uint renderWidth = 2880;
-        private uint renderHeight = 1440;
 
         // eye's distance
         public float eyeDistance = 0.1f;
@@ -58,7 +57,7 @@ namespace ThreeGlasses
 
         private static int hmdKeyStatus = 0;
         //hmd touchpad
-        private static Vector2 hmdTouchPad;
+        private static Vector2 hmdTouchPad = Vector2.zero;
 
         static public string hmdName = "no name";
         System.IntPtr strPtr;
@@ -66,7 +65,10 @@ namespace ThreeGlasses
 
         void Awake()
         {
-            
+            ThreeGlassesHeadDisplayLife.scaleRenderSize = scaleRenderResolution;
+            ThreeGlassesHeadDisplayLife.AsynchronousProjection =
+                AsynchronousProjection;
+
             // create life manager object
             if (GameObject.FindObjectOfType(typeof(ThreeGlassesHeadDisplayLife)) == null)
             {
@@ -107,16 +109,11 @@ namespace ThreeGlasses
             // init RenderTexture
             if (renderTexture[0] == null && renderTexture[1] == null)
             {
-                uint[] buffsize = { renderWidth, renderHeight };
-                ThreeGlassesDllInterface.GetRenderSize(buffsize);
-                renderWidth = buffsize[0];
-                renderHeight = buffsize[1];
-
                 for (var i = 0; i < CAMERA_NUM; i++)
                 {
                     renderTexture[i] = new RenderTexture(
-                        (int)renderWidth / 2,
-                        (int)renderHeight,
+                        (int)ThreeGlassesHeadDisplayLife.renderWidth / 2,
+                        (int)ThreeGlassesHeadDisplayLife.renderHeight,
                         24,
                         RenderTextureFormat.Default,
                         RenderTextureReadWrite.Default);
@@ -204,7 +201,7 @@ namespace ThreeGlasses
 
                 // add subCamera script after add all component
                 subCameraScript[i] = subCamera[i].AddComponent<ThreeGlassesSubCamera>();
-                subCameraScript[i].type = (ThreeGlassesSubCamera.CameraType)i;
+                subCameraScript[i].CameraType = (ThreeGlassesSubCamera.CameraTypes)i;
             }
 
             var eyeDis = new Vector3(eyeDistance/2, 0, 0);
@@ -216,13 +213,13 @@ namespace ThreeGlasses
             foreach(var cam in cams)
             {
                 Camera tempCamera = cam.gameObject.GetComponent<Camera>();
-                if (ThreeGlassesSubCamera.CameraType.Screen == cam.type)
+                if (ThreeGlassesSubCamera.CameraTypes.Screen == cam.CameraType)
                 {
                     tempCamera.targetTexture = null;
                     continue;
                 }
 
-                tempCamera.targetTexture = renderTexture[(int) cam.type];
+                tempCamera.targetTexture = renderTexture[(int) cam.CameraType];
             }
 
             thisCam.enabled = !onlyHeadDisplay;
@@ -237,7 +234,7 @@ namespace ThreeGlasses
             foreach(var cam in cams)
             {
                 Camera tempCamera = cam.gameObject.GetComponent<Camera>();
-                if (ThreeGlassesSubCamera.CameraType.Screen != cam.type)
+                if (ThreeGlassesSubCamera.CameraTypes.Screen != cam.CameraType)
                 {
                     tempCamera.targetTexture = null;
                 }
@@ -251,12 +248,15 @@ namespace ThreeGlasses
             {
                 renderTexture[i].Release();
             }
-                
         }
+
         public void Resume()
         {
             // init plugin
-            ThreeGlassesDllInterface.SZVRPluginInit();
+            ThreeGlassesDllInterface.SZVRPluginInit(
+                (uint)(ThreeGlassesHeadDisplayLife.AsynchronousProjection ? 0 : 1),
+                ThreeGlassesHeadDisplayLife.renderWidth,
+                ThreeGlassesHeadDisplayLife.renderHeight);
 
             // create rendertexture
             for (var i = 0; i < CAMERA_NUM; i++)
@@ -276,12 +276,12 @@ namespace ThreeGlasses
             foreach(var cam in cams)
             {
                 Camera tempCamera = cam.gameObject.GetComponent<Camera>();
-                if (ThreeGlassesSubCamera.CameraType.Screen == cam.type)
+                if (ThreeGlassesSubCamera.CameraTypes.Screen == cam.CameraType)
                 {
                     tempCamera.targetTexture = null;
                     continue;
                 }
-                tempCamera.targetTexture = renderTexture[(int) cam.type];
+                tempCamera.targetTexture = renderTexture[(int) cam.CameraType];
             }
 
             // resume render HMD

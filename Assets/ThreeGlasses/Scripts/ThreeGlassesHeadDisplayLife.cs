@@ -42,8 +42,17 @@ namespace ThreeGlasses
         private const int SW_SHOWNORMAL = 1;
 #endif
 
+        public static uint renderWidth { get; private set; }
+        public static uint renderHeight { get; private set; }
+        public static float scaleRenderSize = 1.3f;
+        public static bool AsynchronousProjection = false;
+
+
         void Awake ()
         {
+            renderWidth = 2048;
+            renderHeight = 1024;
+
 #if !UNITY_EDITOR
             var threadId = GetCurrentThreadId();
             EnumThreadWindows(threadId, (hWnd, lParam) =>
@@ -61,7 +70,18 @@ namespace ThreeGlasses
 
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife init");
 
-            ThreeGlassesDllInterface.SZVRPluginInit();
+            uint[] buffsize = { renderWidth, renderHeight };
+            ThreeGlassesDllInterface.GetNativeRenderSize(buffsize);
+            renderWidth = (uint)(scaleRenderSize * buffsize[0]);
+            renderHeight = (uint)(scaleRenderSize * buffsize[1]);
+
+            renderWidth = renderWidth - (renderWidth % 16);
+            renderHeight = renderHeight - (renderHeight % 16);
+
+            ThreeGlassesDllInterface.SZVRPluginInit(
+                (uint)(AsynchronousProjection ? 0 : 1),
+                renderWidth,
+                renderHeight);
 
 #if !UNITY_EDITOR
             if (_windowHandle != IntPtr.Zero)
