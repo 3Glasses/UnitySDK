@@ -328,7 +328,7 @@ Light:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_Lightmapping: 1
+  m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 2
   m_ShadowRadius: 0
@@ -408,8 +408,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   freezePosition: 0
   freezeRotation: 0
-  scaleRenderSize: 1.3
-  AsynchronousProjection: 0
+  scaleRenderResolution: 1.3
+  AsynchronousProjection: 1
   hmdAntiAliasingLevel: 2
   eyeDistance: 0.1
   layerMask:
