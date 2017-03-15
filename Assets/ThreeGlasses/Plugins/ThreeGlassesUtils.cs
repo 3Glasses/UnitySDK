@@ -9,10 +9,11 @@ namespace ThreeGlasses
     public static class ThreeGlassesUtils
     {
         // 复写log
-        [ConditionalAttribute("TGDEBUG")]
         public static void Log(object msg)
         {
+#if TGDEBUG
             UnityEngine.Debug.Log(msg);
+#endif
         }
 
         public static Component CopyComponent(Component original, GameObject destination)
