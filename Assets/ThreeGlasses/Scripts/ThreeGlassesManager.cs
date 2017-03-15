@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -59,7 +60,7 @@ namespace ThreeGlasses
         //hmd touchpad
         private static Vector2 hmdTouchPad = Vector2.zero;
 
-        static public string hmdName = "no name";
+        public static string hmdName = "no name";
         System.IntPtr strPtr;
 
 
@@ -374,9 +375,9 @@ namespace ThreeGlasses
                     bool getRotate = false, getPos = false, getTrigger = false, getStick = false, getButton = false;
                     float[] wandRotate = { 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
                     float[] wandPos = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
-                    byte[] trigger = { 0, 0 };
-                    byte[] stick = { 0, 0, 0, 0 };
-                    byte[] wandButton = new byte[12];
+                    byte[] trigger = { 128, 128 };
+                    byte[] stick = { 128, 128, 128, 128 };
+                    var wandButton = new byte[12];
                     if (0 == ThreeGlassesDllInterface.SZVR_GetWandRotate(wandRotate))
                     {
                         getRotate = true;
@@ -402,35 +403,33 @@ namespace ThreeGlasses
 
                     for (var i = 0; i < JOYPAD_NUM; i++)
                     {
-                        if (connect[i] != 0)
+                        if (connect[i] == 0) continue;
+                        if (getRotate)
                         {
-                            if (getRotate)
-                            {
-                                joyPad[i].UpdateRotate(wandRotate);
-                            }
-                            if (getPos)
-                            {
-                                joyPad[i].UpdatePos(wandPos);
-                            }
-                            if (getTrigger)
-                            {
-                                joyPad[i].UpdateTrigger(trigger);
-                            }
-                            if (getStick)
-                            {
-                                joyPad[i].UpdateStick(stick);
-                            }
-                            if (getButton)
-                            {
-                                joyPad[i].UpdateButton(wandButton);
-                            }
+                            joyPad[i].UpdateRotate(wandRotate);
+                        }
+                        if (getPos)
+                        {
+                            joyPad[i].UpdatePos(wandPos);
+                        }
+                        if (getTrigger)
+                        {
+                            joyPad[i].UpdateTrigger(trigger);
+                        }
+                        if (getStick)
+                        {
+                            joyPad[i].UpdateStick(stick);
+                        }
+                        if (getButton)
+                        {
+                            joyPad[i].UpdateButton(wandButton);
                         }
                     }
                 }
             }
         }
 
-        static public bool GetHmdKey(InputKey key)
+        public static bool GetHmdKey(InputKey key)
         {
             switch (key)
             {
@@ -438,10 +437,22 @@ namespace ThreeGlasses
                     return (hmdKeyStatus & HMD_BUTTON_MASK_MENU) != 0;
                 case InputKey.HmdExit:
                     return (hmdKeyStatus & HMD_BUTTON_MASK_EXIT) != 0;
+                case InputKey.WandMenu:
+                    break;
+                case InputKey.WandBack:
+                    break;
+                case InputKey.WandLeftSide:
+                    break;
+                case InputKey.WandRightSide:
+                    break;
+                case InputKey.WandTriggerWeak:
+                    break;
+                case InputKey.WandTriggerStrong:
+                    break;
             }
             return false;
         }
-        static public Vector2 GetHmdTouchPad()
+        public static Vector2 GetHmdTouchPad()
         {
             return hmdTouchPad;
         }
@@ -450,13 +461,11 @@ namespace ThreeGlasses
         {
             for (var i = 0; i < CAMERA_NUM; i++)
             {
-                if (renderTexture[i] != null)
-                {
-                    renderTexture[i].Release();
-                    renderTexture[i] = null;   
-                }
+                if (renderTexture[i] == null) continue;
+                renderTexture[i].Release();
+                renderTexture[i] = null;
             }
-            System.Runtime.InteropServices.Marshal.FreeHGlobal(strPtr);
+            Marshal.FreeHGlobal(strPtr);
         }
 
         // get
