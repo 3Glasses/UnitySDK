@@ -34,9 +34,6 @@ namespace ThreeGlasses
         [DllImport("user32.dll")]
         static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
-        [DllImport("3GlassesTracker")]
-        static extern int HMDPresent(ref bool hmdPresent);
-
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
         {
@@ -51,8 +48,6 @@ namespace ThreeGlasses
 
 
         private const string UnityWindowClassName = "UnityWndClass";
-
-
 
         #if !UNITY_EDITOR
         private IntPtr _windowHandle = IntPtr.Zero;
@@ -69,14 +64,12 @@ namespace ThreeGlasses
         public static float scaleRenderSize = 1.3f;
         public static bool AsynchronousProjection = false;
 
-
         void Awake()
         {
             renderWidth = 2048;
             renderHeight = 1024;
 
-            #if !UNITY_EDITOR
-
+#if !UNITY_EDITOR
             var threadId = GetCurrentThreadId();
             EnumThreadWindows(threadId, (hWnd, lParam) =>
             {
@@ -87,11 +80,7 @@ namespace ThreeGlasses
                 _windowHandle = hWnd;
                 return false;
             }, IntPtr.Zero);
-
-            #endif
-
-            bool result = false;
-            HMDPresent(ref result);
+#endif
 
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife init");
 
