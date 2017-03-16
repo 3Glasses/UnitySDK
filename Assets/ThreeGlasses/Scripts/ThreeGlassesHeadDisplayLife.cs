@@ -25,22 +25,44 @@ namespace ThreeGlasses
         [DllImport("user32.dll")]
         static extern IntPtr ShowWindow(IntPtr hwnd, int cmdShow);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
+        static extern bool SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll")]
+        static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
         [DllImport("3GlassesTracker")]
         static extern int HMDPresent(ref bool hmdPresent);
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
+        {
+            public int Left, Top, Right, Bottom;
+        }
 
-        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);     [DllImport("user32.dll")]
+        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
+        [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool EnumThreadWindows(uint dwThreadId, EnumWindowsProc lpEnumFunc, IntPtr lParam);
 
 
         private const string UnityWindowClassName = "UnityWndClass";
 
-#if !UNITY_EDITOR
+
+
+        #if !UNITY_EDITOR
         private IntPtr _windowHandle = IntPtr.Zero;
         private const int SW_SHOWNORMAL = 1;
-#endif
+        private const int GWL_STYLE = -16;
+        private const int WS_BORDER = 0x00800000;
+        private const int SW_MAXIMIZE = 3;
+        private const int HWND_TOPMOST = -1;
+        private const uint SWP_SHOWWINDOW = 0x0040;
+        #endif
 
         public static uint renderWidth { get; private set; }
         public static uint renderHeight { get; private set; }
@@ -48,12 +70,13 @@ namespace ThreeGlasses
         public static bool AsynchronousProjection = false;
 
 
-        void Awake ()
+        void Awake()
         {
             renderWidth = 2048;
             renderHeight = 1024;
 
-#if !UNITY_EDITOR
+            #if !UNITY_EDITOR
+
             var threadId = GetCurrentThreadId();
             EnumThreadWindows(threadId, (hWnd, lParam) =>
             {
@@ -64,7 +87,9 @@ namespace ThreeGlasses
                 _windowHandle = hWnd;
                 return false;
             }, IntPtr.Zero);
-#endif
+
+            #endif
+
             bool result = false;
             HMDPresent(ref result);
 
