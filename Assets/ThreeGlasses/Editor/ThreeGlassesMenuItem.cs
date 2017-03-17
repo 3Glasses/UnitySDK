@@ -60,8 +60,9 @@ namespace ThreeGlasses
             }
 
             // bind script
-            Undo.AddComponent<ThreeGlassesManager>(cam.gameObject);
-            
+            var tgm = Undo.AddComponent<ThreeGlassesManager>(cam.gameObject);
+            tgm.cloneTargetCamera = cam;
+
             Selection.activeGameObject = cam.gameObject;
         }
         public static void clear3Glasses()
