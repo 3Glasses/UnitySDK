@@ -16,15 +16,16 @@ Now the Three3GlassesManager script is bind in your main camera, and there are s
 [[./README/TreeGlassesCameraProperty.png]]
 *** Properties:
   #+ATTR_HTML: :border 2 :rules all :frame border
-  | Property:               | Discription                                                                  |
-  |-------------------------+------------------------------------------------------------------------------|
-  | FreezePosition          | freeze the headdisplay's position                                            |
-  | FreezeRotation          | freeze the headdisplay's rotation                                            |
-  | Hmd Anti Aliasing Level | RenderTexture's Anti Aliasing Level                                          |
-  | Eye Distance            | The distance between the left and right camera in the HeadDisplay.           |
-  | Layer Mask              | Includes or omits layers of objects to be rendered by the HeadDisplay device |
-  | Enable JoyPad           | Enable the 3Glasses Wand                                                     |
-  | Only Head Display       | If checked it will cancel the display of the maincamera                      |
+  | Property:               | Discription                                                                            |
+  |-------------------------+----------------------------------------------------------------------------------------|
+  | Clone Target Camera     | The VR camera will clone the parameters of the specified camera (mandatory, not empty) |
+  | Bind Target Camera      | Bind the rotation and displacement of the camera to the main camera ( don't check to bind the rotation and displacement to the current GameObject) |
+  | FreezePosition          | freeze the headdisplay's position                                                      |
+  | FreezeRotation          | freeze the headdisplay's rotation                                                      |
+  | Hmd Anti Aliasing Level | RenderTexture's Anti Aliasing Level                                                    |
+  | Eye Distance            | The distance between the left and right camera in the HeadDisplay.                     |
+  | Layer Mask              | Includes or omits layers of objects to be rendered by the HeadDisplay device           |
+  | Enable JoyPad           | Enable the 3Glasses Wand                                                               |
   
 ** Get HMD Info
 - Get HMD's position and rotation

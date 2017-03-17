@@ -7,6 +7,27 @@ namespace ThreeGlasses
     public static class ThreeGlassesDllInterface
     {
         private const string Dllname = "SZVRUnityPlugin";
+        private const string ServerDllname = "3GlassesTracker";
+
+        // Server ---------------------------------------------------------------------------------------
+        // init & destroy
+        [DllImport(ServerDllname)]
+        public static extern int InitDevices();
+
+        [DllImport(ServerDllname)]
+        public static extern int StartTracking(IntPtr ptr, IntPtr ptr2, IntPtr ptr3, IntPtr ptr4);
+
+        static ThreeGlassesDllInterface()
+        {
+            var hmdConnection = false;
+            if (0 != SZVR_GetHMDConnectionStatus(
+                    ref hmdConnection))
+            {
+                InitDevices();
+                StartTracking(IntPtr.Zero, IntPtr.Zero,
+                    IntPtr.Zero, IntPtr.Zero);
+            }
+        }
 
         // hmd ---------------------------------------------------------------------------------------
         // init & destroy

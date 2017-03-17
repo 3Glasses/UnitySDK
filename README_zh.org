@@ -18,15 +18,17 @@
   [[./README/TreeGlassesCameraProperty.png]]
 
   #+ATTR_HTML: :border 2 :rules all :frame border
-   | 参数                    | 描述                                                |
-   |-------------------------+-----------------------------------------------------|
-   | FreezePosition          | 头盔的位置变动不会更新                              |
-   | FreezeRotation          | 头盔的旋转变动不会更新                              |
-   | Hmd Anti Aliasing Level | 渲染的抗锯齿级别                                            |
-   | Eye Distance            | 头显内部左右相机的距离                              |
-   | Layer Mask              | 头显可以看到的层                                    |
-   | Enable JoyPad           | 使用3Glasses的Wand手柄                              |
-   | Only Head Display       | 仅头显显示，绑定的相机在显示器不显示 (节省渲染效率) |
+   | 参数                    | 描述                                                                    |
+   |-------------------------+------------------------------------------------------------------------|
+   | Clone Target Camera     | VR相机将克隆指定相机的参数(必选,不能为空)                                 |
+   | Bind Target Camera      | 将相机的旋转和位移绑定到主相机上(不勾选则将旋转和位移绑定到当前GameObject上) |
+   | Freeze Position         | 头盔的位置变动不会更新                                                   |
+   | Freeze Rotation         | 头盔的旋转变动不会更新                                                   |
+   | Hmd Anti Aliasing Level | 渲染的抗锯齿级别                                                        |
+   | Eye Distance            | 头显内部左右相机的距离                                                   |
+   | Layer Mask              | 头显可以看到的层                                                        |
+   | Enable JoyPad           | 使用3Glasses的Wand手柄                                                 |
+
 ** 使用SDK脚本
 
 - 获取头显的位置和旋转信息
