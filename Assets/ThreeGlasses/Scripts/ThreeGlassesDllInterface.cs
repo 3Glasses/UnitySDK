@@ -1,19 +1,38 @@
 
-using UnityEngine;
-using System.Collections;
 using System.Runtime.InteropServices;
 using System;
 
 namespace ThreeGlasses
 {
-    public class ThreeGlassesDllInterface
+    public static class ThreeGlassesDllInterface
     {
         private const string Dllname = "SZVRUnityPlugin";
+        private const string ServerDllname = "3GlassesTracker";
+
+        // Server ---------------------------------------------------------------------------------------
+        // init & destroy
+        [DllImport(ServerDllname)]
+        public static extern int InitDevices();
+
+        [DllImport(ServerDllname)]
+        public static extern int StartTracking(IntPtr ptr, IntPtr ptr2, IntPtr ptr3, IntPtr ptr4);
+
+        static ThreeGlassesDllInterface()
+        {
+            var hmdConnection = false;
+            if (0 != SZVR_GetHMDConnectionStatus(
+                    ref hmdConnection))
+            {
+                InitDevices();
+                StartTracking(IntPtr.Zero, IntPtr.Zero,
+                    IntPtr.Zero, IntPtr.Zero);
+            }
+        }
 
         // hmd ---------------------------------------------------------------------------------------
         // init & destroy
         [DllImport(Dllname)]
-        public static extern void SZVRPluginInit();
+        public static extern void SZVRPluginInit(uint enableATW, uint renderWidth, uint renderHeight);
         [DllImport(Dllname)]
         public static extern void SZVRPluginDestroy();
 
@@ -21,18 +40,12 @@ namespace ThreeGlasses
         [DllImport(Dllname)]
         public static extern uint SZVR_GetHMDConnectionStatus(ref bool result);
         [DllImport(Dllname)]// IntPtr must Marshal.AllocHGlobal(64), Marshal.PtrToStringAnsi to string
-        public static extern uint SZVR_GetHMDDevName(System.IntPtr name);
+        public static extern uint SZVR_GetHMDDevName(IntPtr name);
         [DllImport(Dllname)]
         public static extern uint SZVR_GetHMDDevIPD(ref byte value);
         // if light
         [DllImport(Dllname)]
         public static extern uint SZVR_GetHMDPresent(ref bool result);
-
-        // ATW
-        [DllImport(Dllname)]
-        public static extern void SZVRPluginEnableATW();
-        [DllImport(Dllname)]
-        public static extern void SZVRPluginDiasbleATW();
 
         // hmd rotation & position
         [DllImport(Dllname)]
@@ -95,27 +108,16 @@ namespace ThreeGlasses
         public static extern void SZVRPluginProjection(float[] matrix);
 
         [DllImport(Dllname)]
-        public static extern void GetRenderSize(uint[] bufferSize);
+        public static extern void GetNativeRenderSize(uint[] bufferSize);
 
         [DllImport(Dllname)]
-        public static extern void UpdateTextureFromUnity(
-                                                         System.IntPtr leftIntPtr,
-                                                         System.IntPtr rigthIntPtr);
+        public static extern void UpdateTextureFromUnity(IntPtr leftIntPtr,
+                                                         IntPtr rigthIntPtr);
         [DllImport(Dllname)]
         public static extern void StereoRenderBegin();
 
         [DllImport(Dllname)]
-        public static extern System.IntPtr GetRenderEventFunc();
-
-
-		// 3glasses sever -------------------------------------------------------------------------
-        [DllImport(Dllname)]
-		public static extern uint szvrInitDevices();
-
-
-		[DllImport(Dllname)]
-		public static extern uint szvrShutdownDevices();
-
+        public static extern IntPtr GetRenderEventFunc();
     }
 
 }
