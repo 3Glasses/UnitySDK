@@ -14,12 +14,16 @@ namespace ThreeGlasses
         private GameObject[] subCamera = new GameObject[CAMERA_NUM];
         private float near, far;
         private string[] cameraName = new string[]{"leftCamera", "rightCamera"};
-        private Camera thisCam;
         private Camera[] subCameraCam = new Camera[CAMERA_NUM];
         private ThreeGlassesSubCamera[] subCameraScript = new ThreeGlassesSubCamera[CAMERA_NUM];
         public static Vector3 hmdPosition = new Vector3();
         public static Quaternion hmdRotation = new Quaternion();
-		public bool freezePosition = false;
+
+        public Camera cloneTargetCamera;
+        public bool bindTargetCamera = true;
+        private bool _bindTargetCamera = true;
+
+        public bool freezePosition = false;
 		public bool freezeRotation = false;
 
         [Range(1.0f, 4.0f)]
@@ -48,9 +52,6 @@ namespace ThreeGlasses
 
         const int JOYPAD_NUM = 2;
         public static ThreeGlassesWand[] joyPad = new ThreeGlassesWand[JOYPAD_NUM] { null, null};
-
-        // maincamera can displayer
-        public bool onlyHeadDisplay = false;
 
         // hmd button
         public const int HMD_BUTTON_MASK_MENU = 0x01;
@@ -81,6 +82,9 @@ namespace ThreeGlasses
             // lock cursor
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+
+            // block runtime settings
+            _bindTargetCamera = bindTargetCamera;
         }
 
         void Start ()
@@ -140,10 +144,26 @@ namespace ThreeGlasses
 
         void VRCameraInit ()
         {
+            //Check if the camera is a parent object
+            var isParent = false;
+            var parentCamera = gameObject.GetComponentsInParent<Camera>();
+            foreach (var p_camera in parentCamera)
+            {
+                if (p_camera.GetInstanceID() == cloneTargetCamera.GetInstanceID())
+                {
+                    isParent = true;
+                    break;
+                }
+            }
+
+            if (!isParent && _bindTargetCamera)
+            {
+                Debug.LogError("Clone target is not parent object, VR Camera can't rotate");
+            }
+
             // get maincamera's nearClip and farClip
-            thisCam = GetComponent<Camera>();
-            near = thisCam.nearClipPlane;
-            far = thisCam.farClipPlane;
+            near = cloneTargetCamera.nearClipPlane;
+            far = cloneTargetCamera.farClipPlane;
 
             // get components
             ArrayList needAdd = new ArrayList();
@@ -191,7 +211,7 @@ namespace ThreeGlasses
                 subCameraCam[i].nearClipPlane = near;
                 subCameraCam[i].farClipPlane = far;
                 subCameraCam[i].cullingMask = layerMask;
-                subCameraCam[i].depth = thisCam.depth;
+                subCameraCam[i].depth = cloneTargetCamera.depth;
                 subCamera[i].transform.SetParent(this.transform);
 
                 // add the components
@@ -222,9 +242,8 @@ namespace ThreeGlasses
 
                 tempCamera.targetTexture = renderTexture[(int) cam.CameraType];
             }
-
-            thisCam.enabled = !onlyHeadDisplay;
         }
+
         public void Pasue()
         {
             // stop render HMD
@@ -320,8 +339,6 @@ namespace ThreeGlasses
             var eyeDis = new Vector3(eyeDistance / 2, 0, 0);
             subCamera[0].transform.localPosition = -eyeDis;
             subCamera[1].transform.localPosition = eyeDis;
-
-            thisCam.enabled = !onlyHeadDisplay;
         }
 
         void UpdateHMD()
@@ -329,10 +346,17 @@ namespace ThreeGlasses
             // update hmd
             float[] pos = {0, 0, 0};
             ThreeGlassesDllInterface.SZVR_GetHMDPos(pos);
-            var hmdPosition = new Vector3(pos[0], pos[1], -pos[2])/1000f;
+            hmdPosition = new Vector3(pos[0], pos[1], -pos[2])/1000f;
             if (!freezePosition && ThreeGlassesUtils.CheckNaN(hmdPosition))
             {
-                thisCam.transform.localPosition = hmdPosition;
+                if (_bindTargetCamera)
+                {
+                    cloneTargetCamera.transform.localPosition = hmdPosition;
+                }
+                else
+                {
+                    transform.localPosition = hmdPosition;
+                }
             }
 
             float[] rotate = { 0, 0, 0, 1 };
@@ -340,14 +364,21 @@ namespace ThreeGlasses
             hmdRotation = new Quaternion(rotate[0], rotate[1], -rotate[2], -rotate[3]);
             if (!freezeRotation)
             {
-                thisCam.transform.localRotation = hmdRotation;
+                if (_bindTargetCamera)
+                {
+                    cloneTargetCamera.transform.localRotation = hmdRotation;
+                }
+                else
+                {
+                    transform.localRotation = hmdRotation;
+                }
             }
             ThreeGlassesDllInterface.StereoRenderBegin();
 
             bool[] button = { false, false };
             ThreeGlassesDllInterface.SZVR_GetHMDMenuButton(ref button[0]);
             ThreeGlassesDllInterface.SZVR_GetHMDExitButton(ref button[1]);
-            for (int i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
                 if (button[i])
                 {
