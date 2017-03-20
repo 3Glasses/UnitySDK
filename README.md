@@ -2,7 +2,7 @@
 
 # 3GlassesSDK
 
-**[Home Page](http://dev.vrshow.com/)** | **[中文手册](file://d:/README_zh.md)**
+**[Home Page](http://dev.vrshow.com/)** | **[中文手册](./README_zh.md)**
 
 ## How to Use
 
