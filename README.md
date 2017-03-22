@@ -42,7 +42,7 @@ Now the Three3GlassesManager script is bind in your main camera, and there are s
   Quaternion rotate = TGInput.GetRotation(InputType.HMD);
 ```
 
-- Get HMD's button and touchpad info
+- Get HMD's button, touchpad, proximity sensor info
 
 ```csharp
   // if the HMD's Menu Button is pressed
@@ -50,6 +50,9 @@ Now the Three3GlassesManager script is bind in your main camera, and there are s
 
   // get touchpad info，rang is [-1.0~1.0]
   Vector2 v = TGInput.GetHMDTouchPad();
+
+  // get proximity sensor state, where wearing HMD return true
+  bool present = ThreeGlassesManager.GetHMDPresent();
 ```
 
 ## Get Wand Input
@@ -67,6 +70,7 @@ The InputExtendMethods class definit some methods for get the wand's info. you c
 
   // get the back key status (down is true)
   TGInput.GetKey(InputType.LeftWand, InputKey.WandBack);
+
   // get the stick's info,Both the X axis and the Y axis are limited to between -1 and 1.
   Vector2 v = TGInput.GetStick(InputType.LeftWand);
 ```
