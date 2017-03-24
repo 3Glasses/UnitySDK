@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 namespace ThreeGlasses
 {
@@ -36,6 +37,7 @@ namespace ThreeGlasses
                 triggerProcess = wand.triggerProcess;
                 keyStatus = wand.keyStatus;
             }
+
             public Wand()
             {
                 type = InputType.LeftWand;
@@ -65,6 +67,11 @@ namespace ThreeGlasses
                         return (keyStatus & WANDS_BUTTON_MASK_TRIGGER_PRESS_END) != 0;
                 }
                 return false;
+            }
+
+            public void SetMotor(ushort level)
+            {
+                ThreeGlassesDllInterface.SZVR_SetVibrator_V2((uint)type, level);
             }
         }
 

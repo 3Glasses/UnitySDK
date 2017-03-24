@@ -102,6 +102,9 @@ namespace ThreeGlasses
         [DllImport(Dllname)]
         public static extern uint SZVR_GetWandStick(byte[] result);//4
 
+        [DllImport(Dllname)]
+        public static extern uint SZVR_SetVibrator_V2(uint index, ushort value); // index: 0,1 value: 0~100
+
 
         // render ------------------------------------------------------------------------------
         [DllImport(Dllname)]
