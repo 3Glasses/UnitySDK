@@ -186,7 +186,12 @@ namespace ThreeGlasses
         {
             return new Vector2(pack.stick.x, pack.stick.y);
         }
-        
+
+        public void SetMotor(ushort level)
+        {
+            pack.SetMotor(level);
+        }
+
         private static bool checkFloat(float v)
         {
             var status = !float.IsNaN(v);
