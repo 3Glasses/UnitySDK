@@ -45,7 +45,7 @@
   Quaternion rotate = TGInput.GetRotation(InputType.HMD);
 ```
 
-### 获取头显的按键和TouchPad信息
+### 获取头显的按键,触控板,光感信息
 
 ```csharp
   // 这里获取头显的menu按键是否有按下
@@ -53,6 +53,9 @@
 
   // 获取touchpad信息，范围是 [-1.0~1.0]
   Vector2 v = TGInput.GetHMDTouchPad();
+
+  // 获取光感状态,佩戴头盔时为 true
+  bool present = ThreeGlassesManager.GetHMDPresent();
 ```
 
 ### 获取Wand手柄的输入

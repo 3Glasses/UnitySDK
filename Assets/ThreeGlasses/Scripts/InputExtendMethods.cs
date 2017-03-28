@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 namespace ThreeGlasses
@@ -57,8 +58,10 @@ namespace ThreeGlasses
             {
                 case InputType.LeftWand:
                 case InputType.RightWand:
-                    if (ThreeGlassesManager.joyPad[(int)type] == null)
-                        return false;   
+                    if (ThreeGlassesManager.joyPad[(int) type] == null)
+                    {
+                        return false;
+                    }
                     return ThreeGlassesManager.joyPad[(int)type].GetKey(key);
                  case InputType.HMD:
                     return ThreeGlassesManager.GetHmdKey(key);
