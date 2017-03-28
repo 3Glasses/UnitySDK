@@ -26,6 +26,9 @@ public class WandController : MonoBehaviour {
     private Transform trans;
     private Material mat;
     public Transform headDisplay;
+
+    private Coroutine _delayStopMotor;
+
     // Use this for initialization
     void Start () {
         trans = GetComponent<Transform>();
@@ -71,7 +74,6 @@ public class WandController : MonoBehaviour {
             if (currRate > fireRate)
             {
                 currRate -= fireRate;
-                
 
                 if (TGInput.GetKey(inputType, InputKey.WandTriggerStrong))
                 {
@@ -81,6 +83,17 @@ public class WandController : MonoBehaviour {
                     Rigidbody rb = bullet.AddComponent<Rigidbody>();
                     rb.AddForce(transform.forward*bulletSpeed, ForceMode.VelocityChange);
                     Destroy(bullet, 10.0f);
+
+                    if (inputType == InputType.LeftWand
+                        || inputType == InputType.RightWand)
+                    {
+                        ThreeGlassesManager.joyPad[(int) inputType].SetMotor(80);
+                        if (_delayStopMotor != null)
+                        {
+                            StopCoroutine(_delayStopMotor);
+                        }
+                        _delayStopMotor = StartCoroutine(DelayStopMotor());
+                    }
                 }
             }
         }
@@ -99,6 +112,16 @@ public class WandController : MonoBehaviour {
                 headDisplay.Rotate(headDisplay.up, dir.x * rotateSpeed * Time.deltaTime);
                 headDisplay.Rotate(headDisplay.right, -dir.y * rotateSpeed * Time.deltaTime);
             }  
+        }
+    }
+    
+    IEnumerator DelayStopMotor()
+    {
+        yield return new WaitForSeconds(0.2f);
+        if (inputType == InputType.LeftWand
+                        || inputType == InputType.RightWand)
+        {
+            ThreeGlassesManager.joyPad[(int)inputType].SetMotor(0);
         }
     }
 
@@ -129,6 +152,13 @@ public class WandController : MonoBehaviour {
                     Rigidbody rb = bullet.AddComponent<Rigidbody>();
                     rb.AddForce(transform.forward * bulletSpeed, ForceMode.VelocityChange);
                     Destroy(bullet, 10.0f);
+                    pack.SetMotor(80);
+
+                    if (_delayStopMotor != null)
+                    {
+                        StopCoroutine(_delayStopMotor);
+                    }
+                    _delayStopMotor = StartCoroutine(DelayStopMotor());
                 }
             }
         }

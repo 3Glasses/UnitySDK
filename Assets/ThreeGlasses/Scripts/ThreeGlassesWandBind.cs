@@ -9,9 +9,6 @@ namespace ThreeGlasses
         public bool sendToChildren = true;
         public bool updateSelf = true;
 
-        [Range(0, 100.0f)]
-        public float vibrationIntensity = 0;
-
         private float moveScale = 1.0f;
         private Vector3 origin;
 
@@ -63,11 +60,6 @@ namespace ThreeGlasses
 					tran.position = origin + pack.position*moveScale;
                     tran.rotation = pack.rotation;
                 }
-            }
-
-            if (Mathf.Abs(vibrationIntensity) <= 100.0f)
-            {
-                pack.SetMotor((ushort)(Mathf.Abs(vibrationIntensity)));
             }
         }
     }

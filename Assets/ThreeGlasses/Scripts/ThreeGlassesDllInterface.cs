@@ -121,6 +121,11 @@ namespace ThreeGlasses
 
         [DllImport(Dllname)]
         public static extern IntPtr GetRenderEventFunc();
+
+        // Algorithm
+        [DllImport(Dllname, EntryPoint = "SZVR_ALGORITHM_FFT")]
+        public static extern void FFT(
+            float[] real, float[] imag, uint size);
     }
 
 }

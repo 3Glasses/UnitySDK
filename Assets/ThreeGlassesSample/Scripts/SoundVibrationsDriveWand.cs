@@ -1,13 +1,26 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using ThreeGlasses;
 
 public class SoundVibrationsDriveWand : MonoBehaviour
 {
+    public int Window = 2048;
+
     [Range(0, 100.0f)]
-    public float level = 0;
-    public float strength = 0;
+    public float Frequency = 0;
+    public float Scale = 1.0f;
+    public int Channel = 0;
+
+    public float Strength = 0;
+
+    private readonly object _dataLock = new object();
+    private readonly List<float> _data = new List<float>();
+
+    private float[] real;
+    private float[] imag;
+    private int _w;
 
 #if TEST_FFT
     public void Awake()
@@ -24,7 +37,7 @@ public class SoundVibrationsDriveWand : MonoBehaviour
         var output = new float[16];
 
         DFT(real,ref output);
-        Fft.Transform(real, imag);
+        ThreeGlassesDllInterface.FFT(real, imag, (uint)real.Length);
 
         Debug.Log("DFT = " +
                   string.Join("", new List<float>(output)
@@ -43,9 +56,37 @@ public class SoundVibrationsDriveWand : MonoBehaviour
     }
 #endif
 
+
+    public void Start()
+    {
+        _w = Window;
+    }
+
     public void Update()
     {
-        var v = (ushort)(Mathf.Clamp(strength, 0, 1.0f) * 100);
+        lock (_dataLock)
+        {
+            if (_data.Count < _w)
+            {
+                return;
+            }
+
+            if (Scale < 0)
+            {
+                return;
+            }
+
+            var index = (int)((Frequency / 100.0f) * (_w - 1));
+
+            real = new float[_w];
+            imag = new float[_w];
+            Array.Copy(_data.ToArray(), real, _w);
+            ThreeGlassesDllInterface.FFT(real, imag, (uint)real.Length);
+            Strength = (real[index] * real[index]
+                            + imag[index] * imag[index]) * Scale;
+        }
+
+        var v = (ushort)(Mathf.Clamp(Strength, 0.0f, 100.0f));
         foreach (var wand in ThreeGlassesManager.joyPad)
         {
             wand.SetMotor(v);
@@ -57,18 +98,21 @@ public class SoundVibrationsDriveWand : MonoBehaviour
         if (channels <= 0) return;
 
         var sliceLength = data.Length / channels;
-        if (sliceLength < 4)
+        if (sliceLength < 1)
         {
             return;
         }
 
-        var real = new float[sliceLength];
-        var imag = new float[sliceLength];
-        Array.Copy(data, real, sliceLength);
+        var dataSlice = new float[sliceLength];
+        Array.Copy(data, sliceLength * Channel, dataSlice, 0, sliceLength);
 
-        Fft.Transform(real, imag);
-        var index = (int)((level / 100.0f) * (sliceLength - 1));
-        strength = (real[index] * real[index] + imag[index] * imag[index]) / sliceLength;
+        lock (_dataLock)
+        {
+            _data.AddRange(dataSlice);
+            if (_data.Count <= _w) return;
+            var removeNum = _data.Count - _w;
+            _data.RemoveRange(0, removeNum);
+        }
     }
 
 #if TEST_FFT
