@@ -209,7 +209,7 @@ namespace ThreeGlasses
             {
                 // create camera
                 subCamera[i] = new GameObject();
-                
+
                 // rename，add ThreeGlassesSubCamera
                 subCamera[i].name = cameraName[i];
                 subCameraCam[i] = subCamera[i].AddComponent<Camera>();
@@ -217,10 +217,17 @@ namespace ThreeGlasses
                 subCameraCam[i].farClipPlane = far;
                 subCameraCam[i].cullingMask = layerMask;
                 subCameraCam[i].depth = cloneTargetCamera.depth;
+
+#if UNITY_5_6_OR_NEWER
+                subCameraCam[i].allowHDR = cloneTargetCamera.allowHDR;
+                subCameraCam[i].allowMSAA = cloneTargetCamera.allowMSAA;
+#endif
                 subCamera[i].transform.SetParent(transform);
+                subCamera[i].transform.rotation = Quaternion.identity;
+                subCamera[i].transform.localRotation = Quaternion.identity;
 
                 // add the components
-                foreach(var item in needAdd)
+                foreach (var item in needAdd)
                 {
                     ThreeGlassesUtils.CopyComponent((Component)item, subCamera[i]);
                 }
