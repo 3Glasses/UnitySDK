@@ -1,5 +1,4 @@
-﻿//#define DEBUG_WAND
-using System;
+﻿using System;
 using UnityEngine;
 using System.Collections;
 namespace ThreeGlasses
@@ -83,76 +82,6 @@ namespace ThreeGlasses
             pack.type = type;
         }
 
-#if DEBUG_WAND
-        public void Update()
-        {
-            // update position
-            float[] rotate_result = new float[8] {0, 0, 0, 1, 0, 0, 0, 1};
-            float[] pos_result = new float[6] {0, 0, 0, 0, 0, 0};
-
-            if (0 == ThreeGlassesDllInterface.SZVR_GetWandPos(pos_result))
-            {
-                Vector3 left_pos = new Vector3(pos_result[0], pos_result[1],
-                                       pos_result[2]) / -1000f;
-                Vector3 right_pos = new Vector3(pos_result[3], pos_result[4],
-                                        pos_result[5]) / -1000f;
-
-                switch (pack.type)
-                {
-                    case InputType.LeftWand:
-                        if (ThreeGlassesUtils.CheckNaN(left_pos))
-                        {
-                            pack.position = left_pos;
-                            Debug.Log("type=" + pack.type + "    vec="
-                                      + left_pos);
-                        }
-                        break;
-                    case InputType.RightWand:
-                        if (ThreeGlassesUtils.CheckNaN(right_pos))
-                        {
-                            pack.position = right_pos;
-                            Debug.Log("type=" + pack.type + "    vec="
-                                      + right_pos);
-                        }
-                        break;
-                    case InputType.HMD:
-                        break;
-                }
-            }
-
-            // update rotation
-            if (0 == ThreeGlassesDllInterface.SZVR_GetWandRotate(rotate_result))
-            {
-                Quaternion left_quat = new Quaternion(rotate_result[0],
-                    rotate_result[1], rotate_result[2], rotate_result[3]);
-                Quaternion right_quat = new Quaternion(rotate_result[0],
-                    rotate_result[1], rotate_result[2], rotate_result[3]);
-
-                switch (pack.type)
-                {
-                    case InputType.LeftWand:
-                        if (ThreeGlassesUtils.CheckNaN(left_quat))
-                        {
-                            pack.rotation = left_quat;
-                            Debug.Log("type=" + pack.type + "    vec="
-                                      + left_quat);
-                        }
-                        break;
-                    case InputType.RightWand:
-                        if (ThreeGlassesUtils.CheckNaN(right_quat))
-                        {
-                            pack.rotation = right_quat;
-                            Debug.Log("type=" + pack.type + "    vec="
-                                      + right_quat);
-                        }
-                        break;
-                    case InputType.HMD:
-                        break;
-                }
-            }
-        }
-#endif
-
         public void UpdatePos(float[] pos)
         {
             int offset = 3 * (int)pack.type;
@@ -167,7 +96,7 @@ namespace ThreeGlasses
         {
             int offset = 2 * (int)pack.type;
             pack.stick[0] = ((stick[offset] / (float)255.0) - 0.5f)*2.0f; 
-            pack.stick[1] = (-(stick[offset + 1] / (float)255.0) + 0.5f)*2.0f;
+            pack.stick[1] = ((stick[offset + 1] / (float)255.0) - 0.5f)*2.0f;
         }
         public void UpdateTrigger(byte[] trigger)
         {

@@ -110,8 +110,8 @@ public class WandController : MonoBehaviour {
             else if (inputType == InputType.RightWand)
             {
                 headDisplay.Rotate(headDisplay.up, dir.x * rotateSpeed * Time.deltaTime);
-                headDisplay.Rotate(headDisplay.right, -dir.y * rotateSpeed * Time.deltaTime);
-            }  
+                headDisplay.Rotate(headDisplay.right, dir.y * rotateSpeed * Time.deltaTime);
+            }
         }
     }
     
