@@ -10,9 +10,6 @@ namespace ThreeGlasses
 {
     public class ThreeGlassesHeadDisplayLife : MonoBehaviour
     {
-        [DllImport("3GlassesTracker.dll")]
-        static extern void main();
-
         [DllImport("kernel32.dll")]
         static extern uint GetCurrentThreadId();
 
@@ -49,15 +46,15 @@ namespace ThreeGlasses
 
         private const string UnityWindowClassName = "UnityWndClass";
 
-        #if !UNITY_EDITOR
+#if !UNITY_EDITOR
         private IntPtr _windowHandle = IntPtr.Zero;
-        private const int SW_SHOWNORMAL = 1;
+        private const int SW_SHOW = 5;
         private const int GWL_STYLE = -16;
         private const int WS_BORDER = 0x00800000;
         private const int SW_MAXIMIZE = 3;
         private const int HWND_TOPMOST = -1;
         private const uint SWP_SHOWWINDOW = 0x0040;
-        #endif
+#endif
 
         public static uint renderWidth { get; private set; }
         public static uint renderHeight { get; private set; }
@@ -69,7 +66,7 @@ namespace ThreeGlasses
             renderWidth = 2048;
             renderHeight = 1024;
 
-#if !UNITY_EDITOR
+            #if !UNITY_EDITOR
             var threadId = GetCurrentThreadId();
             EnumThreadWindows(threadId, (hWnd, lParam) =>
             {
@@ -80,7 +77,7 @@ namespace ThreeGlasses
                 _windowHandle = hWnd;
                 return false;
             }, IntPtr.Zero);
-#endif
+            #endif
 
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife init");
 
@@ -100,7 +97,7 @@ namespace ThreeGlasses
 #if !UNITY_EDITOR
             if (_windowHandle != IntPtr.Zero)
             {
-                ShowWindow(_windowHandle, SW_SHOWNORMAL);
+                ShowWindow(_windowHandle, SW_SHOW);
                 SetForegroundWindow(_windowHandle);
             }
 #endif
