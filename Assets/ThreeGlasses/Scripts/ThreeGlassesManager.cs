@@ -526,6 +526,7 @@ namespace ThreeGlasses
             {
                 status = false;
             }
+            Debug.Log(status);
             return status;
         }
 			
