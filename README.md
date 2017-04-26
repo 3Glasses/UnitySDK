@@ -101,3 +101,13 @@ The children of the object who bind the ThreeGlassesWandBind.cs can implement On
       // pack.GetKey(InputKey.xxx);
   }
 ```
+
+##### Quality Settings
+
+![img](./README/QualitySettings.png)
+
+##### Player Setting
+
+![img](./README/PlayerSetting1.png)
+
+![img](./README/PlayerSetting2.png)

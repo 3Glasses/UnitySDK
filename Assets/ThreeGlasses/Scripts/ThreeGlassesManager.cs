@@ -57,6 +57,12 @@ namespace ThreeGlasses
        
         public LayerMask layerMask = -1;
 
+        public bool CopyOnRenderImageComponent = true;
+
+        public bool CopyOnPreRenderComponent = true;
+
+        public bool CopyOnPostRenderComponent = true;
+
         // whether to active the wand
         public bool enableJoypad = true;
 
@@ -195,10 +201,19 @@ namespace ThreeGlasses
                 if (!(com is MonoBehaviour)) continue;
                 if (com == this) continue;
                 var t = com.GetType();
-                MemberInfo meth = t.GetMethod("OnRenderImage",
+                MemberInfo methORI = t.GetMethod("OnRenderImage",
                     BindingFlags.Instance |
                     BindingFlags.NonPublic | BindingFlags.Public);
-                if (meth != null)
+                MemberInfo methOPreR = t.GetMethod("OnPreRender",
+                    BindingFlags.Instance |
+                    BindingFlags.NonPublic | BindingFlags.Public);
+                MemberInfo methOPostR = t.GetMethod("OnPostRender",
+                    BindingFlags.Instance |
+                    BindingFlags.NonPublic | BindingFlags.Public);
+
+                if ((CopyOnRenderImageComponent && methORI != null) ||
+                    (CopyOnPreRenderComponent && methOPreR != null) ||
+                    (CopyOnPostRenderComponent && methOPostR != null))
                 {
                     needAdd.Add(com);
                 }
@@ -526,6 +541,7 @@ namespace ThreeGlasses
             {
                 status = false;
             }
+            Debug.Log(status);
             return status;
         }
 			
