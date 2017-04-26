@@ -104,3 +104,13 @@ InputExtendMethods类定义了一些获取手柄信息的方法，如下：
       // pack.GetKey(InputKey.xxx);
   }
 ```
+
+##### 质量设置
+
+![img](./README/QualitySettings.png)
+
+##### 导出设置
+
+![img](./README/PlayerSetting1.png)
+
+![img](./README/PlayerSetting2.png)
