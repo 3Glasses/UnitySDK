@@ -111,3 +111,9 @@ The children of the object who bind the ThreeGlassesWandBind.cs can implement On
 ![img](./README/PlayerSetting1.png)
 
 ![img](./README/PlayerSetting2.png)
+
+##### Single Pass supported
+
+![img](./README/single_pass.png)
+
+![img](./README/single_pass2.png)

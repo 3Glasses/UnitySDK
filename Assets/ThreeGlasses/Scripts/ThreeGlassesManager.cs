@@ -3,6 +3,11 @@ using UnityEngine;
 using System.Collections;
 using System.Reflection;
 using System.Runtime.InteropServices;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 // ReSharper disable LoopCanBeConvertedToQuery
 // ReSharper disable IteratorNeverReturns
 // ReSharper disable InconsistentNaming
@@ -39,6 +44,7 @@ namespace ThreeGlasses
         [Range(1.0f, 4.0f)]
         public float scaleRenderResolution = 1.3f;
         public bool AsynchronousProjection = false;
+        public bool useUnityStereoRendering = false;
 
         // RenderTexture
         private static RenderTexture[] renderTexture = new RenderTexture[CAMERA_NUM];
@@ -252,9 +258,39 @@ namespace ThreeGlasses
                 subCameraScript[i].CameraType = (ThreeGlassesSubCamera.CameraTypes)i;
             }
 
-            var eyeDis = new Vector3(eyeDistance/2, 0, 0);
-            subCamera[0].transform.localPosition = -eyeDis;
-            subCamera[1].transform.localPosition = eyeDis;
+
+            if (useUnityStereoRendering)
+            {
+                subCameraCam[0].stereoSeparation = cloneTargetCamera.stereoSeparation;
+                subCameraCam[1].stereoSeparation = cloneTargetCamera.stereoSeparation;
+
+                subCameraCam[0].stereoConvergence = cloneTargetCamera.stereoConvergence;
+                subCameraCam[1].stereoConvergence = cloneTargetCamera.stereoConvergence;
+
+                subCameraCam[0].stereoTargetEye = StereoTargetEyeMask.Left;
+                subCameraCam[1].stereoTargetEye = StereoTargetEyeMask.Right;
+
+                subCamera[0].transform.localPosition = Vector3.zero;
+                subCamera[1].transform.localPosition = Vector3.zero;
+
+#if UNITY_EDITOR
+                // Check Player Setting
+                if (!PlayerSettings.virtualRealitySupported)
+                {
+                    Debug.LogError("Don't enable virtual reality supported");
+                    if (!PlayerSettings.singlePassStereoRendering)
+                    {
+                        Debug.LogError("Don't enable single pass");
+                    }
+                }
+#endif
+            }
+            else
+            {
+                var eyeDis = new Vector3(eyeDistance / 2, 0, 0);
+                subCamera[0].transform.localPosition = -eyeDis;
+                subCamera[1].transform.localPosition = eyeDis;
+            }
 
             // set the camera who bind ThreeGlassesSubCamera
             var cams = FindObjectsOfType(typeof(ThreeGlassesSubCamera)) as ThreeGlassesSubCamera[];
@@ -358,11 +394,19 @@ namespace ThreeGlasses
             {
                 subCameraCam[i].cullingMask = layerMask;
             }
-            
+
             // update eyedistance
-            var eyeDis = new Vector3(eyeDistance / 2, 0, 0);
-            subCamera[0].transform.localPosition = -eyeDis;
-            subCamera[1].transform.localPosition = eyeDis;
+            if (useUnityStereoRendering)
+            {
+                subCamera[0].transform.localPosition = Vector3.zero;
+                subCamera[1].transform.localPosition = Vector3.zero;
+            }
+            else
+            {
+                var eyeDis = new Vector3(eyeDistance / 2, 0, 0);
+                subCamera[0].transform.localPosition = -eyeDis;
+                subCamera[1].transform.localPosition = eyeDis;
+            }
         }
 
         void UpdateHMD()

@@ -114,3 +114,9 @@ InputExtendMethods类定义了一些获取手柄信息的方法，如下：
 ![img](./README/PlayerSetting1.png)
 
 ![img](./README/PlayerSetting2.png)
+
+##### Single Pass支持
+
+![img](./README/single_pass.png)
+
+![img](./README/single_pass2.png)
