@@ -99,7 +99,7 @@ namespace ThreeGlasses
         public void UpdateTrigger(byte[] trigger)
         {
             int offset = (int)pack.type;
-            pack.triggerProcess = 1.0f - (trigger[offset] / (float)255.0);
+            pack.triggerProcess = trigger[offset] / (float)255.0;
 
         }
         public void UpdateButton(byte[] button)
