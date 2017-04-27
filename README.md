@@ -102,17 +102,17 @@ The children of the object who bind the ThreeGlassesWandBind.cs can implement On
   }
 ```
 
-##### Quality Settings
+#### Quality Settings
 
 ![img](./README/QualitySettings.png)
 
-##### Player Setting
+#### Player Setting
 
 ![img](./README/PlayerSetting1.png)
 
 ![img](./README/PlayerSetting2.png)
 
-##### Single Pass supported
+#### Single Pass supported
 
 ![img](./README/single_pass.png)
 
