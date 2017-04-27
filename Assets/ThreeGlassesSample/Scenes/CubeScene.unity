@@ -268,12 +268,16 @@ MonoBehaviour:
   freezePosition: 0
   freezeRotation: 0
   scaleRenderResolution: 1.3
-  AsynchronousProjection: 1
+  AsynchronousProjection: 0
+  useUnityStereoRendering: 1
   hmdAntiAliasingLevel: 2
   eyeDistance: 0.1
   layerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  CopyOnRenderImageComponent: 1
+  CopyOnPreRenderComponent: 1
+  CopyOnPostRenderComponent: 1
   enableJoypad: 1
 --- !u!81 &967942821
 AudioListener:
@@ -431,7 +435,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
