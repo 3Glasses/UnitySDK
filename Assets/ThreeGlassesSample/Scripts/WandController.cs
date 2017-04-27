@@ -45,7 +45,7 @@ public class WandController : MonoBehaviour {
             ThreeGlassesUtils.Log("HMD's key menu is pressed ");
         if (TGInput.GetKey(InputType.HMD, InputKey.HmdExit))
             ThreeGlassesUtils.Log("HMD's key exit is pressed ");
-        for (int i = (int)InputKey.WandMenu; i <= (int)InputKey.WandTriggerStrong; i++)
+        for (var i = (int)InputKey.WandMenu; i <= (int)InputKey.WandTriggerWeak; i++)
         {
             if (TGInput.GetKey(InputType.LeftWand, (InputKey)i))
                 ThreeGlassesUtils.Log((InputKey)i + " is pressed");
@@ -75,7 +75,7 @@ public class WandController : MonoBehaviour {
             {
                 currRate -= fireRate;
 
-                if (TGInput.GetKey(inputType, InputKey.WandTriggerStrong))
+                if (TGInput.GetTriggerProcess(inputType) > 0.9f)
                 {
                     GameObject bullet = GameObject.CreatePrimitive((PrimitiveType)bulletType);
                     bullet.transform.position = firePos.position;
@@ -110,7 +110,7 @@ public class WandController : MonoBehaviour {
             else if (inputType == InputType.RightWand)
             {
                 headDisplay.Rotate(headDisplay.up, dir.x * rotateSpeed * Time.deltaTime);
-                headDisplay.Rotate(headDisplay.right, dir.y * rotateSpeed * Time.deltaTime);
+                headDisplay.Rotate(headDisplay.right, -dir.y * rotateSpeed * Time.deltaTime);
             }
         }
     }
@@ -144,7 +144,7 @@ public class WandController : MonoBehaviour {
                 currRate -= fireRate;
 
 
-                if (pack.GetKey(InputKey.WandTriggerStrong))
+                if (pack.triggerProcess > 0.9f)
                 {
                     GameObject bullet = GameObject.CreatePrimitive((PrimitiveType)bulletType);
                     bullet.transform.position = firePos.position;

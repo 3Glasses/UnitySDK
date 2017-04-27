@@ -546,8 +546,6 @@ namespace ThreeGlasses
                     break;
                 case InputKey.WandTriggerWeak:
                     break;
-                case InputKey.WandTriggerStrong:
-                    break;
             }
             return false;
         }

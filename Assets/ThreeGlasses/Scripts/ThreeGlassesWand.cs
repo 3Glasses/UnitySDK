@@ -63,8 +63,6 @@ namespace ThreeGlasses
                         return (keyStatus & WANDS_BUTTON_MASK_RIGHT_HANDLE) != 0;
                     case InputKey.WandTriggerWeak:
                         return (keyStatus & WANDS_BUTTON_MASK_TRIGGER_PRESSED) != 0;
-                    case InputKey.WandTriggerStrong:
-                        return (keyStatus & WANDS_BUTTON_MASK_TRIGGER_PRESS_END) != 0;
                 }
                 return false;
             }
