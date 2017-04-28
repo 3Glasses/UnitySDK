@@ -18,7 +18,6 @@ namespace ThreeGlasses
         WandLeftSide,
         WandRightSide,
         WandTriggerWeak,
-        WandTriggerStrong,
         HmdMenu = 20,
         HmdExit
     };

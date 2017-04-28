@@ -27,8 +27,6 @@ public class WandController : MonoBehaviour {
     private Material mat;
     public Transform headDisplay;
 
-    private Coroutine _delayStopMotor;
-
     // Use this for initialization
     void Start () {
         trans = GetComponent<Transform>();
@@ -45,7 +43,7 @@ public class WandController : MonoBehaviour {
             ThreeGlassesUtils.Log("HMD's key menu is pressed ");
         if (TGInput.GetKey(InputType.HMD, InputKey.HmdExit))
             ThreeGlassesUtils.Log("HMD's key exit is pressed ");
-        for (int i = (int)InputKey.WandMenu; i <= (int)InputKey.WandTriggerStrong; i++)
+        for (var i = (int)InputKey.WandMenu; i <= (int)InputKey.WandTriggerWeak; i++)
         {
             if (TGInput.GetKey(InputType.LeftWand, (InputKey)i))
                 ThreeGlassesUtils.Log((InputKey)i + " is pressed");
@@ -75,7 +73,7 @@ public class WandController : MonoBehaviour {
             {
                 currRate -= fireRate;
 
-                if (TGInput.GetKey(inputType, InputKey.WandTriggerStrong))
+                if (TGInput.GetTriggerProcess(inputType) > 0.9f)
                 {
                     GameObject bullet = GameObject.CreatePrimitive((PrimitiveType)bulletType);
                     bullet.transform.position = firePos.position;
@@ -88,11 +86,7 @@ public class WandController : MonoBehaviour {
                         || inputType == InputType.RightWand)
                     {
                         ThreeGlassesManager.joyPad[(int) inputType].SetMotor(80);
-                        if (_delayStopMotor != null)
-                        {
-                            StopCoroutine(_delayStopMotor);
-                        }
-                        _delayStopMotor = StartCoroutine(DelayStopMotor());
+                        StartCoroutine(DelayStopMotor());
                     }
                 }
             }
@@ -110,7 +104,7 @@ public class WandController : MonoBehaviour {
             else if (inputType == InputType.RightWand)
             {
                 headDisplay.Rotate(headDisplay.up, dir.x * rotateSpeed * Time.deltaTime);
-                headDisplay.Rotate(headDisplay.right, dir.y * rotateSpeed * Time.deltaTime);
+                headDisplay.Rotate(headDisplay.right, -dir.y * rotateSpeed * Time.deltaTime);
             }
         }
     }
@@ -118,8 +112,8 @@ public class WandController : MonoBehaviour {
     IEnumerator DelayStopMotor()
     {
         yield return new WaitForSeconds(0.2f);
-        if (inputType == InputType.LeftWand
-                        || inputType == InputType.RightWand)
+        if (inputType == InputType.LeftWand ||
+            inputType == InputType.RightWand)
         {
             ThreeGlassesManager.joyPad[(int)inputType].SetMotor(0);
         }
@@ -144,7 +138,7 @@ public class WandController : MonoBehaviour {
                 currRate -= fireRate;
 
 
-                if (pack.GetKey(InputKey.WandTriggerStrong))
+                if (pack.triggerProcess > 0.9f)
                 {
                     GameObject bullet = GameObject.CreatePrimitive((PrimitiveType)bulletType);
                     bullet.transform.position = firePos.position;
@@ -153,12 +147,7 @@ public class WandController : MonoBehaviour {
                     rb.AddForce(transform.forward * bulletSpeed, ForceMode.VelocityChange);
                     Destroy(bullet, 10.0f);
                     pack.SetMotor(80);
-
-                    if (_delayStopMotor != null)
-                    {
-                        StopCoroutine(_delayStopMotor);
-                    }
-                    _delayStopMotor = StartCoroutine(DelayStopMotor());
+                    StartCoroutine(DelayStopMotor());
                 }
             }
         }
