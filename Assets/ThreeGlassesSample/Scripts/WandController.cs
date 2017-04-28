@@ -27,8 +27,6 @@ public class WandController : MonoBehaviour {
     private Material mat;
     public Transform headDisplay;
 
-    private Coroutine _delayStopMotor;
-
     // Use this for initialization
     void Start () {
         trans = GetComponent<Transform>();
@@ -88,11 +86,7 @@ public class WandController : MonoBehaviour {
                         || inputType == InputType.RightWand)
                     {
                         ThreeGlassesManager.joyPad[(int) inputType].SetMotor(80);
-                        if (_delayStopMotor != null)
-                        {
-                            StopCoroutine(_delayStopMotor);
-                        }
-                        _delayStopMotor = StartCoroutine(DelayStopMotor());
+                        StartCoroutine(DelayStopMotor());
                     }
                 }
             }
@@ -118,8 +112,8 @@ public class WandController : MonoBehaviour {
     IEnumerator DelayStopMotor()
     {
         yield return new WaitForSeconds(0.2f);
-        if (inputType == InputType.LeftWand
-                        || inputType == InputType.RightWand)
+        if (inputType == InputType.LeftWand ||
+            inputType == InputType.RightWand)
         {
             ThreeGlassesManager.joyPad[(int)inputType].SetMotor(0);
         }
@@ -153,12 +147,7 @@ public class WandController : MonoBehaviour {
                     rb.AddForce(transform.forward * bulletSpeed, ForceMode.VelocityChange);
                     Destroy(bullet, 10.0f);
                     pack.SetMotor(80);
-
-                    if (_delayStopMotor != null)
-                    {
-                        StopCoroutine(_delayStopMotor);
-                    }
-                    _delayStopMotor = StartCoroutine(DelayStopMotor());
+                    StartCoroutine(DelayStopMotor());
                 }
             }
         }
