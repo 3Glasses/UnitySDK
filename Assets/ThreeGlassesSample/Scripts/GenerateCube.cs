@@ -34,14 +34,11 @@ public class GenerateCube : MonoBehaviour
                     if ((int)(Random.value + 0.5) == 1)
                     {
                         cube.gameObject.GetComponent<Renderer>().material = red;
-                        cube.gameObject.layer = LayerMask.NameToLayer("A");
                     }
                     else
                     {
                         cube.gameObject.GetComponent<Renderer>().material = green;
-                        cube.gameObject.layer = LayerMask.NameToLayer("B");
                     }
-
                 }
             }
         }
