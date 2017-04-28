@@ -269,7 +269,7 @@ MonoBehaviour:
   freezeRotation: 0
   scaleRenderResolution: 1.3
   AsynchronousProjection: 0
-  useUnityStereoRendering: 1
+  useUnityStereoRendering: 0
   hmdAntiAliasingLevel: 2
   eyeDistance: 0.1
   layerMask:
