@@ -101,5 +101,11 @@ namespace ThreeGlasses
             return new Vector2(0,0);
         }
 
+        // set vibration
+        public static void SetVibration(InputType type, ushort level)
+        {
+            if (type == InputType.LeftWand || type == InputType.RightWand)
+                ThreeGlassesManager.joyPad[(int)type].SetMotor(level);
+        }
     }
 }
