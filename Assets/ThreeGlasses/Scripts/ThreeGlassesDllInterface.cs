@@ -108,7 +108,7 @@ namespace ThreeGlasses
 
         // render ------------------------------------------------------------------------------
         [DllImport(Dllname)]
-        public static extern void SZVRPluginProjection(float[] matrix);
+        public static extern void SZVRPluginProjection(float[] leftProjMatrix, float[] rightProjMatrix );
 
         [DllImport(Dllname)]
         public static extern void GetNativeRenderSize(uint[] bufferSize);

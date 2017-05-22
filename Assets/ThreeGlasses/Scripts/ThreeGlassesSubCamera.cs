@@ -28,8 +28,12 @@ namespace ThreeGlasses
             _camera = GetComponent<Camera>();
 
             _projection = Matrix4x4.zero;
-            var proj = new float[16];
-            ThreeGlassesDllInterface.SZVRPluginProjection(proj);
+            var leftProj = new float[16];
+            var rightProj = new float[16];
+            ThreeGlassesDllInterface.SZVRPluginProjection(leftProj, rightProj);
+            var proj = CameraType == CameraTypes.LeftEye
+                ? leftProj
+                : rightProj;
 
             _projection[0, 0] = proj[0];
             _projection[1, 1] = proj[5];
