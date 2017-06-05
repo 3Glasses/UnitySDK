@@ -26,6 +26,18 @@ namespace ThreeGlasses
                 InitDevices();
                 StartTracking(IntPtr.Zero, IntPtr.Zero,
                     IntPtr.Zero, IntPtr.Zero);
+
+                uint timeoutCount = 0;
+                uint[] buffsize = {0, 0};
+                while (timeoutCount != uint.MaxValue)
+                {
+                    ThreeGlassesDllInterface.GetNativeRenderSize(buffsize);
+                    if (buffsize[0] > 0 && buffsize[1] > 0)
+                    {
+                        break;
+                    }
+                    timeoutCount++;
+                }
             }
         }
 
