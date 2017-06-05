@@ -66,7 +66,7 @@ namespace ThreeGlasses
             renderWidth = 2048;
             renderHeight = 1024;
 
-            #if !UNITY_EDITOR
+#if !UNITY_EDITOR
             var threadId = GetCurrentThreadId();
             EnumThreadWindows(threadId, (hWnd, lParam) =>
             {
@@ -77,8 +77,7 @@ namespace ThreeGlasses
                 _windowHandle = hWnd;
                 return false;
             }, IntPtr.Zero);
-            #endif
-
+#endif
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife init");
 
             uint[] buffsize = { renderWidth, renderHeight };
@@ -103,7 +102,8 @@ namespace ThreeGlasses
 #endif
         }
 
-        void OnApplicationQuit()
+
+        private void OnApplicationQuit()
         {
             ThreeGlassesUtils.Log("ThreeGlassesHeadDisplayLife application quit");
             ThreeGlassesDllInterface.SZVRPluginDestroy();
