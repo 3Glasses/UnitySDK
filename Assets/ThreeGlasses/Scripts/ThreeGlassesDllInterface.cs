@@ -20,23 +20,20 @@ namespace ThreeGlasses
         static ThreeGlassesDllInterface()
         {
             var hmdConnection = false;
-            if (0 != SZVR_GetHMDConnectionStatus(
-                    ref hmdConnection))
-            {
-                InitDevices();
-                StartTracking(IntPtr.Zero, IntPtr.Zero,
-                    IntPtr.Zero, IntPtr.Zero);
+            if (0 == SZVR_GetHMDConnectionStatus(
+                    ref hmdConnection)) return;
 
-                uint timeoutCount = 0;
-                uint[] buffsize = {0, 0};
-                while (timeoutCount != uint.MaxValue)
+            InitDevices();
+            StartTracking(IntPtr.Zero, IntPtr.Zero,
+                IntPtr.Zero, IntPtr.Zero);
+
+            uint[] buffsize = {0, 0};
+            while (true)
+            {
+                ThreeGlassesDllInterface.GetNativeRenderSize(buffsize);
+                if (buffsize[0] > 0 && buffsize[1] > 0)
                 {
-                    ThreeGlassesDllInterface.GetNativeRenderSize(buffsize);
-                    if (buffsize[0] > 0 && buffsize[1] > 0)
-                    {
-                        break;
-                    }
-                    timeoutCount++;
+                    break;
                 }
             }
         }
