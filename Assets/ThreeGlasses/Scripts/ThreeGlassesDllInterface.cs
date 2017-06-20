@@ -20,7 +20,7 @@ namespace ThreeGlasses
         static ThreeGlassesDllInterface()
         {
             var hmdConnection = false;
-            if (0 == SZVR_GetHMDConnectionStatus(
+            if (0 == SZVR_GetHMDConnectionStatus_V2(
                     ref hmdConnection)) return;
 
             InitDevices();
@@ -47,42 +47,42 @@ namespace ThreeGlasses
 
         // self attr
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetHMDConnectionStatus(ref bool result);
+        public static extern uint SZVR_GetHMDConnectionStatus_V2(ref bool result);
         [DllImport(Dllname)]// IntPtr must Marshal.AllocHGlobal(64), Marshal.PtrToStringAnsi to string
-        public static extern uint SZVR_GetHMDDevName(IntPtr name);
+        public static extern uint SZVR_GetHMDDevName_V2(IntPtr name);
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetHMDDevIPD(ref byte value);
+        public static extern uint SZVR_GetHMDDevIPD_V2(ref byte value);
         // if light
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetHMDPresent(ref bool result);
+        public static extern uint SZVR_GetHMDPresent_V2(ref bool result);
 
         // hmd rotation & position
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetHMDRotate(float[] rotate);//3
+        public static extern uint SZVR_GetHMDRotate_V2(float[] rotate);//3
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetHMDPos(float[] pos);//4
+        public static extern uint SZVR_GetHMDPos_V2(float[] pos);//4
 
         // hmd touchpad
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetHMDTouchpad(byte[] result);//2
+        public static extern uint SZVR_GetHMDTouchpad_V2(byte[] result);//2
 
         // hmd button
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetHMDMenuButton(ref bool result);
+        public static extern uint SZVR_GetHMDMenuButton_V2(ref bool result);
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetHMDExitButton(ref bool result);
+        public static extern uint SZVR_GetHMDExitButton_V2(ref bool result);
 
 
         // wand --------------------------------------------------------------------------------
         // status
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetWandConnectionStatus(byte[] status);
+        public static extern uint SZVR_GetWandConnectionStatus_V2(byte[] status);
 
         // rotate & position
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetWandRotate(float[] result);//8
+        public static extern uint SZVR_GetWandRotate_V2(float[] result);//8
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetWandPos(float[] result);//6
+        public static extern uint SZVR_GetWandPos_V2(float[] result);//6
 
         // button
         /*
@@ -102,14 +102,14 @@ namespace ThreeGlasses
           11 Trigger press all the way down;
         */
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetWandButton(byte[] result);
+        public static extern uint SZVR_GetWandButton_V2(byte[] result);
 
         // trigger
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetWandTriggerProcess(byte[] result); //2
+        public static extern uint SZVR_GetWandTriggerProcess_V2(byte[] result); //2
         // stick
         [DllImport(Dllname)]
-        public static extern uint SZVR_GetWandStick(byte[] result);//4
+        public static extern uint SZVR_GetWandStick_V2(byte[] result);//4
 
         [DllImport(Dllname)]
         public static extern uint SZVR_SetVibrator_V2(uint index, ushort value); // index: 0,1 value: 0~100
