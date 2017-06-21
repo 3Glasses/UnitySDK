@@ -115,14 +115,14 @@ namespace ThreeGlasses
 
             // check hmd status
             var result = false;
-            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDConnectionStatus(ref result) || !result)
+            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDConnectionStatus_V2(ref result) || !result)
             {
                 Debug.LogWarning("The Helmet Mounted Display is not connect");
             }
 
             // get hmd name
             strPtr = Marshal.AllocHGlobal(64);
-            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDDevName(strPtr))
+            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDDevName_V2(strPtr))
             {
                 hmdName = Marshal.PtrToStringAnsi(strPtr, 64);
             }
@@ -413,7 +413,7 @@ namespace ThreeGlasses
         {
             // update hmd
             float[] pos = {0, 0, 0};
-            ThreeGlassesDllInterface.SZVR_GetHMDPos(pos);
+            ThreeGlassesDllInterface.SZVR_GetHMDPos_V2(pos);
             hmdPosition = new Vector3(pos[0], pos[1], -pos[2])/1000f;
             if (!freezePosition && ThreeGlassesUtils.CheckNaN(hmdPosition))
             {
@@ -428,7 +428,7 @@ namespace ThreeGlasses
             }
 
             float[] rotate = { 0, 0, 0, 1 };
-            ThreeGlassesDllInterface.SZVR_GetHMDRotate(rotate);
+            ThreeGlassesDllInterface.SZVR_GetHMDRotate_V2(rotate);
             hmdRotation = new Quaternion(rotate[0], rotate[1], -rotate[2], -rotate[3]);
             if (!freezeRotation)
             {
@@ -444,8 +444,8 @@ namespace ThreeGlasses
             ThreeGlassesDllInterface.StereoRenderBegin();
 
             bool[] button = { false, false };
-            ThreeGlassesDllInterface.SZVR_GetHMDMenuButton(ref button[0]);
-            ThreeGlassesDllInterface.SZVR_GetHMDExitButton(ref button[1]);
+            ThreeGlassesDllInterface.SZVR_GetHMDMenuButton_V2(ref button[0]);
+            ThreeGlassesDllInterface.SZVR_GetHMDExitButton_V2(ref button[1]);
             for (var i = 0; i < 2; i++)
             {
                 if (button[i])
@@ -456,7 +456,7 @@ namespace ThreeGlasses
 
             // touchpad
             byte[] touchPos = {0, 0};
-            ThreeGlassesDllInterface.SZVR_GetHMDTouchpad(touchPos);
+            ThreeGlassesDllInterface.SZVR_GetHMDTouchpad_V2(touchPos);
             hmdTouchPad[0] = ((touchPos[0] / (float)255.0) - 0.5f)*2.0f; 
             hmdTouchPad[1] = (-(touchPos[1] / (float)255.0) + 0.5f)*2.0f;
         }
@@ -467,7 +467,7 @@ namespace ThreeGlasses
             if (!enableJoypad) return;
 
             byte[] connect = { 0, 0 };
-            if (0 == ThreeGlassesDllInterface.SZVR_GetWandConnectionStatus(connect))
+            if (0 == ThreeGlassesDllInterface.SZVR_GetWandConnectionStatus_V2(connect))
             {
                 if (connect[0] != 0 || connect[1] != 0)
                 {
@@ -477,25 +477,25 @@ namespace ThreeGlasses
                     byte[] trigger = { 128, 128 };
                     byte[] stick = { 128, 128, 128, 128 };
                     var wandButton = new byte[12];
-                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandRotate(wandRotate))
+                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandRotate_V2(wandRotate))
                     {
                         getRotate = true;
                     }
-                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandPos(wandPos))
+                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandPos_V2(wandPos))
                     {
                         getPos = true;
                     }
-                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandTriggerProcess(trigger))
+                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandTriggerProcess_V2(trigger))
                     {
                         getTrigger = true;
                     }
-                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandStick(stick))
+                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandStick_V2(stick))
                     {
                         ThreeGlassesUtils.Log("lwand="+ stick[0]+ "    "+stick[1]);
                         ThreeGlassesUtils.Log("rwand="+ stick[2]+ "    "+stick[3]);
                         getStick = true;
                     }
-                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandButton(wandButton))
+                    if (0 == ThreeGlassesDllInterface.SZVR_GetWandButton_V2(wandButton))
                     {
                         getButton = true;
                     }
@@ -579,7 +579,7 @@ namespace ThreeGlasses
         public static bool GetHMDPresent()
         {
             var status = false;
-            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDPresent(ref status))
+            if (0 != ThreeGlassesDllInterface.SZVR_GetHMDPresent_V2(ref status))
             {
                 status = false;
             }
